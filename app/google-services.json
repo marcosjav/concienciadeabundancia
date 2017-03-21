@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "165499231974",
+    "firebase_url": "https://concienciadeabundancia-8d27b.firebaseio.com",
+    "project_id": "concienciadeabundancia-8d27b",
+    "storage_bucket": "concienciadeabundancia-8d27b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165499231974:android:053c961050b9fdf7",
+        "android_client_info": {
+          "package_name": "com.bnvlab.concienciadeabundancia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165499231974-qiqkdtqsf4ulre3de5i3fhkqnnh1m6gk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bnvlab.concienciadeabundancia",
+            "certificate_hash": "9c9dd3b8221c9dd2f93e925ce48507f687962a38"
+          }
+        },
+        {
+          "client_id": "165499231974-90f92ahn9bk811ibh55q0aapvs4ov37l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALfXyqnhZhpEgOC6GXiCiNAdpGR8AdroM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165499231974-90f92ahn9bk811ibh55q0aapvs4ov37l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

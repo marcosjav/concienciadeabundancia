@@ -60,7 +60,7 @@ public class LoginFragment extends Fragment {
         });
 
 
-        //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER
+        //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER  https://github.com/srodrigo/Android-Hint-Spinner
         HintSpinner<String> hintSpinner = new HintSpinner<>(
                 spinnerLocation,
                 // Default layout - You don't need to pass in any layout id, just your hint text and
@@ -73,6 +73,9 @@ public class LoginFragment extends Fragment {
                     }
                 });
         hintSpinner.init();
+
+
+
 
         return view;
     }
