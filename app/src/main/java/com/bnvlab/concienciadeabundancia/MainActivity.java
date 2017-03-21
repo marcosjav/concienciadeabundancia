@@ -1,9 +1,7 @@
 package com.bnvlab.concienciadeabundancia;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
+import android.support.v4.app.FragmentActivity;
 
 /*
 NORMAS:
@@ -16,21 +14,14 @@ NORMAS:
     -CADA COMMIT DEBE IR ACOMPAÑADO DE UNA DESCRIPCIÓN DE LO QUE SE HIZO Y DE LO QUE SE SE VA A SEGUIR EN EL PRÓXIMO
     -LOS TEXTOS, COLORES Y DEMÁS EN SU RESPECTIVO XML
 */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // ESTO ES SIMPLEMENTE PARA PROBAR EL LOGIN
-        Button buttonTestLogin = (Button) findViewById(R.id.button_login_test);
-        buttonTestLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setContentView(R.layout.layout_login);
-            }
-        });
-
+        LoginFragment loginFragment = new LoginFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_main, loginFragment).commit();
     }
 }

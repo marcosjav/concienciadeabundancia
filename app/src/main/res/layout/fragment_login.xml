@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray">
+
+    <LinearLayout
+        android:id="@+id/layout_login_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_cda_logo" />
+
+        <Button
+            android:id="@+id/button_login_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_button_login" />
+
+        <Button
+            android:id="@+id/button_login_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_button_register" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@mipmap/ic_facebook" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@mipmap/ic_web" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@mipmap/ic_launcher" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_login_register"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/edittext_login_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_edittext_hint_name"/>
+
+        <EditText
+            android:id="@+id/edittext_login_lastname"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_edittext_hint_name"/>
+
+        <Spinner
+            android:id="@+id/spinner_login_location"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"></Spinner>
+
+        <EditText
+            android:id="@+id/edittext_login_phone"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_edittext_hint_name"
+            android:inputType="phone"/>
+
+    </LinearLayout>
+</FrameLayout>
