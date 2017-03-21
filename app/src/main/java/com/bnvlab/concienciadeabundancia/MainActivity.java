@@ -3,7 +3,9 @@ package com.bnvlab.concienciadeabundancia;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -23,11 +25,18 @@ public class MainActivity extends FragmentActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     static String TAG = "CDA_INFORMATION";
     LoginFragment loginFragment = new LoginFragment();
+    MainFragment mainFragment = new MainFragment();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_main, mainFragment,"main_fragment")
+                .commit();
 
         //LOGIN SECTION
         mAuth = FirebaseAuth.getInstance();
@@ -41,15 +50,26 @@ public class MainActivity extends FragmentActivity {
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_main, loginFragment).commit();
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_main, loginFragment).commit();
+                    // Works with either the framework FragmentManager or the
+                    // support package FragmentManager (getSupportFragmentManager).
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.fragment_main, loginFragment, "login_fragment")
+                            // Add this transaction to the back stack
+                            .addToBackStack("login")
+                            .commit();
                 }
             }
         };
 
 
 
-
-
+        getSupportFragmentManager().addOnBackStackChangedListener(
+                new FragmentManager.OnBackStackChangedListener() {
+                    public void onBackStackChanged() {
+                        // Update your UI here.
+                    }
+                });
     }
 
     @Override

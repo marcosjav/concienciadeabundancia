@@ -7,13 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-
-import me.srodrigo.androidhintspinner.HintAdapter;
-import me.srodrigo.androidhintspinner.HintSpinner;
 
 /**
  * Created by Marcos on 17/03/2017.
@@ -22,12 +16,6 @@ import me.srodrigo.androidhintspinner.HintSpinner;
 
 public class LoginFragment extends Fragment {
     Button buttonLogin, buttonRegister;
-    Spinner spinnerLocation;
-    ArrayList<String> locationList = new ArrayList<String>() {{
-        add("Resistencia");
-        add("Corrientes");
-        add("Córdoba");
-    }};
 
     public LoginFragment() {
         // REQUIRED EMPTY PUBLIC CONSTRUCTOR
@@ -41,13 +29,19 @@ public class LoginFragment extends Fragment {
 
         buttonLogin     = (Button) view.findViewById(R.id.button_login_login);
         buttonRegister  = (Button) view.findViewById(R.id.button_login_register);
-        spinnerLocation = (Spinner) view.findViewById(R.id.spinner_login_location);
+
 
         //CHANGING VIEW TEST
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show(R.id.layout_login_register);
+                getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fragment_main, new SignUpFragment(), "sign_up_fragment")
+                        // Add this transaction to the back stack
+                        .addToBackStack("login")
+                        .commit();
             }
         });
 
@@ -56,25 +50,15 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Notify.message(getContext(), "Conciencia de abundancia", "Hay un nuevo test disponible!");
+                getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.fragment_main, new SignInFragment(), "sign_in_fragment")
+                        // Add this transaction to the back stack
+                        .addToBackStack("login")
+                        .commit();
             }
         });
-
-
-        //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER  https://github.com/srodrigo/Android-Hint-Spinner
-        HintSpinner<String> hintSpinner = new HintSpinner<>(
-                spinnerLocation,
-                // Default layout - You don't need to pass in any layout id, just your hint text and
-                // your list data
-                new HintAdapter(getContext(), R.string.login_edittext_hint_locale, locationList),
-                new HintSpinner.Callback<String>() {
-                    @Override
-                    public void onItemSelected(int position, String itemAtPosition) {
-                        // Here you handle the on item selected event (this skips the hint selected event)
-                    }
-                });
-        hintSpinner.init();
-
-
 
 
         return view;
@@ -106,4 +90,6 @@ public class LoginFragment extends Fragment {
             getView().findViewById(id).setVisibility( id==layout ? View.VISIBLE : View.GONE);
         }
     }
+
+
 }
