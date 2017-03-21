@@ -4,7 +4,8 @@
     <!--LOGIN SCREENS-->
     <string name="login_button_login">Ingresar</string>
     <string name="login_button_register">Registrarse</string>
-    <string name="login_edittext_hint_name">Nombre</string>
-    <string name="login_edittext_hint_last_name">Nombre</string>
-    <string name="login_edittext_hint_phone">Nombre</string>
+    <string name="login_edittext_hint_name">nombre</string>
+    <string name="login_edittext_hint_last_name">apellido</string>
+    <string name="login_edittext_hint_phone">celular</string>
+    <string name="login_edittext_hint_locale">seleccione localidad</string>
 </resources>
