@@ -18,7 +18,7 @@ import com.bnvlab.concienciadeabundancia.R;
  */
 
 public class LoginFragment extends Fragment {
-    Button buttonLogin, buttonRegister;
+    Button buttonLogin, buttonRegister, buttonQuiz;
 
     public LoginFragment() {
         // REQUIRED EMPTY PUBLIC CONSTRUCTOR
@@ -32,6 +32,7 @@ public class LoginFragment extends Fragment {
 
         buttonLogin     = (Button) view.findViewById(R.id.button_login_login);
         buttonRegister  = (Button) view.findViewById(R.id.button_login_register);
+        buttonQuiz      = (Button) view.findViewById(R.id.button_login_quiz);
 
 
         //CHANGING VIEW TEST
@@ -64,7 +65,20 @@ public class LoginFragment extends Fragment {
                         .commit();
             }
         });
-
+        // para la encuesta
+        buttonQuiz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
+                        .add(R.id.fragment_main, new QuizFragment(), "sign_up_fragment")
+                        // Add this transaction to the back stack
+                        .addToBackStack("login")
+                        .commit();
+            }
+        });
 
         return view;
     }
