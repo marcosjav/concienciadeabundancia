@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
                 .add(R.id.fragment_main, mainFragment,"main_fragment")
                 .commit();
 
@@ -57,7 +57,7 @@ public class MainActivity extends FragmentActivity {
                     // Works with either the framework FragmentManager or the
                     // support package FragmentManager (getSupportFragmentManager).
                     getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
                             .add(R.id.fragment_main, loginFragment, "login_fragment")
                             // Add this transaction to the back stack
                             .addToBackStack("login")

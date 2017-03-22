@@ -41,7 +41,7 @@ public class LoginFragment extends Fragment {
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
                         .add(R.id.fragment_main, new SignUpFragment(), "sign_up_fragment")
                         // Add this transaction to the back stack
                         .addToBackStack("login")
@@ -57,7 +57,7 @@ public class LoginFragment extends Fragment {
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
                         .add(R.id.fragment_main, new SignInFragment(), "sign_in_fragment")
                         // Add this transaction to the back stack
                         .addToBackStack("login")
