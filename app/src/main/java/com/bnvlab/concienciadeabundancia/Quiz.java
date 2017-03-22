@@ -1,30 +1,26 @@
 package com.bnvlab.concienciadeabundancia;
 
+import android.widget.Switch;
+
 /**
  * Created by bort0 on 21/03/2017.
  */
 
 public class Quiz {
-    private int id;
-    private String quiz;
-    private int answer;
 
-    public Quiz(int id, String quiz, int answer) {
-        this.id = id;
+    private String quiz;
+    private boolean answer;
+
+    public Quiz(String quiz, boolean answer) {
+
         this.answer = answer;
         this.quiz = quiz;
     }
 
-    public int getId() {
-        return this.id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-    public int getAnswer() {
+    public boolean getAnswer() {
         return this.answer;
     }
-    public void setAnswer(int answer) {
+    public void setAnswer(boolean answer) {
         this.answer = answer;
     }
     public String getQuiz() {

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            tools:listitem="@layout/quiz_row" />
+            tools:listitem="@layout/item_quiz_row" />
 
     </LinearLayout>
 </LinearLayout>
