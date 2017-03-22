@@ -1,4 +1,4 @@
-package com.bnvlab.concienciadeabundancia;
+package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,18 +7,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bnvlab.concienciadeabundancia.R;
+
 /**
  * Created by Marcos on 21/03/2017.
  */
 
-public class SignInFragment extends Fragment {
+public class MainFragment extends Fragment {
 
-    public SignInFragment() {
+    public MainFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sign_in, container, false);
+        return  inflater.inflate(R.layout.fragment_main, container, false);
     }
+
+
 }

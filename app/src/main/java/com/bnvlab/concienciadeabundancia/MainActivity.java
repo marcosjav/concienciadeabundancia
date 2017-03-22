@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
+import com.bnvlab.concienciadeabundancia.fragments.LoginFragment;
+import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -35,6 +37,7 @@ public class MainActivity extends FragmentActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
                 .add(R.id.fragment_main, mainFragment,"main_fragment")
                 .commit();
 
@@ -54,6 +57,7 @@ public class MainActivity extends FragmentActivity {
                     // Works with either the framework FragmentManager or the
                     // support package FragmentManager (getSupportFragmentManager).
                     getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
                             .add(R.id.fragment_main, loginFragment, "login_fragment")
                             // Add this transaction to the back stack
                             .addToBackStack("login")

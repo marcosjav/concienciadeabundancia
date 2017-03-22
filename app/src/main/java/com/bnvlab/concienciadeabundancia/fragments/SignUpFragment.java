@@ -1,4 +1,4 @@
-package com.bnvlab.concienciadeabundancia;
+package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Spinner;
+
+import com.bnvlab.concienciadeabundancia.R;
 
 import java.util.ArrayList;
 
@@ -32,7 +34,7 @@ public class SignUpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
-        
+
         spinnerLocation = (Spinner) view.findViewById(R.id.spinner_login_location);
 
         //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER  https://github.com/srodrigo/Android-Hint-Spinner

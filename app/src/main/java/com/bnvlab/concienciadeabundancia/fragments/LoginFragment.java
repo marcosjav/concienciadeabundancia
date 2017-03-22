@@ -1,4 +1,4 @@
-package com.bnvlab.concienciadeabundancia;
+package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.bnvlab.concienciadeabundancia.Notify;
+import com.bnvlab.concienciadeabundancia.R;
 
 /**
  * Created by Marcos on 17/03/2017.
@@ -38,6 +41,7 @@ public class LoginFragment extends Fragment {
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
                         .add(R.id.fragment_main, new SignUpFragment(), "sign_up_fragment")
                         // Add this transaction to the back stack
                         .addToBackStack("login")
@@ -53,6 +57,7 @@ public class LoginFragment extends Fragment {
                 getActivity()
                         .getSupportFragmentManager()
                         .beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
                         .add(R.id.fragment_main, new SignInFragment(), "sign_in_fragment")
                         // Add this transaction to the back stack
                         .addToBackStack("login")
