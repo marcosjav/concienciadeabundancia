@@ -1,5 +1,7 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,9 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ImageButton;
 
-import com.bnvlab.concienciadeabundancia.Notify;
+import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.R;
 
 /**
@@ -18,7 +20,8 @@ import com.bnvlab.concienciadeabundancia.R;
  */
 
 public class LoginFragment extends Fragment {
-    Button buttonLogin, buttonRegister, buttonQuiz;
+    Button buttonSignIn, buttonSignUp;
+    ImageButton buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink;
 
     public LoginFragment() {
         // REQUIRED EMPTY PUBLIC CONSTRUCTOR
@@ -26,57 +29,56 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        View view = super.onCreateView(inflater, container, savedInstanceState);
-
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        buttonLogin     = (Button) view.findViewById(R.id.button_login_login);
-        buttonRegister  = (Button) view.findViewById(R.id.button_login_register);
-        buttonQuiz      = (Button) view.findViewById(R.id.button_login_quiz);
+        buttonSignIn = (Button) view.findViewById(R.id.button_login_sign_in);
+        buttonSignUp = (Button) view.findViewById(R.id.button_login_sign_up);
+        buttonFacebookLink = (ImageButton) view.findViewById(R.id.button_facebook_link);
+        buttonMaillink = (ImageButton) view.findViewById(R.id.button_email_link);
+        buttonTweeterLink = (ImageButton) view.findViewById(R.id.button_tweeter_link);
+        buttonWebLink = (ImageButton) view.findViewById(R.id.button_web_link);
+        buttonPhoneLink = (ImageButton) view.findViewById(R.id.button_phone_link);
 
 
-        //CHANGING VIEW TEST
-        buttonRegister.setOnClickListener(new View.OnClickListener() {
+        buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
-                        .add(R.id.fragment_main, new SignUpFragment(), "sign_up_fragment")
-                        // Add this transaction to the back stack
-                        .addToBackStack("login")
-                        .commit();
+                FragmentMan.changeFragment(getActivity(), SignUpFragment.class);
             }
         });
 
-        //NOTIFICATION TEST
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
+        buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Notify.message(getContext(), "Conciencia de abundancia", "Hay un nuevo test disponible!");
-                getActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
-                        .add(R.id.fragment_main, new SignInFragment(), "sign_in_fragment")
-                        // Add this transaction to the back stack
-                        .addToBackStack("login")
-                        .commit();
+                FragmentMan.changeFragment(getActivity(), SignInFragment.class);
+
             }
         });
-        // para la encuesta
-        buttonQuiz.setOnClickListener(new View.OnClickListener() {
+
+        buttonFacebookLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity()
-                        .getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out)  //VA ANTES DEL ADD
-                        .add(R.id.fragment_main, new QuizFragment(), "sign_up_fragment")
-                        // Add this transaction to the back stack
-                        .addToBackStack("login")
-                        .commit();
+                Uri uri = Uri.parse("https://www.facebook.com/concienciaabundancia"); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+        buttonWebLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://www.concienciadeabundancia.com"); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+        buttonPhoneLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.fromParts("tel", "3624376536", null); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_DIAL, uri);
+                startActivity(intent);
             }
         });
 
@@ -88,27 +90,6 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    /*SHOWS SPECIFICS LAYOUT*/
-    private static final int    LAYOUT_MAIN     = 0,
-                                LAYOUT_LOGIN    = 1,
-                                LAYOUT_REGISTER = 2;
-
-    /**
-     * Shows specific layout, hidding the rest
-     * @param layout the id of the layout to show
-     */
-    private void show(int layout)
-    {
-        int[] layout_id = { R.id.layout_login_main,
-                            R.id.layout_login_register};
-
-        Toast.makeText(getActivity(), "SHOW", Toast.LENGTH_SHORT).show();
-
-        for (int id : layout_id )
-        {
-            getView().findViewById(id).setVisibility( id==layout ? View.VISIBLE : View.GONE);
-        }
-    }
 
 
 }

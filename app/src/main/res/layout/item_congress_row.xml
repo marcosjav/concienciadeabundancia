@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_conference_item"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@drawable/item_rounder_cornes"
+    android:padding="10dp"
+    android:layout_margin="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_conference_item_place"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="LUGAR"
+            android:gravity="center|left"
+            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/text_view_conference_item_location"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="LOCALIDAD"
+            android:gravity="center|left"
+            android:layout_weight="2"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_view_conference_item_day"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="DÍA"/>
+
+        <TextView
+            android:id="@+id/text_view_conference_item_hour"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="HORA"/>
+
+    </LinearLayout>
+
+</LinearLayout>

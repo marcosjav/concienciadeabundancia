@@ -1,4 +1,4 @@
-package com.bnvlab.concienciadeabundancia;
+package com.bnvlab.concienciadeabundancia.auxiliaries;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+
+import com.bnvlab.concienciadeabundancia.MainActivity;
+import com.bnvlab.concienciadeabundancia.R;
 
 /**
  * Created by Marcos on 20/03/2017.
@@ -50,4 +53,16 @@ public class Notify {
         mNotificationManager.notify(0, mBuilder.build());
 
     }
+
+    public static void share(String message, Context context)
+    {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+        sendIntent.setType("text/plain");
+//        startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
+        context.startActivity(Intent.createChooser(sendIntent, context.getResources().getText(R.string.app_name)));
+    }
+
+    
 }

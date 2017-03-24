@@ -6,13 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.Switch;
 
 import com.bnvlab.concienciadeabundancia.Quiz;
-import com.bnvlab.concienciadeabundancia.QuizAdapter;
+import com.bnvlab.concienciadeabundancia.adapters.QuizAdapter;
 import com.bnvlab.concienciadeabundancia.R;
 
 /**
@@ -40,6 +38,23 @@ public class QuizFragment extends Fragment {
                 new Quiz("te gusto el cutso?", false),
                 new Quiz("Entendiste todo el contenido?", false),
                 new Quiz("lo recomendarias a alguien?", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
+                new Quiz("otra pregunta...", false),
                 new Quiz("otra pregunta...", false),
                 new Quiz("otra pregunta...", false),
                 new Quiz("otra pregunta...", false),
