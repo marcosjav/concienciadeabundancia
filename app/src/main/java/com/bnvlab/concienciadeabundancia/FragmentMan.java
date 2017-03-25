@@ -146,6 +146,15 @@ public class FragmentMan {
         }
     }
 
+    public static void eraseAll(FragmentActivity activity)
+    {
+        // ERASE ALL FRAGMENTS
+        FragmentManager fm = activity.getSupportFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+            fm.popBackStack();
+        }
+    }
+
     /*public static void changeRemoveFragment(FragmentActivity activity, Class showFragment, Class removeFragment) {
         if (Fragment.class.isAssignableFrom(showFragment)
                 && Fragment.class.isAssignableFrom(removeFragment)) {

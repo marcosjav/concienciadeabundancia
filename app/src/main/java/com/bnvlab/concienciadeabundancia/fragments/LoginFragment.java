@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 
 /**
  * Created by Marcos on 17/03/2017.
@@ -79,6 +80,13 @@ public class LoginFragment extends Fragment {
                 Uri uri = Uri.fromParts("tel", "3624376536", null); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_DIAL, uri);
                 startActivity(intent);
+            }
+        });
+
+        buttonMaillink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Notify.email(getContext());
             }
         });
 

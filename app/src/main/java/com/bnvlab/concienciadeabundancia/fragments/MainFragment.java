@@ -2,6 +2,7 @@ package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,8 +21,16 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
+import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
+import com.bnvlab.concienciadeabundancia.clases.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Marcos on 21/03/2017.
@@ -31,7 +40,7 @@ public class MainFragment extends Fragment {
 //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
     ImageButton buttonConference, buttonVideos, buttonProgress, buttonTest;
-    ImageButton buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonInformation, buttonShare;
+    ImageButton buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonInformation, buttonShare, buttonAttention, buttonLogout;
 
     public MainFragment() {
     }
@@ -53,6 +62,8 @@ public class MainFragment extends Fragment {
         buttonPhoneLink = (ImageButton) view.findViewById(R.id.button_phone_link);
         buttonShare = (ImageButton) view.findViewById(R.id.button_share_main);
         buttonInformation = (ImageButton) view.findViewById(R.id.button_information_main);
+        buttonAttention = (ImageButton) view.findViewById(R.id.button_attention_main);
+        buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
 
         buttonConference.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +119,56 @@ public class MainFragment extends Fragment {
             }
         });
 
+        buttonLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                builder
+                        .setMessage("Seguro de cerrar sesión?")
+                        .setTitle("SALIR")
+                        .setIcon(R.drawable.attention_red)
+                        .setPositiveButton("SÍ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseAuth.getInstance().signOut();
+                            }
+                        })
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+
+                dialog.show();
+            }
+        });
+
+        buttonAttention.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Context context = getContext();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                builder
+                        .setMessage("Todavía no hemos podido verificar tu celular, si está mal escrito avisanos para corregirlo.")
+                        .setTitle("VERIFICACIÓN")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+
+                dialog.show();
+            }
+        });
+
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,9 +179,13 @@ public class MainFragment extends Fragment {
         buttonMaillink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Notify.email(getContext());
             }
         });
+
+        checkReceive();
+
+        checkPhone();
 
         return view;
     }
@@ -129,9 +194,11 @@ public class MainFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.RECEIVE_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
+
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                     Manifest.permission.RECEIVE_SMS)) {
-                Toast.makeText(getContext(), "r3", Toast.LENGTH_SHORT).show();
+                //THE USER NOT ACCEPT READ SMS
+
             } else {
                 ActivityCompat.requestPermissions(getActivity(),
                         new String[]{Manifest.permission.RECEIVE_SMS},
@@ -169,6 +236,36 @@ public class MainFragment extends Fragment {
         Dialog dialog = builder.create();
 
         dialog.show();
+    }
+
+    private void checkPhone(){
+        //String phone = MainActivity.user.getPhone();
+
+        FirebaseUser userFB = FirebaseAuth.getInstance().getCurrentUser();
+        final String phone = userFB.getEmail().split("@")[0];
+
+        FirebaseDatabase.getInstance()
+                .getReference(MainActivity.REFERENCE)
+                .child("users")
+                .child(phone)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        if (user != null) {
+                            MainActivity.user = user;
+                            buttonAttention.setVisibility(user.isVerified()?
+                                    View.GONE
+                                    :View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
     }
 
     /*protected void sendSMSMessage() {

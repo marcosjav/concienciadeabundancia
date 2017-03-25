@@ -6,12 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.LoginFragment;
@@ -20,8 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.List;
 
 /*
 NORMAS:
@@ -44,11 +40,8 @@ public class MainActivity extends FragmentActivity {
     FragmentManager fragmentManager;
     LoginFragment loginFragment = new LoginFragment();
     MainFragment mainFragment = new MainFragment();
-    boolean firstTime = true, checkingPhone = false;
-    static final String APP_SHARED_PREF_KEY = MainActivity.class.getSimpleName()
-            ,FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime"
-            ,CHEKING_PHONE_PREF_KEY = APP_SHARED_PREF_KEY + ".checkingPhone";
-
+    boolean firstTime = true;
+    public static final String APP_SHARED_PREF_KEY = MainActivity.class.getSimpleName(), FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
 
 
     @Override
@@ -61,10 +54,9 @@ public class MainActivity extends FragmentActivity {
 
         // use a default value using new Date()
         firstTime = prefs.getBoolean(this.FIRST_TIME_PREF_KEY, true);
-        checkingPhone = prefs.getBoolean(this.CHEKING_PHONE_PREF_KEY, true);
 
-        if (firstTime)
-        {
+
+        if (firstTime) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setNeutralButton("VIDEO", new DialogInterface.OnClickListener() {
@@ -77,7 +69,7 @@ public class MainActivity extends FragmentActivity {
             }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User clicked OK button
-                    prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY,false).apply();
+                    prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
                 }
             })
                     .setMessage("Creemos que el amor y la unidad van a transformar positiva-mente al mundo. \n" +
@@ -100,8 +92,7 @@ public class MainActivity extends FragmentActivity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + userFB.getUid());
 
-                    if(newUser)
-                    {
+                    if (newUser) {
                         user.setuId(userFB.getUid());
 
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest
@@ -120,12 +111,23 @@ public class MainActivity extends FragmentActivity {
                                 .setValue(user);
                     }
 
+                    FragmentMan.eraseAll(MainActivity.this);
+
                     FragmentMan.changeFragment(MainActivity.this, MainFragment.class, true);
 
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
+
+                    FragmentMan.eraseAll(MainActivity.this);
+
                     FragmentMan.changeFragment(MainActivity.this, LoginFragment.class, true);
+                    /*Intent mStartActivity = new Intent(MainActivity.this, MainActivity.class);
+                    int mPendingIntentId = 123456;
+                    PendingIntent mPendingIntent = PendingIntent.getActivity(MainActivity.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                    AlarmManager mgr = (AlarmManager) MainActivity.this.getSystemService(Context.ALARM_SERVICE);
+                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                    System.exit(0);*/
                 }
             }
         };
@@ -148,18 +150,6 @@ public class MainActivity extends FragmentActivity {
 //                setFragmentVisible();
             }
         });
-    }
-
-    public void setFragmentVisible(){
-        FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        if(fragments != null){
-            for(Fragment fragment : fragments){
-                if(fragment != null && fragment.getView() != null) {
-                    fragment.getView().setVisibility(View.VISIBLE);
-                }
-            }
-        }
     }
 
     @Override

@@ -73,9 +73,8 @@ public class SignInFragment extends Fragment implements IHidable{
                                         Toast.LENGTH_SHORT).show();
 
                             } else {
-                                Toast.makeText(getActivity(), "Ingreso correcto",
-                                        Toast.LENGTH_SHORT).show();
 //                                    FragmentMan.removeFragment(getActivity(),LoginFragment.class);
+                                FragmentMan.eraseAll(getActivity());
                                 FragmentMan.changeFragment(getActivity(), MainFragment.class, true);
                             }
 

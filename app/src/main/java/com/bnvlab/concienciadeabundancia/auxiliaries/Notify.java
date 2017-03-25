@@ -20,7 +20,7 @@ public class Notify {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mContext)
-                        .setSmallIcon(R.mipmap.ic_cda_icon)
+                        .setSmallIcon(R.mipmap.ic_notification)
                         .setContentTitle(title)
                         .setContentText(text)
                         .setAutoCancel(true);
@@ -64,5 +64,11 @@ public class Notify {
         context.startActivity(Intent.createChooser(sendIntent, context.getResources().getText(R.string.app_name)));
     }
 
-    
+    public static void email(Context context)
+    {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "info@concienciadeabundancia.com" });
+        context.startActivity(Intent.createChooser(intent, ""));
+    }
 }

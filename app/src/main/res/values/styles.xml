@@ -8,5 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:buttonStyle">@style/button</item>
         <item name="imageButtonStyle">@style/button</item>
+
+        <item name="editTextStyle">@style/editTextStyle</item>
     </style>
 </resources>

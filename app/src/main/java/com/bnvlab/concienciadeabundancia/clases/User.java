@@ -7,6 +7,7 @@ package com.bnvlab.concienciadeabundancia.clases;
 public class User {
     public static String CHILD = "users";
     String uId, name, lastName, locale, phone, email;
+    boolean verified;
 
     public User() {
     }
@@ -19,6 +20,7 @@ public class User {
         this.locale = locale;
         this.phone = phone;
         this.email = email;
+        this.verified = false;
     }
     public User(String name, String lastName, String locale, String phone, String email) {
 
@@ -27,6 +29,7 @@ public class User {
         this.locale = locale;
         this.phone = phone;
         this.email = email;
+        this.verified = false;
     }
 
     public String getuId() {
@@ -77,5 +80,11 @@ public class User {
         this.email = email;
     }
 
+    public boolean isVerified() {
+        return verified;
+    }
 
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
 }

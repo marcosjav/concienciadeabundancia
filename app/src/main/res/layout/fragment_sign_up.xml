@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_sign_up"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,18 +32,18 @@
                 android:src="@drawable/logo_white" />
 
             <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="CONCIENCIA DE"-->
-                <!--android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="CONCIENCIA DE"-->
+            <!--android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />-->
 
             <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="ABUNDANCIA"-->
-                <!--android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"-->
-                <!--android:textSize="24dip"-->
-                <!--android:textStyle="bold" />-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="ABUNDANCIA"-->
+            <!--android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"-->
+            <!--android:textSize="24dip"-->
+            <!--android:textStyle="bold" />-->
 
 
             <TextView
@@ -50,51 +51,52 @@
                 android:layout_height="wrap_content"
                 android:text="@string/login_sign_up_title"
                 android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dip"
+                android:layout_gravity="left"
                 android:layout_marginBottom="5dp"
-                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_marginTop="15dip"
                 android:text="@string/login_edittext_hint_name"
-                android:layout_gravity="left"/>
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
             <EditText
                 android:id="@+id/edittext_sign_up_name"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@drawable/edittext_rounder_cornes"
-                android:hint="@string/login_edittext_hint_name" />
+                android:hint="@string/login_edittext_hint_name"
+                android:inputType="textPersonName" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dip"
+                android:layout_gravity="left"
                 android:layout_marginBottom="5dp"
-                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_marginTop="15dip"
                 android:text="@string/login_edittext_hint_last_name"
-                android:layout_gravity="left"/>
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
             <EditText
                 android:id="@+id/edittext_sign_up_lastname"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@drawable/edittext_rounder_cornes"
-                android:hint="@string/login_edittext_hint_last_name" />
+                android:hint="@string/login_edittext_hint_last_name"
+                android:inputType="textPersonName"
+                android:nextFocusDown="@+id/spinner_sign_up_location"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dip"
+                android:layout_gravity="left"
                 android:layout_marginBottom="5dp"
-                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_marginTop="15dip"
                 android:text="@string/login_edittext_hint_location"
-                android:layout_gravity="left"/>
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
             <ViewSwitcher
                 android:id="@+id/view_switcher_sign_up_location"
@@ -121,74 +123,71 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dip"
+                android:layout_gravity="left"
                 android:layout_marginBottom="5dp"
-                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_marginTop="15dip"
                 android:text="@string/login_edittext_hint_phone"
-                android:layout_gravity="left"/>
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
             <EditText
                 android:id="@+id/edittext_sign_up_phone"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@drawable/edittext_rounder_cornes"
                 android:hint="@string/login_edittext_hint_phone"
                 android:inputType="phone" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dip"
+                android:layout_gravity="left"
                 android:layout_marginBottom="5dp"
-                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_marginTop="15dip"
                 android:text="@string/login_edittext_hint_email"
-                android:layout_gravity="left"/>
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
             <EditText
                 android:id="@+id/edittext_sign_up_mail"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@drawable/edittext_rounder_cornes"
                 android:hint="@string/login_edittext_hint_email"
                 android:inputType="textEmailAddress" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dip"
+                android:layout_gravity="left"
                 android:layout_marginBottom="5dp"
-                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_marginTop="15dip"
                 android:text="@string/login_edittext_hint_password"
-                android:layout_gravity="left"/>
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
             <EditText
                 android:id="@+id/edittext_sign_up_password"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@drawable/edittext_rounder_cornes"
                 android:hint="@string/login_edittext_hint_password"
                 android:inputType="textPassword" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dip"
+                android:layout_gravity="left"
                 android:layout_marginBottom="5dp"
-                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:layout_marginTop="15dip"
                 android:text="@string/login_edittext_hint_repassword"
-                android:layout_gravity="left"/>
+                android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
             <EditText
                 android:id="@+id/edittext_sign_up_repassword"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:background="@drawable/edittext_rounder_cornes"
                 android:hint="@string/login_edittext_hint_repassword"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:nextFocusDown="@+id/button_sign_up_ok"/>
 
             <ViewSwitcher
                 android:id="@+id/view_switcher_sign_up_ok"
@@ -199,15 +198,15 @@
                     android:id="@+id/button_sign_up_ok"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
                     android:layout_gravity="center"
+                    android:layout_marginTop="10dip"
                     android:text="@string/login_button_register" />
 
                 <ProgressBar
                     android:layout_width="50dip"
                     android:layout_height="50dip"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"/>
+                    android:layout_gravity="center_horizontal"
+                    android:indeterminate="true" />
 
             </ViewSwitcher>
         </LinearLayout>

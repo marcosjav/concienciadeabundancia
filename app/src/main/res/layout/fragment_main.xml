@@ -22,35 +22,55 @@
             android:layout_width="match_parent"
             android:layout_height="100dp">
 
+            <ImageButton
+                android:id="@+id/button_attention_main"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@null"
+                android:layout_margin="10dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/attention_yellow"
+                android:visibility="gone"/>
+
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginRight="20dp"
-                android:layout_gravity="right|top">
+                android:gravity="right|top">
 
                 <ImageButton
                     android:id="@+id/button_share_main"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:background="@null"
-                    android:layout_margin="5dp"
+                    android:layout_margin="10dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/ico_share"/>
 
                 <ImageButton
                     android:id="@+id/button_information_main"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:background="@null"
-                    android:layout_margin="5dp"
+                    android:layout_margin="10dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/ico_information"
                     android:visibility="gone"/>
 
+                <ImageButton
+                    android:id="@+id/button_logout_main"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@null"
+                    android:layout_margin="10dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/logout"/>
+
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="editTextStyle" parent="@android:style/Widget.DeviceDefault.EditText">
+        <item name="android:background">@drawable/edittext_rounder_cornes</item>
+        <!--<item name="android:textAppearance">@app</item>-->
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+</resources>
