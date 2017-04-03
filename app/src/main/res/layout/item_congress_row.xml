@@ -1,60 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_conference_item"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
     android:background="@drawable/item_rounder_cornes"
-    android:padding="10dp"
-    android:layout_margin="5dp">
+    android:orientation="vertical"
+    android:padding="10dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/text_view_conference_item_title"
+        style="@style/textViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:gravity="center|start"
+        android:textStyle="bold"
+        android:text="TÍTULO"
+        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
-        <TextView
-            android:id="@+id/text_view_conference_item_place"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="LUGAR"
-            android:gravity="center|left"
-            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/text_view_conference_item_location"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="LOCALIDAD"
-            android:gravity="center|left"
-            android:layout_weight="2"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/text_view_conference_item_date"
+        style="@style/textViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="FECHA" />
 
-        <TextView
-            android:id="@+id/text_view_conference_item_day"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="DÍA"/>
+    <TextView
+        android:id="@+id/text_view_conference_item_place"
+        style="@style/textViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="LUGAR" />
 
-        <TextView
-            android:id="@+id/text_view_conference_item_hour"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:text="HORA"/>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/text_view_conference_item_location"
+        style="@style/textViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="LOCALIDAD" />
 
 </LinearLayout>

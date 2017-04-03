@@ -18,4 +18,27 @@
     <string name="player_error">Error initializing YouTube player: %s</string>
     <string name="seek_to">Jump To</string>
     <string name="seek_to_hint">Seconds</string>
+
+
+    <!-- Strings related to login -->
+    <string name="title_activity_login">Ingreso</string>
+    <string name="prompt_phone">Teléfono</string>
+    <string name="prompt_password">Clave</string>
+    <string name="action_sign_in">INGRESAR</string>
+    <string name="action_sign_up">REGISTRARSE</string>
+    <string name="action_sign_in_short">INGRESAR</string>
+    <string name="error_invalid_phone">No es un teléfono válido</string>
+    <string name="error_invalid_password">La clave es muy corta</string>
+    <string name="error_incorrect_password">La clave es incorrecta</string>
+    <string name="error_field_required">Este campo es necesario</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="error_invalid_email">El teléfono es inválido</string>
+
+    <string name="app_half_name_1">CONCIENCIA DE</string>
+    <string name="app_half_name_2">ABUNDANCIA</string>
 </resources>

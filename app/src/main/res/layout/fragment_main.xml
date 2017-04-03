@@ -3,79 +3,100 @@
     android:id="@+id/fragment_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/background"
-        android:scaleType="centerCrop"/>
+    <!--    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/background"
+            android:scaleType="centerCrop"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-        android:background="@drawable/layout_rounder_cornes"
         android:orientation="vertical">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp">
+            android:layout_height="wrap_content">
 
             <ImageButton
                 android:id="@+id/button_attention_main"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@null"
                 android:layout_margin="10dp"
+                android:background="@null"
                 android:scaleType="fitXY"
-                android:src="@drawable/attention_yellow"
-                android:visibility="gone"/>
+                android:src="@drawable/attention_red"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginRight="20dp"
-                android:gravity="right|top">
+                android:gravity="right|top"
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/button_share_main"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@null"
                     android:layout_margin="10dp"
+                    android:background="@null"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ico_share"/>
+                    android:src="@drawable/ic_share" />
 
                 <ImageButton
                     android:id="@+id/button_information_main"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@null"
                     android:layout_margin="10dp"
+                    android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/ico_information"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/button_logout_main"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@null"
                     android:layout_margin="10dp"
+                    android:background="@null"
                     android:scaleType="fitXY"
-                    android:src="@drawable/logout"/>
+                    android:src="@drawable/logout" />
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/imageView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/logo_white" />
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="75dip"
+                    android:src="@drawable/logo" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_half_name_1"
+                    android:textSize="22sp"
+                    style="@style/textViewStyle"
+                    android:textColor="@android:color/black"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_half_name_2"
+                    android:textSize="26sp"
+                    style="@style/textViewStyle"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"/>
+            </LinearLayout>
         </FrameLayout>
 
         <ScrollView
@@ -86,8 +107,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center_horizontal"
+                android:orientation="vertical"
                 android:padding="10dp">
 
                 <LinearLayout
@@ -103,21 +124,21 @@
 
                         <ImageButton
                             android:id="@+id/button_main_conference"
-                            style="@style/button"
+                            style="@style/imageButton"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:layout_margin="10dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ico_conference" />
+                            android:src="@drawable/conference" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Próximos \n encuentros"
+                            android:text="  Próximos \n encuentros"
+                            style="@style/textViewStyle"
                             android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                            android:textSize="16dp" />
+                            android:textSize="10dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -128,21 +149,22 @@
 
                         <ImageButton
                             android:id="@+id/button_main_videos"
-                            style="@style/button"
+                            style="@style/imageButton"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_margin="10dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ico_video" />
+                            android:src="@drawable/youtube" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="Videos"
+                            style="@style/textViewStyle"
                             android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                            android:textSize="16dp" />
+                            android:textSize="10dp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -208,11 +230,12 @@
             </LinearLayout>
 
         </ScrollView>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dip"
-            android:layout_weight="1"
             android:layout_marginTop="30dp"
+            android:layout_weight="1"
             android:gravity="center_horizontal|bottom"
             android:orientation="horizontal">
 
@@ -232,7 +255,7 @@
                 android:layout_margin="5dp"
                 android:background="@null"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ico_mail"/>
+                android:src="@drawable/ico_mail" />
 
             <ImageButton
                 android:id="@+id/button_tweeter_link"

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="textViewStyle" parent="@android:style/Widget.DeviceDefault.TextView">
+        <!--<item name="android:textAppearance">@app</item>-->
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
+</resources>

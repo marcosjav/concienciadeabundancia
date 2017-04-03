@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
+import com.bnvlab.concienciadeabundancia.LoginActivity;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
@@ -132,6 +133,7 @@ public class MainFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
+                                showLogin();
                             }
                         })
                         .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -188,6 +190,13 @@ public class MainFragment extends Fragment {
         checkPhone();
 
         return view;
+    }
+
+    private void showLogin() {
+        Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        this.startActivity(myIntent);
+        getActivity().finish();
     }
 
     private void checkReceive() {

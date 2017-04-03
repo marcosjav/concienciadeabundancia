@@ -55,8 +55,8 @@ public class ConferenceAdapter extends BaseAdapter {
             holder = new ConferenceHolder();
             holder.textViewPlace = (TextView) view.findViewById(R.id.text_view_conference_item_place);
             holder.textViewLocation = (TextView) view.findViewById(R.id.text_view_conference_item_location);
-            holder.textViewDate = (TextView) view.findViewById(R.id.text_view_conference_item_day);
-            holder.textViewTime = (TextView) view.findViewById(R.id.text_view_conference_item_hour);
+            holder.textViewDate = (TextView) view.findViewById(R.id.text_view_conference_item_date);
+            holder.textViewTitle = (TextView) view.findViewById(R.id.text_view_conference_item_title);
 
             view.setTag(holder);
         }
@@ -68,14 +68,14 @@ public class ConferenceAdapter extends BaseAdapter {
 
         holder.textViewPlace.setText(item.getPlace());
         holder.textViewLocation.setText(item.getLocation());
-        holder.textViewDate.setText(date[1]);
-        holder.textViewTime.setText(date[0]);
+        holder.textViewDate.setText(date[1]+ " - " + date[0] + " hs");
+        holder.textViewTitle.setText(item.getTitle());
 
         return view;
     }
 
     class ConferenceHolder {
-        TextView textViewPlace, textViewLocation, textViewDate, textViewTime;
+        TextView textViewPlace, textViewLocation, textViewDate, textViewTitle;
     }
 }
 

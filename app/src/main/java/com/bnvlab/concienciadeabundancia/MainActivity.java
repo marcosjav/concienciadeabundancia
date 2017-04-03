@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -15,9 +14,6 @@ import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.LoginFragment;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.database.FirebaseDatabase;
 
 /*
 NORMAS:
@@ -31,8 +27,8 @@ NORMAS:
     -LOS TEXTOS, COLORES Y DEMÁS EN SU RESPECTIVO XML
 */
 public class MainActivity extends FragmentActivity {
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    //    private FirebaseAuth mAuth;
+//    private FirebaseAuth.AuthStateListener mAuthListener;
     static String TAG = "CDA_INFORMATION";
     public static String REFERENCE = "CDA";
     public static boolean newUser = false;
@@ -48,6 +44,10 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            showLogin();
+        }
 
         final SharedPreferences prefs = this.getSharedPreferences(
                 this.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
@@ -82,8 +82,10 @@ public class MainActivity extends FragmentActivity {
             dialog.show();
         }
 
+        FragmentMan.changeFragment(this, MainFragment.class);
+
         //LOGIN SECTION
-        mAuth = FirebaseAuth.getInstance();
+        /*mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -122,17 +124,17 @@ public class MainActivity extends FragmentActivity {
                     FragmentMan.eraseAll(MainActivity.this);
 
                     FragmentMan.changeFragment(MainActivity.this, LoginFragment.class, true);
-                    /*Intent mStartActivity = new Intent(MainActivity.this, MainActivity.class);
+                    *//*Intent mStartActivity = new Intent(MainActivity.this, MainActivity.class);
                     int mPendingIntentId = 123456;
                     PendingIntent mPendingIntent = PendingIntent.getActivity(MainActivity.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
                     AlarmManager mgr = (AlarmManager) MainActivity.this.getSystemService(Context.ALARM_SERVICE);
                     mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                    System.exit(0);*/
+                    System.exit(0);*//*
                 }
             }
-        };
+        };*/
 
-        getSupportFragmentManager().addOnBackStackChangedListener(
+        /*getSupportFragmentManager().addOnBackStackChangedListener(
                 new FragmentManager.OnBackStackChangedListener() {
                     public void onBackStackChanged() {
                         if (getSupportFragmentManager().getBackStackEntryCount() < 1)
@@ -149,40 +151,59 @@ public class MainActivity extends FragmentActivity {
                     System.exit(0);
 //                setFragmentVisible();
             }
-        });
+        });*/
     }
 
-    @Override
+    private void showLogin() {
+        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        this.startActivity(myIntent);
+        finish();
+    }
+
+/*    @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-    }
+    }*/
 
-    @Override
+/*    @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-    }
+    }*/
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        fragmentManager = getSupportFragmentManager();
+//        fragmentManager = getSupportFragmentManager();
     }
 
 
+    /*    @Override
+        public void onBackPressed() {
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() > 0) {
+                Log.i("MainActivity", "popping backstack");
+                fm.popBackStack();
+            } else {
+                Log.i("MainActivity", "nothing on backstack, calling super");
+                super.onBackPressed();
+            }
+        }*/
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() > 0) {
+        if (fm.getBackStackEntryCount() > 1) {
             Log.i("MainActivity", "popping backstack");
             fm.popBackStack();
         } else {
             Log.i("MainActivity", "nothing on backstack, calling super");
             super.onBackPressed();
+            System.exit(0);
         }
     }
 }

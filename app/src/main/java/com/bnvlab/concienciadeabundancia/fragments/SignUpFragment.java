@@ -146,8 +146,8 @@ public class SignUpFragment extends Fragment implements IHidable{
                 password = editTextPassword.getText().toString(),
                 repassword = editTextRePassword.getText().toString();
 
-        if (name.length() > 5) {
-            if (lastName.length() > 5) {
+        if (name.length() > 2) {
+            if (lastName.length() > 2) {
                 if (phone.length() == 10) {
                     if (isValidEmail(email)) {
                         if (password.length() > 5) {
@@ -164,13 +164,13 @@ public class SignUpFragment extends Fragment implements IHidable{
                         Toast.makeText(getContext(), "Correo incorrecto", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "Teléfono incorrecto", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(getContext(), "Apellido corto", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(getContext(), "nombre corto", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Nombre corto", Toast.LENGTH_SHORT).show();
         }
     }
 

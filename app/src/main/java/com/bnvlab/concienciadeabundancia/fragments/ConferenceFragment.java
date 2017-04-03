@@ -33,7 +33,7 @@ import java.util.Locale;
 public class ConferenceFragment extends Fragment {
     ArrayList<ConferenceItem> list;
     ConferenceAdapter adapter;
-    ProgressBar  progressBar;
+    ProgressBar progressBar;
     View view;
 
     public ConferenceFragment() {
@@ -42,8 +42,8 @@ public class ConferenceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_conference,container, false);
-        
+        View view = inflater.inflate(R.layout.fragment_conference, container, false);
+
         list = new ArrayList<>();
         adapter = new ConferenceAdapter(getContext(), R.layout.item_congress_row, list);
 
@@ -54,23 +54,27 @@ public class ConferenceFragment extends Fragment {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
+                final ConferenceItem item = list.get(position);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                 builder.setNeutralButton("Ver ubicación", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User clicked OK button
-                String uri = String.format(Locale.ENGLISH, "geo:0,0?q=-27.437141,-58.980994(Domo del centenario)");
+
+                        String uri = String.format(Locale.ENGLISH, "geo:0,0?q="
+                                + item.getGps()
+                                + "("
+                                + item.getPlace()
+                                + ")");
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                         getContext().startActivity(intent);
                     }
                 });
 
-                ConferenceItem item = list.get(position);
-
-                builder.setTitle( item.getPlace())
-                        .setMessage( item.getInfo() )
+                builder.setTitle(item.getPlace())
+                        .setMessage(item.getInfo())
                         .setIcon(R.mipmap.ic_app_round);
 
                 AlertDialog dialog = builder.create();
@@ -86,7 +90,7 @@ public class ConferenceFragment extends Fragment {
         return view;
     }
 
-    private void getConfereces(){
+    private void getConfereces() {
         progressBar.setVisibility(View.VISIBLE);
         FirebaseDatabase.getInstance()
                 .getReference(MainActivity.REFERENCE)
@@ -94,17 +98,18 @@ public class ConferenceFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data:
-                             dataSnapshot.getChildren()) {
+                        for (DataSnapshot data :
+                                dataSnapshot.getChildren()) {
 
                             ConferenceItem item = new ConferenceItem();
 
-                            item.setDate( (String)data.child("date").getValue() );
-                            item.setDuration( (String)data.child("duration").getValue() );
-                            item.setGps( (String)data.child("gps").getValue() );
-                            item.setInfo( (String)data.child("info").getValue() );
-                            item.setLocation( (String)data.child("location").getValue() );
-                            item.setPlace( (String)data.child("place").getValue() );
+                            item.setTitle((String) data.child("title").getValue());
+                            item.setDate((String) data.child("date").getValue());
+                            item.setDuration((String) data.child("duration").getValue());
+                            item.setGps((String) data.child("gps").getValue());
+                            item.setInfo((String) data.child("info").getValue());
+                            item.setLocation((String) data.child("location").getValue());
+                            item.setPlace((String) data.child("place").getValue());
 
 
                             list.add(item);
