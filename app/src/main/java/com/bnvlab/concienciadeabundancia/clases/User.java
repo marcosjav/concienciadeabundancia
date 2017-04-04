@@ -6,7 +6,7 @@ package com.bnvlab.concienciadeabundancia.clases;
 
 public class User {
     public static String CHILD = "users";
-    String uId, name, lastName, locale, phone, email;
+    String uId, name, lastName, locale, phone, email, lastNumber;
     boolean verified;
 
     public User() {
@@ -86,5 +86,13 @@ public class User {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public String getLastNumber() {
+        return lastNumber;
+    }
+
+    public void setLastNumber(String lastNumber) {
+        this.lastNumber = lastNumber;
     }
 }

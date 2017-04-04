@@ -53,7 +53,7 @@ import me.srodrigo.androidhintspinner.HintAdapter;
 import me.srodrigo.androidhintspinner.HintSpinner;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static com.bnvlab.concienciadeabundancia.fragments.SignUpFragment.isValidEmail;
+import static com.bnvlab.concienciadeabundancia.fragments.SettingsFragment.isValidEmail;
 
 /**
  * A login screen that offers login via email/password.
@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     public static final String APP_SHARED_PREF_KEY = MainActivity.class.getSimpleName(), FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
     SharedPreferences prefs;
+    private Button buttonPasswordRecovery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +171,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         loadLocations();
+
+        buttonPasswordRecovery = (Button) findViewById(R.id.button_password_recovery);
+        buttonPasswordRecovery.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void populateAutoComplete() {
@@ -318,7 +327,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 if (!used_numbers.contains(email))
                                     used_numbers.add(email);
 
-                                prefs.edit().putStringSet("used_numbres", new HashSet<String>(used_numbers));
+                                prefs.edit().putStringSet("used_numbers", new HashSet<String>(used_numbers));
 
                                 Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
                                 myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -575,7 +584,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }else{
                     TextView errorText = (TextView)spinnerLocation.getSelectedView();
-                    errorText.setError("anything here, just to add the icon");
+                    errorText.setError("");
                     errorText.setTextColor(Color.RED);//just to highlight that this is an error
                     errorText.setText("Debe elegir una localidad");//changes the selected item text to this
                     errorText.requestFocus();
@@ -617,6 +626,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             Toast.makeText(LoginActivity.this, "falló la autenticación" + task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            FirebaseDatabase
+                                    .getInstance()
+                                    .getReference(MainActivity.REFERENCE)
+                                    .child(User.CHILD)
+                                    .child(user.getPhone())
+                                    .setValue(user);
+
                             close_login();
                         }
 

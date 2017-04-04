@@ -42,7 +42,7 @@
                     android:id="@+id/button_share_main"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_share" />
@@ -51,7 +51,7 @@
                     android:id="@+id/button_information_main"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/ico_information"
@@ -61,12 +61,23 @@
                     android:id="@+id/button_logout_main"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/logout" />
 
             </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/button_settings"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="5dp"
+                android:background="@null"
+                android:layout_gravity="end"
+                android:scaleType="fitXY"
+                android:src="@drawable/settings"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -93,6 +104,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/app_half_name_2"
                     android:textSize="26sp"
+                    android:layout_marginTop="-11dp"
                     style="@style/textViewStyle"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"/>

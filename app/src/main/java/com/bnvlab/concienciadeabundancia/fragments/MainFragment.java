@@ -41,7 +41,8 @@ public class MainFragment extends Fragment {
 //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
     ImageButton buttonConference, buttonVideos, buttonProgress, buttonTest;
-    ImageButton buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonInformation, buttonShare, buttonAttention, buttonLogout;
+    ImageButton buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink
+            , buttonPhoneLink, buttonInformation, buttonShare, buttonAttention, buttonLogout, buttonSettings;
 
     public MainFragment() {
     }
@@ -65,6 +66,14 @@ public class MainFragment extends Fragment {
         buttonInformation = (ImageButton) view.findViewById(R.id.button_information_main);
         buttonAttention = (ImageButton) view.findViewById(R.id.button_attention_main);
         buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
+        buttonSettings = (ImageButton) view.findViewById(R.id.button_settings);
+
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentMan.changeFragment(getActivity(), SettingsFragment.class);
+            }
+        });
 
         buttonConference.setOnClickListener(new View.OnClickListener() {
             @Override

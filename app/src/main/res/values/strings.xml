@@ -14,6 +14,9 @@
     <string name="login_edittext_hint_repassword">Repetir clave:</string>
     <string name="login_edittext_hint_location">Localidad:</string>
 
+    <string name="fragment_settings">CONFIGURACIÓN</string>
+    <string name="settings_button_ok">GUARDAR</string>
+
     <!--YOUTUBE-->
     <string name="player_error">Error initializing YouTube player: %s</string>
     <string name="seek_to">Jump To</string>

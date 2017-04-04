@@ -51,6 +51,7 @@
                 android:text="@string/app_half_name_2"
                 android:textSize="26dp"
                 style="@style/textViewStyle"
+                android:layout_marginTop="-10dp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:layout_marginBottom="30dp"/>
@@ -79,7 +80,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/prompt_email"
+                        android:text="@string/prompt_phone"
                         android:layout_gravity="start"
                         style="@style/textViewStyle"/>
 
@@ -87,7 +88,7 @@
                         android:id="@+id/email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/prompt_email"
+                        android:hint="@string/prompt_phone"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
                         style="@style/editTextStyle"/>
@@ -130,6 +131,14 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/action_sign_up"
                         android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/button_password_recovery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RECUPERAR CLAVE"
+                        android:background="@null"
+                        android:textColor="#ff0000aa"/>
 
                 </LinearLayout>
             </ScrollView>
@@ -288,7 +297,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
-                    android:hint="@string/login_edittext_hint_email"
+                    android:hint="@string/login_edittext_hint_phone"
                     style="@style/editTextStyle"
                     android:inputType="textEmailAddress" />
 
@@ -300,6 +309,7 @@
                     android:layout_marginTop="15dip"
                     android:text="@string/login_edittext_hint_password"
                     style="@style/textViewStyle"
+                    android:inputType="phone"
                     android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
                 <EditText

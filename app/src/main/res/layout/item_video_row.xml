@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:background="@drawable/item_rounder_cornes">
+    android:background="@drawable/item_rounder_cornes"
+    android:layout_marginBottom="5dp">
 
     <ImageView
         android:id="@+id/image_view_video_item_thumbnail"
@@ -18,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TÍTULO DEL VIDEO"
+        android:gravity="center_horizontal"
         style="@style/textViewStyle"/>
 
     <TextView

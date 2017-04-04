@@ -6,7 +6,8 @@
     android:layout_margin="5dp"
     android:background="@drawable/item_rounder_cornes"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:layout_marginBottom="5dp">
 
     <TextView
         android:id="@+id/text_view_conference_item_title"

@@ -44,7 +44,7 @@ public class LoginFragment extends Fragment {
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentMan.changeFragment(getActivity(), SignUpFragment.class);
+                FragmentMan.changeFragment(getActivity(), SettingsFragment.class);
             }
         });
 
