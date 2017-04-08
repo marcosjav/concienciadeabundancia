@@ -26,6 +26,7 @@
     <!-- Strings related to login -->
     <string name="title_activity_login">Ingreso</string>
     <string name="prompt_phone">Teléfono</string>
+    <string name="prompt_phone_or_email">Teléfono o correo</string>
     <string name="prompt_password">Clave</string>
     <string name="action_sign_in">INGRESAR</string>
     <string name="action_sign_up">REGISTRARSE</string>

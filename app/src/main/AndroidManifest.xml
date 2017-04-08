@@ -13,8 +13,8 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_app"
-        android:roundIcon="@mipmap/ic_app_round"
+        android:icon="@mipmap/ico_app"
+        android:roundIcon="@mipmap/ico_app"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar">
         <activity

@@ -16,6 +16,7 @@ import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.LoginFragment;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +52,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // REVISO SI HAY UNA NUEVA VERSIÓN
         FirebaseDatabase.getInstance()
                 .getReference(MainActivity.REFERENCE)
                 .child("last_version")
@@ -98,6 +100,28 @@ public class MainActivity extends FragmentActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             showLogin();
+        } else {
+            FirebaseDatabase.getInstance()
+                    .getReference(REFERENCE)
+                    .child(User.CHILD)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                            for (DataSnapshot data: dataSnapshot.getChildren())
+                            {
+                                User user = data.getValue(User.class);
+
+                                if(user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
+                                    MainActivity.user = user;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
         }
 
         final SharedPreferences prefs = this.getSharedPreferences(
@@ -106,7 +130,7 @@ public class MainActivity extends FragmentActivity {
         // use a default value using new Date()
         firstTime = prefs.getBoolean(this.FIRST_TIME_PREF_KEY, true);
 
-
+        // PROPAGANDA DEL PRIMER INGRESO DEL USUSARIO
         if (firstTime) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -134,75 +158,6 @@ public class MainActivity extends FragmentActivity {
         }
 
         FragmentMan.changeFragment(this, MainFragment.class);
-
-        //LOGIN SECTION
-        /*mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser userFB = firebaseAuth.getCurrentUser();
-                if (userFB != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + userFB.getUid());
-
-                    if (newUser) {
-                        user.setuId(userFB.getUid());
-
-                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest
-                                .Builder()
-                                .setDisplayName(user.getLastName() + ", " + user.getName())
-                                .build();
-
-                        FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
-
-                        //SAVE THE USER IN THE FIREBASE DATABASE
-                        FirebaseDatabase
-                                .getInstance()
-                                .getReference(MainActivity.REFERENCE)
-                                .child(User.CHILD)
-                                .child(user.getPhone())
-                                .setValue(user);
-                    }
-
-                    FragmentMan.eraseAll(MainActivity.this);
-
-                    FragmentMan.changeFragment(MainActivity.this, MainFragment.class, true);
-
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-
-                    FragmentMan.eraseAll(MainActivity.this);
-
-                    FragmentMan.changeFragment(MainActivity.this, LoginFragment.class, true);
-                    *//*Intent mStartActivity = new Intent(MainActivity.this, MainActivity.class);
-                    int mPendingIntentId = 123456;
-                    PendingIntent mPendingIntent = PendingIntent.getActivity(MainActivity.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
-                    AlarmManager mgr = (AlarmManager) MainActivity.this.getSystemService(Context.ALARM_SERVICE);
-                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-                    System.exit(0);*//*
-                }
-            }
-        };*/
-
-        /*getSupportFragmentManager().addOnBackStackChangedListener(
-                new FragmentManager.OnBackStackChangedListener() {
-                    public void onBackStackChanged() {
-                        if (getSupportFragmentManager().getBackStackEntryCount() < 1)
-                            System.exit(0);
-
-
-//                        setFragmentVisible();
-                    }
-                });
-        getSupportFragmentManager().removeOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if (getSupportFragmentManager().getBackStackEntryCount() < 1)
-                    System.exit(0);
-//                setFragmentVisible();
-            }
-        });*/
     }
 
     private void showLogin() {
@@ -212,39 +167,6 @@ public class MainActivity extends FragmentActivity {
         finish();
     }
 
-/*    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }*/
-
-/*    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
-    }*/
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-//        fragmentManager = getSupportFragmentManager();
-    }
-
-
-    /*    @Override
-        public void onBackPressed() {
-            FragmentManager fm = getSupportFragmentManager();
-            if (fm.getBackStackEntryCount() > 0) {
-                Log.i("MainActivity", "popping backstack");
-                fm.popBackStack();
-            } else {
-                Log.i("MainActivity", "nothing on backstack, calling super");
-                super.onBackPressed();
-            }
-        }*/
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();

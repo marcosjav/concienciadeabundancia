@@ -2,6 +2,7 @@ package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -18,6 +19,8 @@ import android.widget.ViewSwitcher;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.clases.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -73,6 +76,8 @@ public class SettingsFragment extends Fragment {
         spinnerLocation = (Spinner) view.findViewById(R.id.spinner_settings_location);
         buttonUpdate = (Button) view.findViewById(R.id.button_settings_ok);
 
+        user = MainActivity.user;
+
         FirebaseDatabase.getInstance()
                 .getReference(MainActivity.REFERENCE)
                 .child("locations")
@@ -127,18 +132,32 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        String phone = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
+//        String phone = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];/
 
+        updateDataFields();
+
+        return view;
+    }
+
+    private void updateDataFields()
+    {
         FirebaseDatabase.getInstance()
                 .getReference(MainActivity.REFERENCE)
                 .child(User.CHILD)
-                .child(phone)
+                .orderByChild("email")
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        user = dataSnapshot.getValue(User.class);
-                        userReady = true;
-                        updateDataFields();
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            user = data.getValue(User.class);
+                            userReady = true;
+                            editTextName.setText(user.getName());
+                            editTextLastName.setText(user.getLastName());
+                            editTextPhone.setText(user.getPhone());
+                            editTextMail.setText(user.getEmail());
+                            updateSpinner();
+                        }
                     }
 
                     @Override
@@ -146,18 +165,7 @@ public class SettingsFragment extends Fragment {
 
                     }
                 });
-
-        return view;
-    }
-
-    private void updateDataFields()
-    {
         //        FILLING USER DATA IN EDITTEXTS
-        editTextName.setText(user.getName());
-        editTextLastName.setText(user.getLastName());
-        editTextPhone.setText(user.getPhone());
-        editTextMail.setText(user.getEmail());
-        updateSpinner();
     }
 
     private void updateSpinner(){
@@ -262,19 +270,19 @@ public class SettingsFragment extends Fragment {
 //        else
 //            salida += "\nNuevo apellido: " + nLastName;
 
-        if (nPhone.equals(user.getPhone()))
+        if (!nPhone.equals(user.getPhone()))
         {
             user.setLastNumber(user.getPhone());
             registredPhone = user.getPhone();
             user.setPhone(nPhone);
             isModified = true;
-            FirebaseAuth.getInstance().getCurrentUser().updateEmail(nPhone + "@cda.com");
+//            FirebaseAuth.getInstance().getCurrentUser().updateEmail(nPhone + "@cda.com");
         }
 //            salida += "\nMismo telefono";
 //        else
 //            salida += "\nNuevo telefoni: " + nPhone;
 
-        if (nEmail.equals(user.getEmail()))
+        if (!nEmail.equals(user.getEmail()))
         {
             user.setEmail(nEmail);
             isModified = true;
@@ -283,7 +291,7 @@ public class SettingsFragment extends Fragment {
 //        else
 //            salida += "\nNuevo correo: " + nEmail;
 
-        if (nLocation.equals(user.getLocale()))
+        if (!nLocation.equals(user.getLocale()))
         {
             user.setLocale(nLocation);
             isModified = true;
@@ -299,11 +307,27 @@ public class SettingsFragment extends Fragment {
                     .getReference(MainActivity.REFERENCE)
                     .child(User.CHILD)
                     .child(user.getPhone())
-                    .setValue(user);
+                    .setValue(user)
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                    {
+                        viewSwitcherOK.showPrevious();
+                        Toast.makeText(getContext(), "LISTO!", Toast.LENGTH_SHORT).show();
+
+                    }
+                    else
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
-        viewSwitcherOK.showPrevious();
-        Toast.makeText(getContext(), "LISTO!", Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onResume() {
+        updateDataFields();
+        super.onResume();
     }
 }

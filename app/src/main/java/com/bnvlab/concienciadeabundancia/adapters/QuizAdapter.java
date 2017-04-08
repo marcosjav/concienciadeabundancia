@@ -2,58 +2,77 @@ package com.bnvlab.concienciadeabundancia.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Switch;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.bnvlab.concienciadeabundancia.Quiz;
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.clases.QuizItem;
+
+import java.util.ArrayList;
 
 /**
  * Created by bort0 on 22/03/2017.
  */
 
-public class QuizAdapter extends ArrayAdapter {
+public class QuizAdapter extends BaseAdapter {
 
     Context context;
-    int layoutResourceId;
-    Quiz quiz[] = null;
+    ArrayList<QuizItem> list;
 
-    public QuizAdapter(Context context, int layoutResourceId, Quiz[] quiz) {
-        super(context, layoutResourceId, quiz);
-
+    public QuizAdapter(@NonNull Context context, @LayoutRes int resource, ArrayList<QuizItem> list) {
         this.context = context;
-        this.layoutResourceId = layoutResourceId;
-        this.quiz = quiz;
+        this.list = list;
     }
 
-    public View getView(int posicion, View convertView, ViewGroup parent){
-        View row = convertView;
+    @Override
+    public int getCount() {
+        return list.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return list.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View view = convertView;
         QuizHolder holder = null;
-        if(row==null){
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
+
+        if(convertView == null) {
+            view = ((Activity) context).getLayoutInflater().inflate(R.layout.item_quiz_row, parent, false);
 
             holder = new QuizHolder();
-            holder.answer = (Switch) row.findViewById(R.id.switch_quiz);
-            holder.quiz = (TextView) row.findViewById(R.id.row_text);
-            row.setTag(holder);
+            holder.quizText = (TextView) view.findViewById(R.id.quiz_item_string);
+            holder.quizSwitch = (SwitchCompat) view.findViewById(R.id.quiz_item_switch);
+
+            view.setTag(holder);
         }
         else
-            holder = (QuizHolder) row.getTag();
+            holder = (QuizHolder) view.getTag();
 
-        Quiz item = quiz[posicion];
-        holder.quiz.setText(item.getQuiz());
-        holder.answer.setChecked(item.getAnswer());
+        QuizItem item = list.get(position);
 
-        return row;
+        holder.quizText.setText(item.getQuiz());
+        holder.quizSwitch.setChecked(item.getAnswer());
+
+        return view;
     }
 
-    static class QuizHolder {
-        private TextView quiz;
-        private Switch answer;
+    private class QuizHolder{
+        TextView quizText;
+        SwitchCompat quizSwitch;
     }
 }

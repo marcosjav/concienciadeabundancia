@@ -38,11 +38,10 @@ import com.google.firebase.database.ValueEventListener;
  */
 
 public class MainFragment extends Fragment {
-//    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+    //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
-    ImageButton buttonConference, buttonVideos, buttonProgress, buttonTest;
-    ImageButton buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink
-            , buttonPhoneLink, buttonInformation, buttonShare, buttonAttention, buttonLogout, buttonSettings;
+    ImageButton buttonConference, buttonVideos;
+    ImageButton buttonQuiz, buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonInformation, buttonShare, buttonAttention, buttonLogout, buttonSettings;
 
     public MainFragment() {
     }
@@ -54,8 +53,8 @@ public class MainFragment extends Fragment {
 
         buttonConference = (ImageButton) view.findViewById(R.id.button_main_conference);
         buttonVideos = (ImageButton) view.findViewById(R.id.button_main_videos);
-        buttonProgress = (ImageButton) view.findViewById(R.id.button_main_progress);
-        buttonTest = (ImageButton) view.findViewById(R.id.button_main_test);
+//        buttonProgress = (ImageButton) view.findViewById(R.id.button_main_progress);
+//        buttonTest = (ImageButton) view.findViewById(R.id.button_main_test);
 
         buttonFacebookLink = (ImageButton) view.findViewById(R.id.button_facebook_link);
         buttonMaillink = (ImageButton) view.findViewById(R.id.button_email_link);
@@ -67,6 +66,7 @@ public class MainFragment extends Fragment {
         buttonAttention = (ImageButton) view.findViewById(R.id.button_attention_main);
         buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
         buttonSettings = (ImageButton) view.findViewById(R.id.button_settings);
+        buttonQuiz = (ImageButton) view.findViewById(R.id.button_main_quiz);
 
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,19 +86,6 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentMan.changeFragment(getActivity(), VideoFragment.class);
-            }
-        });
-
-        buttonProgress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        buttonTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
             }
         });
 
@@ -194,6 +181,35 @@ public class MainFragment extends Fragment {
             }
         });
 
+        buttonInformation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Context context = getContext();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                builder
+                        .setMessage("Todavía no hemos podido verificar tu celular, si está mal escrito avisanos para corregirlo.")
+                        .setTitle("VERIFICACIÓN")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+                AlertDialog dialog = builder.create();
+
+                dialog.show();
+            }
+        });
+
+        buttonQuiz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentMan.changeFragment(getActivity(), QuizListFragment.class);
+            }
+        });
+
         checkReceive();
 
         checkPhone();
@@ -225,8 +241,7 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void shareDialog()
-    {
+    private void shareDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder
@@ -243,9 +258,7 @@ public class MainFragment extends Fragment {
 
                             Notify.share(message, getContext());
                             dialog.dismiss();
-                        }
-                        else
-                        {
+                        } else {
                             Toast.makeText(getContext(), "Escibe tu experiencia!", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -256,33 +269,46 @@ public class MainFragment extends Fragment {
         dialog.show();
     }
 
-    private void checkPhone(){
+    private void checkPhone() {
         //String phone = MainActivity.user.getPhone();
 
         FirebaseUser userFB = FirebaseAuth.getInstance().getCurrentUser();
-        final String phone = userFB.getEmail().split("@")[0];
+//        String[] splitEmail = userFB.getEmail().split("@");
+        final String email = userFB.getEmail();
 
-        FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child("users")
-                .child(phone)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        if (user != null) {
-                            MainActivity.user = user;
-                            buttonAttention.setVisibility(user.isVerified()?
-                                    View.GONE
-                                    :View.VISIBLE);
+
+            FirebaseDatabase.getInstance()
+                    .getReference(MainActivity.REFERENCE)
+                    .child("users")
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren())
+                            {
+                                User user = data.getValue(User.class);
+                                if (user.getEmail().equals(email))
+                                {
+                                    MainActivity.user = user;
+                                    buttonAttention.setVisibility(user.isVerified() ?
+                                        View.GONE
+                                        : View.VISIBLE);
+                                    break;
+                                }
+                            }
+//                            User user = dataSnapshot.getValue(User.class);
+//                            if (user != null) {
+//                                MainActivity.user = user;
+//                                buttonAttention.setVisibility(user.isVerified() ?
+//                                        View.GONE
+//                                        : View.VISIBLE);
+//                            }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
 
     }
 

@@ -35,55 +35,64 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right|top"
                 android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/button_share_main"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_margin="5dp"
-                    android:background="@null"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="15dp"
+                    android:layout_gravity="start"
+                    style="@style/imageButton"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_share" />
 
                 <ImageButton
                     android:id="@+id/button_information_main"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_margin="5dp"
-                    android:background="@null"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="15dp"
+                    android:layout_gravity="right"
                     android:scaleType="fitXY"
-                    android:src="@drawable/ico_information"
-                    android:visibility="gone" />
+                    style="@style/imageButton"
+                    android:src="@drawable/ico_information" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|end"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/button_settings"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="40dp"
+                    android:scaleType="fitXY"
+                    style="@style/imageButton"
+                    android:src="@drawable/settings" />
 
                 <ImageButton
                     android:id="@+id/button_logout_main"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_margin="5dp"
-                    android:background="@null"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="15dp"
+                    android:layout_gravity="right"
+                    style="@style/imageButton"
                     android:scaleType="fitXY"
                     android:src="@drawable/logout" />
 
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/button_settings"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="5dp"
-                android:background="@null"
-                android:layout_gravity="end"
-                android:scaleType="fitXY"
-                android:src="@drawable/settings"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -91,23 +100,23 @@
                     android:src="@drawable/logo" />
 
                 <TextView
+                    style="@style/textViewStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="@string/app_half_name_1"
-                    android:textSize="22sp"
-                    style="@style/textViewStyle"
                     android:textColor="@android:color/black"
-                    android:layout_marginTop="10dp"/>
+                    android:textSize="22sp" />
 
                 <TextView
+                    style="@style/textViewStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/app_half_name_2"
-                    android:textSize="26sp"
                     android:layout_marginTop="-11dp"
-                    style="@style/textViewStyle"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"/>
+                    android:text="@string/app_half_name_2"
+                    android:textColor="@android:color/black"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </FrameLayout>
 
@@ -144,11 +153,11 @@
                             android:src="@drawable/conference" />
 
                         <TextView
+                            style="@style/textViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="  Próximos \n encuentros"
-                            style="@style/textViewStyle"
                             android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
                             android:textSize="10dp" />
                     </LinearLayout>
@@ -170,11 +179,11 @@
                             android:src="@drawable/youtube" />
 
                         <TextView
+                            style="@style/textViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="Videos"
-                            style="@style/textViewStyle"
                             android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
                             android:textSize="10dp" />
                     </LinearLayout>
@@ -185,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -194,48 +203,50 @@
                         android:orientation="vertical">
 
                         <ImageButton
-                            android:id="@+id/button_main_progress"
-                            style="@style/button"
+                            android:id="@+id/button_main_quiz"
+                            style="@style/imageButton"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:layout_margin="10dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ico_progress" />
+                            android:src="@drawable/ico_brain" />
 
                         <TextView
+                            style="@style/textViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Avances"
+                            android:text="Entrenamientos"
                             android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                            android:textSize="16dp" />
+                            android:textSize="10dp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="invisible">
 
                         <ImageButton
-                            android:id="@+id/button_main_test"
-                            style="@style/button"
+                            android:id="@+id/button_main_nothing"
+                            style="@style/imageButton"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:layout_margin="10dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ico_test" />
+                            android:src="@drawable/ico_brain" />
 
                         <TextView
+                            style="@style/textViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Test"
+                            android:text="  Próximos \n encuentros"
                             android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-                            android:textSize="16dp" />
+                            android:textSize="10dp" />
                     </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -245,9 +256,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dip"
+            android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_weight="1"
+            android:layout_weight="0.00"
             android:gravity="center_horizontal|bottom"
             android:orientation="horizontal">
 
