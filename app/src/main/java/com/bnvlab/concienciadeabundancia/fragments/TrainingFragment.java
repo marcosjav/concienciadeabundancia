@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.TrainingAdapter;
+import com.bnvlab.concienciadeabundancia.auxiliaries.ICallback;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 import com.bnvlab.concienciadeabundancia.clases.TrainingItem;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * Created by Marcos on 08/04/2017.
  */
 
-public class TrainingFragment extends Fragment {
+public class TrainingFragment extends Fragment implements ICallback {
 
     ArrayList<TrainingItem> list;
     TrainingAdapter adapter;
@@ -55,10 +55,9 @@ public class TrainingFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (list.get(position).isComplete())
-                {
-
-                }else{
+                if (list.get(position).isComplete()) {
+                    FragmentMan.changeFragment(getActivity(), ResumeFragment.class, listId.get(position));
+                } else {
                     FragmentMan.changeFragment(getActivity(), QuizFragment.class, listId.get(position));
                 }
             }
@@ -93,7 +92,7 @@ public class TrainingFragment extends Fragment {
                 });
     }
 
-    private void getTrainingsStatus(){
+    private void getTrainingsStatus() {
         FirebaseDatabase.getInstance()
                 .getReference(MainActivity.REFERENCE)
                 .child("sent")
@@ -101,12 +100,11 @@ public class TrainingFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data : dataSnapshot.getChildren())
-                        {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
                             int index = listId.indexOf(data.getKey());
                             if (index != -1)
                                 list.get(index).setComplete(true);
-                            Toast.makeText(getContext(), data.getKey(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(getContext(), data.getKey(), Toast.LENGTH_SHORT).show();
                         }
                         adapter.notifyDataSetChanged();
                         showProgress(false);
@@ -119,11 +117,21 @@ public class TrainingFragment extends Fragment {
                 });
     }
 
-    private void showProgress(boolean show){
+    private void showProgress(boolean show) {
         if (show)
             viewSwitcher.showPrevious();
         else
             viewSwitcher.showNext();
     }
 
+
+    @Override
+    public void callback() {
+        if (list != null) {
+            list.clear();
+            listId.clear();
+            adapter.notifyDataSetChanged();
+            getTrainings();
+        }
+    }
 }

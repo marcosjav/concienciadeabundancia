@@ -132,6 +132,16 @@
 
                     </ListView>
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="30dp"
+                        android:text="Siempre recuerden que todo empieza y termina en uno mismo, al cambiar estos patrones
+mentales, transformaran todas sus relaciones de forma nutritiva y permanente."
+                        android:textColor="@android:color/black"
+                        android:gravity="center"/>
+
                     <ViewSwitcher
                         android:id="@+id/view_switcher_quiz_button"
                         android:layout_width="match_parent"

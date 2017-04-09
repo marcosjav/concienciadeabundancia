@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
+import com.bnvlab.concienciadeabundancia.auxiliaries.ICallback;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
 
 /**
@@ -56,7 +57,7 @@ public class FragmentMan {
             for (Fragment f :
                     fragmentsList) {
                 if (f != null && f.getView() != null)
-                    f.getView().setVisibility(View.INVISIBLE);
+                    f.getView().isVisible(View.INVISIBLE);
             }*/
 
         if (Fragment.class.isAssignableFrom(fragmentClass)) {
@@ -84,6 +85,11 @@ public class FragmentMan {
                                 .add(R.id.fragment_main, fragment, className)
                                 .addToBackStack(className)
                                 .commit();
+
+                        if (fragment instanceof ICallback)
+                        {
+                            ((ICallback)fragment).callback();
+                        }
                     }else
                     {
                         activity
@@ -114,7 +120,7 @@ public class FragmentMan {
                     }
                     View v = fm.findFragmentByTag(className).getView();
                     if (v != null)
-                        v.setVisibility(View.VISIBLE);
+                        v.isVisible(View.VISIBLE);
                 } else {
                     actualFragment = fragment;
                     if (className != MainFragment.class.getSimpleName()) {

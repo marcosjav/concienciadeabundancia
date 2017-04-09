@@ -272,7 +272,7 @@ public class MainFragment extends Fragment {
 //                            User user = dataSnapshot.getValue(User.class);
 //                            if (user != null) {
 //                                MainActivity.user = user;
-//                                buttonAttention.setVisibility(user.isVerified() ?
+//                                buttonAttention.isVisible(user.isVerified() ?
 //                                        View.GONE
 //                                        : View.VISIBLE);
 //                            }

@@ -15,7 +15,6 @@ import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.R;
-import com.bnvlab.concienciadeabundancia.auxiliaries.IHidable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Created by Marcos on 21/03/2017.
  */
 
-public class SignInFragment extends Fragment implements IHidable{
+public class SignInFragment extends Fragment {
     static String TAG = "fragment_sign_in";
     Button buttonSingIn;
     EditText editTextPhone, editTextPassword;
@@ -95,10 +94,5 @@ public class SignInFragment extends Fragment implements IHidable{
 
         return phone.length() == 10
                 && pass.length() > 5;
-    }
-
-    @Override
-    public void setVisibility(boolean visible) {
-        getView().findViewById(R.id.fragment_sign_in).setVisibility(visible? View.VISIBLE : View.GONE);
     }
 }

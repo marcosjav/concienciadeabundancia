@@ -52,9 +52,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal|top"
+                android:gravity="center_horizontal|top"
                 android:orientation="vertical">
 
                 <TextView
@@ -63,28 +63,6 @@
                     android:text="Este es el resultado enviado:"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Creencias testeadas"
-                        android:textColor="@android:color/black" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="Resultado del testeo"
-                        android:textColor="@android:color/black" />
-                </LinearLayout>
 
                 <ListView
                     android:id="@+id/list_view_quiz_resume"

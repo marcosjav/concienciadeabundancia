@@ -12,8 +12,15 @@ import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.adapters.ResumeAdapter;
+import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * Created by Marcos on 08/04/2017.
@@ -26,6 +33,9 @@ public class ResumeFragment extends Fragment {
     ViewSwitcher viewSwitcher;
 
     String quizId;
+    ArrayList<QuizItem> list;
+
+    ResumeAdapter adapter;
 
     public ResumeFragment() {
     }
@@ -35,9 +45,14 @@ public class ResumeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_quiz_resume, container, false);
 
+        list = new ArrayList<>();
+        adapter = new ResumeAdapter(getContext(), R.layout.item_resume_row, list);
+
         tvTitle = (TextView) view.findViewById(R.id.text_view_quiz_resume_layout_title);
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_quiz_resume_layout);
         listView = (ListView) view.findViewById(R.id.list_view_quiz_resume);
+
+        listView.setAdapter(adapter);
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -45,14 +60,46 @@ public class ResumeFragment extends Fragment {
             getQuiz();
         }
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     private void getQuiz(){
         FirebaseDatabase.getInstance()
                 .getReference(MainActivity.REFERENCE)
+                .child(QuizItem.CHILD)
+                .child(quizId)
+                .child("title")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        tvTitle.setText(dataSnapshot.getValue(String.class));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+        FirebaseDatabase.getInstance()
+                .getReference(MainActivity.REFERENCE)
                 .child("sent")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(quizId);
+                .child(quizId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data: dataSnapshot.getChildren())
+                            list.add(data.getValue(QuizItem.class));
+
+                        adapter.notifyDataSetChanged();
+                        viewSwitcher.showNext();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                        viewSwitcher.showNext();
+                    }
+                });
     }
 }

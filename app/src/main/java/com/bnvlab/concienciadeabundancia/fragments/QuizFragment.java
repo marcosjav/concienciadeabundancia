@@ -1,6 +1,7 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -13,10 +14,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.QuizAdapter;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +56,7 @@ public class QuizFragment extends Fragment {
         list = new ArrayList<>();
         adapter = new QuizAdapter(getContext(), R.layout.item_quiz_row, list);
 
+        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_quiz_layout);
         tvTitle = (TextView) view.findViewById(R.id.text_view_quiz_title);
         tvSubTitle = (TextView) view.findViewById(R.id.text_view_quiz_subtitle);
         tvModule = (TextView) view.findViewById(R.id.text_view_quiz_module);
@@ -61,6 +66,7 @@ public class QuizFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 sendQuiz();
+                viewSwitcher.showNext();
             }
         });
 
@@ -69,7 +75,7 @@ public class QuizFragment extends Fragment {
 
 //        setListViewHeightBasedOnChildren(listView);
 
-        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_quiz_layout);
+
 
         Bundle bundle = this.getArguments();
 
@@ -104,11 +110,10 @@ public class QuizFragment extends Fragment {
                                 QuizItem quizItem = new QuizItem(data.getValue(String.class));
                                 list.add(quizItem);
                                 adapter.notifyDataSetChanged();
-                                setListViewHeightBasedOnChildren(listView);
 //                                Toast.makeText(getContext(), quizItem.getQuiz(), Toast.LENGTH_SHORT).show();
                             }
                         }
-
+                        setListViewHeightBasedOnChildren(listView);
                         showProgress(false);
                     }
 
@@ -150,7 +155,7 @@ public class QuizFragment extends Fragment {
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + ((listView.getDividerHeight()) * (listAdapter.getCount()));
+        params.height = totalHeight + ((listView.getDividerHeight()) * (listAdapter.getCount()))*2;
 
         listView.setLayoutParams(params);
         listView.requestLayout();
@@ -164,6 +169,16 @@ public class QuizFragment extends Fragment {
                 .child("sent")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(quizId)
-                .setValue(list);
+                .setValue(list)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            getActivity().onBackPressed();
+                            getActivity().onBackPressed();
+                            FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
+                        }
+                    }
+                });
     }
 }

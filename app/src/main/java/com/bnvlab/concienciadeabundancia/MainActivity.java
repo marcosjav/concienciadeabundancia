@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +21,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jsoup.Jsoup;
+
+import java.io.IOException;
 
 /*
 NORMAS:
@@ -53,19 +57,17 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         // REVISO SI HAY UNA NUEVA VERSIÓN
-        FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child("last_version")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null)
-                            try {
-                                long lastVersionCode = (long) dataSnapshot.getValue();
-                                long thisVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+        VersionChecker versionChecker = new VersionChecker();
+        try {
+            String latestVersion = versionChecker.execute().get();
+            double playVersion = Double.valueOf(latestVersion);
+            double thisVersion = Double.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
 
-                                if (lastVersionCode > thisVersionCode) {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//            Toast.makeText(this, "this: " + thisVersion + "\nPlay: " +playVersion, Toast.LENGTH_SHORT).show();
+
+            if (playVersion > thisVersion)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
                                     builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
@@ -86,17 +88,55 @@ public class MainActivity extends FragmentActivity {
                                     AlertDialog dialog = builder.create();
 
                                     dialog.show();
-                                }
-                            } catch (PackageManager.NameNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                    }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+//        FirebaseDatabase.getInstance()
+//                .getReference(MainActivity.REFERENCE)
+//                .child("last_version")
+//                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        if (dataSnapshot.getValue() != null)
+//                            try {
+//                                long lastVersionCode = (long) dataSnapshot.getValue();
+//                                long thisVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+//
+//                                if (lastVersionCode > thisVersionCode) {
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//
+//                                    builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int id) {
+//                                            // User clicked OK button
+//                                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+//                                            try {
+//                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+//                                            } catch (android.content.ActivityNotFoundException anfe) {
+//                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+//                                            }
+//                                        }
+//                                    })
+//                                            .setMessage("Hay una nueva versión de esta aplicación disponible.\nPor favor descargala antes de seguir.")
+//                                            .setTitle("Nueva actualización")
+//                                            .setCancelable(false)
+//                                            .setIcon(R.drawable.attention_yellow);
+//
+//                                    AlertDialog dialog = builder.create();
+//
+//                                    dialog.show();
+//                                }
+//                            } catch (PackageManager.NameNotFoundException e) {
+//                                e.printStackTrace();
+//                            }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             showLogin();
@@ -108,11 +148,10 @@ public class MainActivity extends FragmentActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                            for (DataSnapshot data: dataSnapshot.getChildren())
-                            {
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 User user = data.getValue(User.class);
 
-                                if(user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
+                                if (user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
                                     MainActivity.user = user;
                             }
                         }
@@ -177,6 +216,30 @@ public class MainActivity extends FragmentActivity {
             Log.i("MainActivity", "nothing on backstack, calling super");
             super.onBackPressed();
             System.exit(0);
+        }
+    }
+
+    public class VersionChecker extends AsyncTask<String, String, String> {
+
+        String newVersion;
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            try {
+                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + getPackageName() + "&hl=en")
+                        .timeout(30000)
+                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                        .referrer("http://www.google.com")
+                        .get()
+                        .select("div[itemprop=softwareVersion]")
+                        .first()
+                        .ownText();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return newVersion;
         }
     }
 }
