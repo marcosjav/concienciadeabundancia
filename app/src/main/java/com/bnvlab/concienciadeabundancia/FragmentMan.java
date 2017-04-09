@@ -1,5 +1,6 @@
 package com.bnvlab.concienciadeabundancia;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -20,8 +21,16 @@ public class FragmentMan {
      * @param activity      The running activity
      * @param fragmentClass The class of the fragment to show, add.
      */
+    public static void changeFragment(FragmentActivity activity, Class fragmentClass, String tag) {
+        changeFragment(activity, fragmentClass, false, tag);
+    }
+
     public static void changeFragment(FragmentActivity activity, Class fragmentClass) {
-        changeFragment(activity, fragmentClass, false);
+        changeFragment(activity, fragmentClass, false, null);
+    }
+
+    public static void changeFragment(FragmentActivity activity, Class fragmentClass, boolean clear) {
+        changeFragment(activity, fragmentClass, clear, null);
     }
 
     /**
@@ -31,7 +40,7 @@ public class FragmentMan {
      * @param fragmentClass The class of the fragment to show, add.
      * @param clearAll      if true all the other fragments will be erased
      */
-    public static void changeFragment(FragmentActivity activity, Class fragmentClass, boolean clearAll) {
+    public static void changeFragment(FragmentActivity activity, Class fragmentClass, boolean clearAll, String tag) {
 
         // ERASE ALL FRAGMENTS
        /* if (clearAll) {
@@ -57,6 +66,11 @@ public class FragmentMan {
 
             try {
                 fragment = (Fragment) fragmentClass.newInstance();
+                if (tag != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("tag", tag);
+                    fragment.setArguments(bundle);
+                }
             } catch (Exception e) {
                 Log.d("CDA_EXCEPTION", "EXCEPTION: " + e.getMessage());
             }

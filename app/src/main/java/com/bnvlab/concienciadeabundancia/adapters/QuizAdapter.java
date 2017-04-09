@@ -9,6 +9,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
@@ -47,7 +48,7 @@ public class QuizAdapter extends BaseAdapter {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
         QuizHolder holder = null;
 
@@ -57,6 +58,13 @@ public class QuizAdapter extends BaseAdapter {
             holder = new QuizHolder();
             holder.quizText = (TextView) view.findViewById(R.id.quiz_item_string);
             holder.quizSwitch = (SwitchCompat) view.findViewById(R.id.quiz_item_switch);
+
+            holder.quizSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    list.get(position).setAnswer(isChecked);
+                }
+            });
 
             view.setTag(holder);
         }

@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.QuizAdapter;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -35,7 +37,9 @@ public class QuizFragment extends Fragment {
     TextView tvTitle, tvSubTitle, tvModule, tvDescription;
     ViewSwitcher viewSwitcher;
     ListView listView;
-    private String quizId;
+    Button buttonOk;
+
+    String quizId;
 
     public QuizFragment() {
     }
@@ -52,6 +56,13 @@ public class QuizFragment extends Fragment {
         tvSubTitle = (TextView) view.findViewById(R.id.text_view_quiz_subtitle);
         tvModule = (TextView) view.findViewById(R.id.text_view_quiz_module);
         tvDescription = (TextView) view.findViewById(R.id.text_view_quiz_description);
+        buttonOk = (Button) view.findViewById(R.id.button_quiz_ok);
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendQuiz();
+            }
+        });
 
         listView = (ListView) view.findViewById(R.id.list_view_quiz);
         listView.setAdapter(adapter);
@@ -60,10 +71,13 @@ public class QuizFragment extends Fragment {
 
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_quiz_layout);
 
-        quizId = "0";
-//        quizId = savedInstanceState.getString("ID");
-//        if(!quizId.isEmpty())
-            getQuiz();
+        Bundle bundle = this.getArguments();
+
+        if (bundle != null) {
+            quizId = bundle.getString("tag");
+            if (!quizId.isEmpty())
+                getQuiz();
+        }
 
         this.view = view;
         return view;
@@ -141,5 +155,15 @@ public class QuizFragment extends Fragment {
         listView.setLayoutParams(params);
         listView.requestLayout();
 
+    }
+
+    private void sendQuiz()
+    {
+        FirebaseDatabase.getInstance()
+                .getReference(MainActivity.REFERENCE)
+                .child("sent")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(quizId)
+                .setValue(list);
     }
 }

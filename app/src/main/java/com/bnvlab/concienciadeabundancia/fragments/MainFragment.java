@@ -41,7 +41,7 @@ public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
     ImageButton buttonConference, buttonVideos;
-    ImageButton buttonQuiz, buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonInformation, buttonShare, buttonAttention, buttonLogout, buttonSettings;
+    ImageButton buttonQuiz, buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonInformation, buttonShare, buttonLogout, buttonSettings;
 
     public MainFragment() {
     }
@@ -63,7 +63,6 @@ public class MainFragment extends Fragment {
         buttonPhoneLink = (ImageButton) view.findViewById(R.id.button_phone_link);
         buttonShare = (ImageButton) view.findViewById(R.id.button_share_main);
         buttonInformation = (ImageButton) view.findViewById(R.id.button_information_main);
-        buttonAttention = (ImageButton) view.findViewById(R.id.button_attention_main);
         buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
         buttonSettings = (ImageButton) view.findViewById(R.id.button_settings);
         buttonQuiz = (ImageButton) view.findViewById(R.id.button_main_quiz);
@@ -145,28 +144,6 @@ public class MainFragment extends Fragment {
             }
         });
 
-        buttonAttention.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Context context = getContext();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                builder
-                        .setMessage("Todavía no hemos podido verificar tu celular, si está mal escrito avisanos para corregirlo.")
-                        .setTitle("VERIFICACIÓN")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
-            }
-        });
-
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,7 +183,7 @@ public class MainFragment extends Fragment {
         buttonQuiz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentMan.changeFragment(getActivity(), QuizListFragment.class);
+                FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
             }
         });
 
@@ -289,9 +266,6 @@ public class MainFragment extends Fragment {
                                 if (user.getEmail().equals(email))
                                 {
                                     MainActivity.user = user;
-                                    buttonAttention.setVisibility(user.isVerified() ?
-                                        View.GONE
-                                        : View.VISIBLE);
                                     break;
                                 }
                             }
