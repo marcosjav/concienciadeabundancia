@@ -38,6 +38,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -699,6 +701,15 @@ public class LoginActivity extends AppCompatActivity  {
                                                 Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
+
+                            SecureRandom secureRandom = new SecureRandom();
+
+                            FirebaseDatabase.getInstance()
+                                    .getReference(MainActivity.REFERENCE)
+                                    .child("verification_codes")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child("code")
+                                    .setValue(new BigInteger(40, secureRandom).toString(32));
                         }
 
                         ViewSwitcher viewSwitcherOK = (ViewSwitcher) findViewById(R.id.switcher_sign_up_ok);

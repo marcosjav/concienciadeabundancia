@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.bnvlab.concienciadeabundancia.clases.QuizNotificationService;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.LoginFragment;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
@@ -140,6 +141,7 @@ public class MainActivity extends FragmentActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             showLogin();
+            stopService(new Intent(this, QuizNotificationService.class));
         } else {
             FirebaseDatabase.getInstance()
                     .getReference(REFERENCE)
@@ -161,6 +163,7 @@ public class MainActivity extends FragmentActivity {
 
                         }
                     });
+            startService(new Intent(this, QuizNotificationService.class));
         }
 
         final SharedPreferences prefs = this.getSharedPreferences(
@@ -195,6 +198,10 @@ public class MainActivity extends FragmentActivity {
 
             dialog.show();
         }
+//
+//        SecureRandom secureRandom = new SecureRandom();
+//        Toast.makeText(this,         new BigInteger(40, secureRandom).toString(32)
+//                , Toast.LENGTH_LONG).show();
 
         FragmentMan.changeFragment(this, MainFragment.class);
     }

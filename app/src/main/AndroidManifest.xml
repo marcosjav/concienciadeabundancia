@@ -38,6 +38,8 @@
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait"/>
+        <service android:name=".clases.QuizNotificationService"
+            android:exported="false"/>
     </application>
 
 </manifest>
