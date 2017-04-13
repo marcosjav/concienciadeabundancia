@@ -39,22 +39,22 @@
 
                 <ImageButton
                     android:id="@+id/button_share_main"
+                    style="@style/imageButton"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="15dp"
                     android:layout_gravity="start"
-                    style="@style/imageButton"
+                    android:layout_margin="15dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_share" />
 
                 <ImageButton
                     android:id="@+id/button_information_main"
+                    style="@style/imageButton"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="15dp"
                     android:layout_gravity="right"
+                    android:layout_margin="15dp"
                     android:scaleType="fitXY"
-                    style="@style/imageButton"
                     android:src="@drawable/ico_information" />
 
             </LinearLayout>
@@ -67,22 +67,22 @@
 
                 <ImageButton
                     android:id="@+id/button_settings"
+                    style="@style/imageButton"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="right"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="40dp"
                     android:scaleType="fitXY"
-                    style="@style/imageButton"
                     android:src="@drawable/settings" />
 
                 <ImageButton
                     android:id="@+id/button_logout_main"
+                    style="@style/imageButton"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_margin="15dp"
                     android:layout_gravity="right"
-                    style="@style/imageButton"
+                    android:layout_margin="15dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/logout" />
 
@@ -120,10 +120,18 @@
             </LinearLayout>
         </FrameLayout>
 
-        <ScrollView
+
+        <FrameLayout
+            android:id="@+id/frame_layout_scroll_main"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+
+        <ScrollView
+            android:id="@+id/scroll_view_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,20 +152,20 @@
                         android:orientation="vertical">
 
                         <ImageButton
-                            android:id="@+id/button_main_conference"
+                            android:id="@+id/button_main_quiz"
                             style="@style/imageButton"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/conference" />
+                            android:src="@drawable/ico_brain" />
 
                         <TextView
                             style="@style/textViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="  Próximos \n encuentros"
+                            android:text="Entrenamientos"
                             android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
                             android:textSize="10dp" />
                     </LinearLayout>
@@ -193,9 +201,10 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:orientation="horizontal"
-                    android:visibility="visible"
-                    android:layout_gravity="center_horizontal">
+                    android:visibility="visible">
+
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -204,23 +213,84 @@
                         android:orientation="vertical">
 
                         <ImageButton
-                            android:id="@+id/button_main_quiz"
+                            android:id="@+id/button_main_conference"
                             style="@style/imageButton"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ico_brain" />
+                            android:src="@drawable/conference" />
 
                         <TextView
                             style="@style/textViewStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Entrenamientos"
+                            android:text="  Próximos \n encuentros"
                             android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
                             android:textSize="10dp" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/button_main_faq"
+                            style="@style/imageButton"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/question" />
+
+                        <TextView
+                            style="@style/textViewStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="  Preguntas \n frecuentes"
+                            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                            android:textSize="10dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/button_main_about_us"
+                            style="@style/imageButton"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/about_us" />
+
+                        <TextView
+                            style="@style/textViewStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="  Próximos \n encuentros"
+                            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+                            android:textSize="10dp" />
+                    </LinearLayout>
+
 
                     <!--<LinearLayout
                         android:layout_width="wrap_content"
@@ -255,6 +325,27 @@
 
         </ScrollView>
 
+            <ImageButton
+                android:id="@+id/up_arrow_main"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="fitCenter"
+                android:background="@drawable/imagebutton_background"
+                android:src="@drawable/up_arrow_sketch"
+                android:layout_gravity="end"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:id="@+id/down_arrow_main"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/imagebutton_background"
+                android:scaleType="fitCenter"
+                android:src="@drawable/down_arrow_sketch"
+                android:layout_gravity="bottom|end"/>
+
+        </FrameLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -288,8 +379,7 @@
                 android:layout_margin="5dp"
                 android:background="@null"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ico_tw"
-                android:visibility="gone" />
+                android:src="@drawable/ico_tweeter"/>
 
             <ImageButton
                 android:id="@+id/button_web_link"
@@ -308,7 +398,6 @@
                 android:background="@null"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ico_phone" />
-
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

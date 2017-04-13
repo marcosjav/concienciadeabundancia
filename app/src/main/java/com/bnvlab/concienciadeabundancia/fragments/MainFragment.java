@@ -16,8 +16,10 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
@@ -42,6 +44,7 @@ public class MainFragment extends Fragment {
     private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
     ImageButton buttonConference, buttonVideos;
     ImageButton buttonQuiz, buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonInformation, buttonShare, buttonLogout, buttonSettings;
+    ScrollView scrollView;
 
     public MainFragment() {
     }
@@ -49,7 +52,7 @@ public class MainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         buttonConference = (ImageButton) view.findViewById(R.id.button_main_conference);
         buttonVideos = (ImageButton) view.findViewById(R.id.button_main_videos);
@@ -66,6 +69,47 @@ public class MainFragment extends Fragment {
         buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
         buttonSettings = (ImageButton) view.findViewById(R.id.button_settings);
         buttonQuiz = (ImageButton) view.findViewById(R.id.button_main_quiz);
+
+        final ImageButton downArroy = (ImageButton) view.findViewById(R.id.down_arrow_main);
+        final ImageButton upArroy = (ImageButton) view.findViewById(R.id.up_arrow_main);
+        scrollView = (ScrollView) view.findViewById(R.id.scroll_view_main);
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                int max = scrollView.getChildAt(0).getHeight() - scrollView.getMeasuredHeightAndState();
+                int yScroll = scrollView.getScrollY();
+
+//                Toast.makeText(getContext(), "value: " + yScroll + "\nMesured: " +
+//                        scrollView.getMeasuredHeightAndState()+
+//                        "\nTotal: " + scrollView.getChildAt(0).getHeight()+
+//                        "\nDif: " + ( - ) , Toast.LENGTH_LONG).show();
+
+
+
+                if(yScroll < max)
+                    downArroy.setVisibility(View.VISIBLE);
+                else
+                    downArroy.setVisibility(View.GONE);
+
+                if (yScroll == 0)
+                    upArroy.setVisibility(View.GONE);
+                else
+                    upArroy.setVisibility(View.VISIBLE);
+            }
+        });
+
+        downArroy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.setScrollY(scrollView.getMaxScrollAmount());
+            }
+        });
+        upArroy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.setScrollY(0);
+            }
+        });
 
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override

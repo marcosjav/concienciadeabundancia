@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -166,9 +168,92 @@ public class LoginActivity extends AppCompatActivity  {
         buttonPasswordRecovery.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
 
+                builder
+                        .setPositiveButton("ENVIAR", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        final String email = mPasswordView.getText().toString();
+                        if (isValidEmail(email))
+                            sendRecoveryPass(email, dialog);
+                        else if (isPhoneValid(email))
+                        {
+                            FirebaseDatabase.getInstance().getReference(MainActivity.REFERENCE)
+                                    .child(User.CHILD)
+                                    .endAt(email)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    boolean isFinished = false;
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        User user = data.getValue(User.class);
+                                        if(user.getEmail().equals(email) || user.getPhone().equals(email)) {
+//                                    Toast.makeText(LoginActivity.this, "Usuario encontrado!", Toast.LENGTH_SHORT).show();
+                                            FirebaseAuth.getInstance()
+                                                    .sendPasswordResetEmail(user.getEmail())
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful())
+                                                    {
+                                                        Toast.makeText(LoginActivity.this, "Se envió el correo!", Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
+                                                    }
+                                                    else{
+                                                        Toast.makeText(LoginActivity.this, "Ocurrió un error\n"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                    if (!isFinished) {
+                                        Toast.makeText(LoginActivity.this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
+                                        showProgress(false);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Toast.makeText(LoginActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                        else
+                            Toast.makeText(LoginActivity.this, "No es un mail válido", Toast.LENGTH_SHORT).show();
+                    }
+                }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                        .setMessage("Te podemos mandar un correo con un link donde podés restablecer tu clave.")
+                        .setTitle("RECUPERAR CLAVE");
+
+                AlertDialog dialog = builder.create();
+
+                dialog.show();
             }
         });
+    }
+
+    private void sendRecoveryPass(String email, final DialogInterface dialog)
+    {
+        FirebaseAuth.getInstance()
+                .sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Se envió el correo!", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        }
+                        else
+                            Toast.makeText(LoginActivity.this, "Hubo un inconveniente\n"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 //    private void populateAutoComplete() {
