@@ -16,7 +16,7 @@ import com.bnvlab.concienciadeabundancia.R;
 
 public class Notify {
 
-    public static void message(Context mContext, String title, String text) {
+    public static void message(Context mContext, String title, String text, int id) {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mContext)
@@ -50,8 +50,12 @@ public class Notify {
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // mId allows you to update the notification later on.
-        mNotificationManager.notify(0, mBuilder.build());
+        mNotificationManager.notify(id, mBuilder.build());
 
+    }
+
+    public static void message(Context mContext, String title, String text){
+        message(mContext,title,text,0);
     }
 
     public static void share(String message, Context context)

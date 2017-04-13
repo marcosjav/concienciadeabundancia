@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
@@ -18,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
  */
 
 public class QuizNotificationService extends Service {
-    private static boolean running;
 
     @Nullable
     @Override
@@ -26,29 +26,25 @@ public class QuizNotificationService extends Service {
         return null;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        if (!running) {
-            running = true;
+        super.onStartCommand(intent, flags, startId);
+        if(intent != null)
+        {
             checkTrainings();
             checkConferences();
+            Toast.makeText(this, "SERVICIO INICIADO", Toast.LENGTH_SHORT).show();
         }
-
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
-        running = false;
-        super.onDestroy();
+//        super.onDestroy();
     }
+
+
 
     private void checkTrainings() {
         FirebaseDatabase.getInstance()
@@ -60,7 +56,7 @@ public class QuizNotificationService extends Service {
                         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                             final String title = dataSnapshot.child("title").getValue(String.class);
                             String message = "Se agregó: \"" + title + "\"";
-                            Notify.message(getApplicationContext(), "Nuevo entrenamiento!", message);
+                            Notify.message(getApplicationContext(), "Nuevo entrenamiento!", message, 1);
                         }
                     }
 
@@ -96,7 +92,7 @@ public class QuizNotificationService extends Service {
                         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                             final String title = dataSnapshot.child("title").getValue(String.class);
                             String message = title + " - Entrá para saber más";
-                            Notify.message(getApplicationContext(), "Nuevo encuentro!", message);
+                            Notify.message(getApplicationContext(), "Nuevo encuentro!", message, 2);
                         }
                     }
 

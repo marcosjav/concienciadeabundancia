@@ -1,5 +1,7 @@
 package com.bnvlab.concienciadeabundancia;
 
+import android.app.ActivityManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -76,7 +78,7 @@ public class MainActivity extends FragmentActivity {
                                             final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
                                             try {
                                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                                            } catch (android.content.ActivityNotFoundException anfe) {
+                                            } catch (ActivityNotFoundException anfe) {
                                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
                                             }
                                         }
@@ -141,7 +143,7 @@ public class MainActivity extends FragmentActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             showLogin();
-            stopService(new Intent(this, QuizNotificationService.class));
+//            stopService(new Intent(this, QuizNotificationService.class));
         } else {
             FirebaseDatabase.getInstance()
                     .getReference(REFERENCE)
@@ -163,7 +165,14 @@ public class MainActivity extends FragmentActivity {
 
                         }
                     });
-            startService(new Intent(this, QuizNotificationService.class));
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                if (getSystemService(QuizNotificationService.class) == null)
+//                    startService(new Intent(this, QuizNotificationService.class));
+//            }else{
+                if (!isMyServiceRunning(QuizNotificationService.class))
+                    startService(new Intent(this, QuizNotificationService.class));
+//            }
+
         }
 
         final SharedPreferences prefs = this.getSharedPreferences(
@@ -204,6 +213,16 @@ public class MainActivity extends FragmentActivity {
 //                , Toast.LENGTH_LONG).show();
 
         FragmentMan.changeFragment(this, MainFragment.class);
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void showLogin() {

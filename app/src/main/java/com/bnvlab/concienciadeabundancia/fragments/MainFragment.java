@@ -136,6 +136,34 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Uri uri = Uri.parse("https://www.facebook.com/concienciaabundancia"); // missing 'http://' will cause crashed
+                try {
+                    int versionCode = getContext().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
+                    boolean activated =  getContext().getPackageManager().getApplicationInfo("com.facebook.katana", 0).enabled;
+                    if(activated) {
+                        if ((versionCode >= 3002850)) {
+                            uri = Uri.parse("fb://facewebmodal/f?href=" + "https://www.facebook.com/concienciaabundancia");
+                        } else {
+                            uri = Uri.parse("fb://page/" + "concienciaabundancia");
+                        }
+                    }
+                } catch (PackageManager.NameNotFoundException ignored) {
+                }
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+        buttonTweeterLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("https://twitter.com/FacundoCda"); // missing 'http://' will cause crashed
+                try {
+                    // get the Twitter app if possible
+                    getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
+                    uri = Uri.parse("twitter://user?user_id=FacundoCda");
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                } catch (Exception e) {
+                }
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -301,7 +329,7 @@ public class MainFragment extends Fragment {
             FirebaseDatabase.getInstance()
                     .getReference(MainActivity.REFERENCE)
                     .child("users")
-                    .addValueEventListener(new ValueEventListener() {
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot data : dataSnapshot.getChildren())
