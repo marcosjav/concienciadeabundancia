@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,17 +53,19 @@ import me.srodrigo.androidhintspinner.HintSpinner;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.os.Build.VERSION_CODES.M;
+import static com.bnvlab.concienciadeabundancia.R.id.sign_up_first_name;
 import static com.bnvlab.concienciadeabundancia.fragments.SettingsFragment.isValidEmail;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity  {
+public class LoginActivity extends AppCompatActivity {
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private String android_id;
 
     /**
      * Array of recent used phone numbers and adapter for autocomplete
@@ -81,6 +85,10 @@ public class LoginActivity extends AppCompatActivity  {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private String invitationCode;
+    private String invitationSenderUID;
+
     public static final String APP_SHARED_PREF_KEY = MainActivity.class.getSimpleName(), FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
     SharedPreferences prefs;
     private Button buttonPasswordRecovery;
@@ -102,6 +110,15 @@ public class LoginActivity extends AppCompatActivity  {
 
         prefs = this.getSharedPreferences(
                 this.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+
+        SecureRandom secureRandom = new SecureRandom();
+        String sessionCode = new BigInteger(40, secureRandom).toString(32);
+
+        if (prefs.getString("android_id", "").equals("")) {
+            prefs.edit().putString("android_id", sessionCode).apply();
+        }
+
+        android_id = prefs.getString("android_id", "");
 
         used_numbers = new ArrayList<>(prefs.getStringSet("used_numbers", new HashSet<String>()));
 
@@ -156,9 +173,22 @@ public class LoginActivity extends AppCompatActivity  {
         buttonSignUpOK.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ViewSwitcher viewSwitcherOK = (ViewSwitcher) findViewById(R.id.switcher_sign_up_ok);
-                viewSwitcherOK.showPrevious();
-                signUp();
+                if (invitationCode != null) {
+                    ViewSwitcher viewSwitcherOK = (ViewSwitcher) findViewById(R.id.switcher_sign_up_ok);
+                    viewSwitcherOK.showPrevious();
+                    signUp();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+
+                    builder.setNegativeButton("Entiendo", null)
+                            .setMessage("Necesitás ser invitado por alguien que ya nos conozca.")
+                            .setTitle("Registro")
+                            .setCancelable(true);
+
+                    AlertDialog dialog = builder.create();
+
+                    dialog.show();
+                }
             }
         });
 
@@ -172,58 +202,54 @@ public class LoginActivity extends AppCompatActivity  {
 
                 builder
                         .setPositiveButton("ENVIAR", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, int id) {
-                        // User clicked OK button
-                        final String email = mPasswordView.getText().toString();
-                        if (isValidEmail(email))
-                            sendRecoveryPass(email, dialog);
-                        else if (isPhoneValid(email))
-                        {
-                            FirebaseDatabase.getInstance().getReference(MainActivity.REFERENCE)
-                                    .child(User.CHILD)
-                                    .endAt(email)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    boolean isFinished = false;
-                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        User user = data.getValue(User.class);
-                                        if(user.getEmail().equals(email) || user.getPhone().equals(email)) {
-//                                    Toast.makeText(LoginActivity.this, "Usuario encontrado!", Toast.LENGTH_SHORT).show();
-                                            FirebaseAuth.getInstance()
-                                                    .sendPasswordResetEmail(user.getEmail())
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onClick(final DialogInterface dialog, int id) {
+                                // User clicked OK button
+                                final String email = mPasswordView.getText().toString();
+                                if (isValidEmail(email))
+                                    sendRecoveryPass(email, dialog);
+                                else if (isPhoneValid(email)) {
+                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                            .child(References.USERS)
+                                            .endAt(email)
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful())
-                                                    {
-                                                        Toast.makeText(LoginActivity.this, "Se envió el correo!", Toast.LENGTH_SHORT).show();
-                                                        dialog.dismiss();
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    boolean isFinished = false;
+                                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                        User user = data.getValue(User.class);
+                                                        if (user.getEmail().equals(email) || user.getPhone().equals(email)) {
+//                                    Toast.makeText(LoginActivity.this, "Usuario encontrado!", Toast.LENGTH_SHORT).show();
+                                                            FirebaseAuth.getInstance()
+                                                                    .sendPasswordResetEmail(user.getEmail())
+                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (task.isSuccessful()) {
+                                                                                Toast.makeText(LoginActivity.this, "Se envió el correo!", Toast.LENGTH_SHORT).show();
+                                                                                dialog.dismiss();
+                                                                            } else {
+                                                                                Toast.makeText(LoginActivity.this, "Ocurrió un error\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                                                dialog.dismiss();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                        }
                                                     }
-                                                    else{
-                                                        Toast.makeText(LoginActivity.this, "Ocurrió un error\n"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                        dialog.dismiss();
+                                                    if (!isFinished) {
+                                                        Toast.makeText(LoginActivity.this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
+                                                        showProgress(false);
                                                     }
                                                 }
-                                            });
-                                        }
-                                    }
-                                    if (!isFinished) {
-                                        Toast.makeText(LoginActivity.this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
-                                        showProgress(false);
-                                    }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    Toast.makeText(LoginActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                                }
-                            });
-                        }
-                        else
-                            Toast.makeText(LoginActivity.this, "No es un mail válido", Toast.LENGTH_SHORT).show();
-                    }
-                }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+                                                    Toast.makeText(LoginActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                } else
+                                    Toast.makeText(LoginActivity.this, "No es un mail válido", Toast.LENGTH_SHORT).show();
+                            }
+                        }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -237,10 +263,55 @@ public class LoginActivity extends AppCompatActivity  {
                 dialog.show();
             }
         });
+
+        Uri data = getIntent().getData();
+        if (data != null) {
+            invitationCode = data.toString()
+                    .replaceAll("http://concienciadeabundancia.com/code=", "");
+
+            ViewSwitcher viewSwitcher = (ViewSwitcher) findViewById(R.id.login_switcher);
+            viewSwitcher.setInAnimation(LoginActivity.this, android.R.anim.fade_in);
+            viewSwitcher.setOutAnimation(LoginActivity.this, android.R.anim.fade_out);
+            viewSwitcher.showNext();
+
+            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                    .child(References.INVITATION_CODES)
+                    .child(invitationCode)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            invitationSenderUID = dataSnapshot.getValue(String.class);
+
+                            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                    .child(References.USERS)
+                                    .child(invitationSenderUID)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String fullName = dataSnapshot.child(References.USERS_CHILD_LASTNAME).getValue(String.class) + ", " + dataSnapshot.child(References.USERS_CHILD_NAME).getValue(String.class);
+                                            ((TextView) findViewById(R.id.sign_up_invitation_code)).setText(fullName);
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+        }
     }
 
-    private void sendRecoveryPass(String email, final DialogInterface dialog)
-    {
+    private void sendRecoveryPass(String email, final DialogInterface dialog) {
         FirebaseAuth.getInstance()
                 .sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -249,9 +320,8 @@ public class LoginActivity extends AppCompatActivity  {
                         if (task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, "Se envió el correo!", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
-                        }
-                        else
-                            Toast.makeText(LoginActivity.this, "Hubo un inconveniente\n"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(LoginActivity.this, "Hubo un inconveniente\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -291,7 +361,7 @@ public class LoginActivity extends AppCompatActivity  {
     private void loadLocations() {
         final Spinner spinnerLocation = (Spinner) findViewById(R.id.spinner_sign_up_location);
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
+                .getReference(References.REFERENCE)
                 .child("locations")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -401,8 +471,8 @@ public class LoginActivity extends AppCompatActivity  {
 
 //            signInFireBase(email,password);
             FirebaseDatabase.getInstance()
-                    .getReference(MainActivity.REFERENCE)
-                    .child(User.CHILD)
+                    .getReference(References.REFERENCE)
+                    .child(References.USERS)
                     .endAt(email)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -410,14 +480,13 @@ public class LoginActivity extends AppCompatActivity  {
                             boolean isFinished = false;
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 User user = data.getValue(User.class);
-                                if(user.getEmail().equals(email) || user.getPhone().equals(email)) {
+                                if (user.getEmail().equals(email) || user.getPhone().equals(email)) {
 //                                    Toast.makeText(LoginActivity.this, "Usuario encontrado!", Toast.LENGTH_SHORT).show();
                                     if (user.isSignInWithEmail()) {
                                         signInFireBase(user.getEmail(), password);
                                         isFinished = true;
                                         break;
-                                    }
-                                    else {
+                                    } else {
                                         signInFireBase(user.getPhone() + "@cda.com", password);
                                         isFinished = true;
                                         break;
@@ -445,82 +514,10 @@ public class LoginActivity extends AppCompatActivity  {
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        showProgress(false);
-
                         if (task.isSuccessful()) {
-
-                            /*FirebaseDatabase.getInstance().getReference(MainActivity.REFERENCE)
-                                    .child(User.CHILD)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            boolean isFinished = false;
-                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                                final User user = data.getValue(User.class);
-                                                final FirebaseUser userFB = FirebaseAuth.getInstance().getCurrentUser();
-
-                                                String wrongPhone = userFB.getEmail().split("@")[0];
-
-                                                if (user.getEmail().equals(userFB.getEmail()))
-                                                    MainActivity.user = user;
-
-                                                if (!data.getKey().equals(userFB.getUid())) {
-
-                                                    if (user.getPhone().equals(wrongPhone)) {
-                                                        isFinished = true;
-                                                        userFB.updateEmail(user.getEmail())
-                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if (task.isSuccessful()) {
-                                                                            if (!userFB.isEmailVerified())
-                                                                                userFB.sendEmailVerification();
-
-                                                                            user.setSignInWithEmail(true);
-
-                                                                            MainActivity.user = user;
-
-                                                                            FirebaseDatabase.getInstance()
-                                                                                    .getReference(MainActivity.REFERENCE)
-                                                                                    .child(User.CHILD)
-                                                                                    .child(user.getPhone())
-                                                                                    .child("signInWithEmail")
-                                                                                    .setValue(true)
-                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                        @Override
-                                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                                            if (task.isSuccessful()) {
-                                                                                                close_login();
-                                                                                            } else {
-                                                                                                Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                                                                            }
-                                                                                        }
-                                                                                    });
-
-
-                                                                        } else {
-                                                                            Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    }
-                                                                });
-
-                                                    }
-                                                }
-                                            }
-                                            if (!isFinished)
-                                                close_login();
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });*/
-
                             close_login();
-
                         } else {
-
+                            showProgress(false);
                             if (((FirebaseAuthException) task.getException()).getErrorCode().equals("ERROR_USER_NOT_FOUND")) {
                                 mEmailView.setError("usuario no encontrado");
                                 Toast.makeText(LoginActivity.this, email + "\n" + password, Toast.LENGTH_SHORT).show();
@@ -539,16 +536,35 @@ public class LoginActivity extends AppCompatActivity  {
 
     private void close_login() {
         String email = ((AutoCompleteTextView) findViewById(R.id.email)).getText().toString();
+        String email_sign_up = ((EditText) findViewById(R.id.sign_up_mail)).getText().toString();
+
+        if (email.isEmpty() && !email_sign_up.isEmpty())
+            email = email_sign_up;
 
         if (!used_numbers.contains(email))
             used_numbers.add(email);
 
         prefs.edit().putStringSet("used_numbers", new HashSet<String>(used_numbers)).apply();
 
-        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(myIntent);
-        finish();
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.USERS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(References.USERS_CHILD_DEVICEID)
+                .setValue(android_id)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("android_id", android_id);
+                        myIntent.putExtras(bundle);
+                        startActivity(myIntent);
+                        finish();
+                    }
+                });
+
+
     }
 
     private boolean isEmailValid(String email) {
@@ -674,6 +690,7 @@ public class LoginActivity extends AppCompatActivity  {
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putStringArrayList("used_numbers", used_numbers);
@@ -690,9 +707,16 @@ public class LoginActivity extends AppCompatActivity  {
     }
 
     private void signUp() {
-        EditText edName = ((EditText) findViewById(R.id.sign_up_name)), edLastName = ((EditText) findViewById(R.id.sign_up_lastname)), edPhone = ((EditText) findViewById(R.id.sign_up_phone)), edEmail = ((EditText) findViewById(R.id.sign_up_mail)), edPassword = ((EditText) findViewById(R.id.sign_up_password)), edRePassword = ((EditText) findViewById(R.id.sign_up_repassword));
+        EditText edName = ((EditText) findViewById(sign_up_first_name)),
+                edSecondName = (EditText) findViewById(R.id.sign_up_second_name),
+                edLastName = ((EditText) findViewById(R.id.sign_up_lastname)),
+                edPhone = ((EditText) findViewById(R.id.sign_up_phone)),
+                edEmail = ((EditText) findViewById(R.id.sign_up_mail)),
+                edPassword = ((EditText) findViewById(R.id.sign_up_password)),
+                edRePassword = ((EditText) findViewById(R.id.sign_up_repassword));
 
         String name = edName.getText().toString(),
+                secondName = edSecondName.getText().toString(),
                 lastName = edLastName.getText().toString(),
                 phone = edPhone.getText().toString(),
                 email = edEmail.getText().toString().toLowerCase(),
@@ -710,7 +734,7 @@ public class LoginActivity extends AppCompatActivity  {
                             if (password.length() > 5) {
                                 if (password.equals(repassword)) {
                                     ((ViewSwitcher) findViewById(R.id.switcher_sign_up_ok)).showNext();
-                                    registerUser(name, lastName, phone, email, password);
+                                    registerUser(name, secondName, lastName, phone, email, password);
                                 } else {
                                     edRePassword.setError("Las claves no coinciden");
 //                                    Toast.makeText(getContext(), "Las claves no coinciden", Toast.LENGTH_SHORT).show();
@@ -746,14 +770,14 @@ public class LoginActivity extends AppCompatActivity  {
         viewSwitcherOK.showPrevious();
     }
 
-    private void registerUser(String name, String lastName, String phone, String email, String password) {
+    private void registerUser(String name, String secondName, String lastName, String phone, String email, String password) {
 //        String name = editTextName.getText().toString(), lastName = editTextLastName.getText().toString(), locale = spinnerLocation.getSelectedItem().toString(), phone = editTextPhone.getText().toString();
 
         Spinner spinnerLocation = (Spinner) findViewById(R.id.spinner_sign_up_location);
 
         String locale = (String) spinnerLocation.getSelectedItem();
 
-        final User user = new User(name, lastName, locale, phone, email);
+        final User user = new User(name, secondName, lastName, locale, phone, email, invitationSenderUID);
 
         MainActivity.newUser = true;
         MainActivity.user = user;
@@ -773,15 +797,27 @@ public class LoginActivity extends AppCompatActivity  {
                         } else {
                             FirebaseDatabase
                                     .getInstance()
-                                    .getReference(MainActivity.REFERENCE)
-                                    .child(User.CHILD)
+                                    .getReference(References.REFERENCE)
+                                    .child(References.USERS)
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .setValue(user)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful())
-                                                close_login();
+                                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                                        .child(References.INVITATION_CODES)
+                                                        .child(invitationCode)
+                                                        .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful())
+                                                            close_login();
+                                                        else
+                                                            Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+
                                             else
                                                 Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         }
@@ -790,7 +826,7 @@ public class LoginActivity extends AppCompatActivity  {
                             SecureRandom secureRandom = new SecureRandom();
 
                             FirebaseDatabase.getInstance()
-                                    .getReference(MainActivity.REFERENCE)
+                                    .getReference(References.REFERENCE)
                                     .child("verification_codes")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .child("code")

@@ -12,6 +12,7 @@ public class ConferenceItem {
             ,location
             ,place
             ,title;
+    boolean freeContent;
 
     public String getTitle() {
         return title;
@@ -24,7 +25,7 @@ public class ConferenceItem {
     public ConferenceItem() {
     }
 
-    public ConferenceItem(String date, String duration, String gps, String info, String location, String place, String title) {
+    public ConferenceItem(String date, String duration, String gps, String info, String location, String place, String title, boolean freeContent) {
         this.date = date;
         this.duration = duration;
         this.gps = gps;
@@ -32,6 +33,7 @@ public class ConferenceItem {
         this.location = location;
         this.place = place;
         this.title = title;
+        this.freeContent = freeContent;
     }
 
     public String getDate() {
@@ -80,5 +82,13 @@ public class ConferenceItem {
 
     public void setPlace(String place) {
         this.place = place;
+    }
+
+    public boolean isFreeContent() {
+        return freeContent;
+    }
+
+    public void setFreeContent(boolean freeContent) {
+        this.freeContent = freeContent;
     }
 }

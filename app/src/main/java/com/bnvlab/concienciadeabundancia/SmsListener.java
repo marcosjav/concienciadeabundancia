@@ -9,6 +9,7 @@ import android.telephony.SmsMessage;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,9 +47,9 @@ public class SmsListener extends BroadcastReceiver {
                             final String code = msgBody.split("code:")[1];
 
                             FirebaseDatabase.getInstance()
-                                    .getReference(MainActivity.REFERENCE)
-                                    .child("verification_codes")
-                                    .child(MainActivity.user.getPhone())
+                                    .getReference(References.REFERENCE)
+                                    .child(References.VERIFICATION_CODES)
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -80,18 +81,18 @@ public class SmsListener extends BroadcastReceiver {
         final String phone = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];
 
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child("users")
-                .child(MainActivity.user.getPhone())
-                .child("verified")
+                .getReference(References.REFERENCE)
+                .child(References.USERS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(References.USERS_CHILD_VERIFIED)
                 .setValue(true);
 
         Notify.message(context, "Listo!", "Hemos verificado tu teléfono con éxito.");
 
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child("verification_codes")
-                .child(phone)
+                .getReference(References.REFERENCE)
+                .child(References.VERIFICATION_CODES)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .removeValue();
     }
 }

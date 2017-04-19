@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/textViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_rounder_corner"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="PREGUNTAS FRECUENTES"
+        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+    <!--<ExpandableListView-->
+    <!--android:id="@+id/expandable_list_faq"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:groupIndicator="@drawable/settings_selector" />-->
+    <ViewSwitcher
+        android:id="@+id/view_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:indeterminate="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="cargando..."
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
+
+        <ExpandableListView
+            android:id="@+id/expandable_list_faq"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft" />
+
+    </ViewSwitcher>
+
+</LinearLayout>

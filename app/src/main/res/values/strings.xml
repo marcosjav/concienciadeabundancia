@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Conciencia De Abundancia</string>
+    <string name="app_name">Conciencia De Ser</string>
 
     <!--LOGIN SCREENS-->
     <string name="login_button_login">Ingresar</string>
@@ -44,5 +44,6 @@
     <string name="error_invalid_email">El teléfono es inválido</string>
 
     <string name="app_half_name_1">CONCIENCIA DE</string>
-    <string name="app_half_name_2">ABUNDANCIA</string>
+    <string name="app_half_name_2">SER</string>
+
 </resources>

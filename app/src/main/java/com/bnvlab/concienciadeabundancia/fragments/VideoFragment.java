@@ -13,10 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.VideoActivity;
 import com.bnvlab.concienciadeabundancia.adapters.VideoItemAdapter;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.SimpleYouTubeHelper;
 import com.bnvlab.concienciadeabundancia.clases.VideoItem;
 import com.google.firebase.database.DataSnapshot;
@@ -73,44 +73,18 @@ public class VideoFragment extends Fragment {
 
     private void getVideoList() {
         progressBar.setVisibility(View.VISIBLE);
+
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child("videos")
+                .getReference(References.REFERENCE)
+                .child(References.VIDEOS)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data :
                                 dataSnapshot.getChildren()) {
 
-//                            urlList.add((String)data.getValue());
-
-                            AsyncTask<String, Void, Void> task = new AsyncTask<String, Void, Void>() {
-                                VideoItem vi;
-                                String url;
-                                SimpleYouTubeHelper syh;
-
-                                @Override
-                                protected Void doInBackground(String... params) {
-                                    vi = new VideoItem();
-                                    url = params[0];
-                                    syh = new SimpleYouTubeHelper(url);
-
-                                    return null;
-                                }
-
-                                @Override
-                                protected void onPostExecute(Void s) {
-                                    vi.setTitle(syh.getTitleQuietly());
-                                    vi.setThumbnail(syh.getThumbnailUrl());
-                                    vi.setUrl(url);
-                                    list.add(vi);
-
-                                    refresh();
-                                }
-                            };
-
-                            task.execute((String) data.getValue());
-
+                            if (data.child(References.FREE_CONTENT).getValue(boolean.class))
+                                (new VideoPreview()).execute(data.child(References.VIDEOS_CHILD_URL).getValue(String.class));
 
                         }
                         progressBar.setVisibility(View.GONE);
@@ -123,8 +97,32 @@ public class VideoFragment extends Fragment {
                 });
     }
 
-    public static void refresh()
-    {
+    public static void refresh() {
         adapter.notifyDataSetChanged();
+    }
+
+    private class VideoPreview extends AsyncTask<String, Void, Void> {
+        VideoItem vi;
+        String url;
+        SimpleYouTubeHelper syh;
+
+        @Override
+        protected Void doInBackground(String... params) {
+            vi = new VideoItem();
+            url = params[0];
+            syh = new SimpleYouTubeHelper(url);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void s) {
+            vi.setTitle(syh.getTitleQuietly());
+            vi.setThumbnail(syh.getThumbnailUrl());
+            vi.setUrl(url);
+            list.add(vi);
+
+            refresh();
+        }
     }
 }

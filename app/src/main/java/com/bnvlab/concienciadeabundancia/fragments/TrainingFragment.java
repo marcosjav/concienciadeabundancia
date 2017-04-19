@@ -11,11 +11,10 @@ import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
-import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.TrainingAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.ICallback;
-import com.bnvlab.concienciadeabundancia.clases.QuizItem;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.TrainingItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -70,19 +69,41 @@ public class TrainingFragment extends Fragment implements ICallback {
         return view;
     }
 
-    private void getTrainings() {
+    private void getTrainings(){
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child(QuizItem.CHILD)
+                .getReference(References.REFERENCE)
+                .child(References.USERS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        boolean active_user = dataSnapshot.child(References.USERS_CHILD_ACTIVE).getValue(boolean.class);
+                        getTrainings(active_user);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void getTrainings(final boolean active){
+        FirebaseDatabase.getInstance()
+                .getReference(References.REFERENCE)
+                .child(References.QUIZ)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            String title = data.child("title").getValue(String.class);
-                            list.add(new TrainingItem(title));
-                            listId.add(data.getKey());
-                            getTrainingsStatus();
+                            String title = data.child(References.CONFERENCES_CHILD_TITLE).getValue(String.class);
+                            boolean freeContent = data.child(References.FREE_CONTENT).getValue(boolean.class);
+                            if ( freeContent || ( !freeContent && active)) {
+                                list.add(new TrainingItem(title));
+                                listId.add(data.getKey());
+                            }
                         }
+                        getTrainingsStatus();
                     }
 
                     @Override
@@ -94,8 +115,8 @@ public class TrainingFragment extends Fragment implements ICallback {
 
     private void getTrainingsStatus() {
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child("sent")
+                .getReference(References.REFERENCE)
+                .child(References.SENT)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

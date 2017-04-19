@@ -10,9 +10,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.ResumeAdapter;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -65,10 +65,10 @@ public class ResumeFragment extends Fragment {
 
     private void getQuiz(){
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child(QuizItem.CHILD)
+                .getReference(References.REFERENCE)
+                .child(References.QUIZ)
                 .child(quizId)
-                .child("title")
+                .child(References.QUIZ_CHILD_TITLE)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -81,8 +81,8 @@ public class ResumeFragment extends Fragment {
                     }
                 });
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child("sent")
+                .getReference(References.REFERENCE)
+                .child(References.SENT)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(quizId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {

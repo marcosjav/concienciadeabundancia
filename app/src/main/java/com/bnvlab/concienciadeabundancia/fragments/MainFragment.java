@@ -1,13 +1,12 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.Manifest;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -27,13 +25,18 @@ import com.bnvlab.concienciadeabundancia.LoginActivity;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Calendar;
 
 /**
  * Created by Marcos on 21/03/2017.
@@ -43,7 +46,8 @@ public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
     ImageButton buttonConference, buttonVideos;
-    ImageButton buttonQuiz, buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonInformation, buttonShare, buttonLogout, buttonSettings;
+    ImageButton buttonQuiz, buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonFundaments, buttonShare, buttonLogout, buttonSettings, buttonFAQ,
+            buttonAbout;
     ScrollView scrollView;
 
     public MainFragment() {
@@ -65,10 +69,12 @@ public class MainFragment extends Fragment {
         buttonWebLink = (ImageButton) view.findViewById(R.id.button_web_link);
         buttonPhoneLink = (ImageButton) view.findViewById(R.id.button_phone_link);
         buttonShare = (ImageButton) view.findViewById(R.id.button_share_main);
-        buttonInformation = (ImageButton) view.findViewById(R.id.button_information_main);
         buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
         buttonSettings = (ImageButton) view.findViewById(R.id.button_settings);
         buttonQuiz = (ImageButton) view.findViewById(R.id.button_main_quiz);
+        buttonFAQ = (ImageButton) view.findViewById(R.id.button_main_faq);
+        buttonFundaments = (ImageButton) view.findViewById(R.id.button_main_fundaments);
+        buttonAbout = (ImageButton) view.findViewById(R.id.button_main_about_us);
 
         final ImageButton downArroy = (ImageButton) view.findViewById(R.id.down_arrow_main);
         final ImageButton upArroy = (ImageButton) view.findViewById(R.id.up_arrow_main);
@@ -85,8 +91,7 @@ public class MainFragment extends Fragment {
 //                        "\nDif: " + ( - ) , Toast.LENGTH_LONG).show();
 
 
-
-                if(yScroll < max)
+                if (yScroll < max)
                     downArroy.setVisibility(View.VISIBLE);
                 else
                     downArroy.setVisibility(View.GONE);
@@ -101,13 +106,15 @@ public class MainFragment extends Fragment {
         downArroy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scrollView.setScrollY(scrollView.getMaxScrollAmount());
+//                scrollView.setScrollY(scrollView.getMaxScrollAmount());
+                scrollView.smoothScrollTo(scrollView.getScrollX(), scrollView.getMaxScrollAmount());
             }
         });
         upArroy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scrollView.setScrollY(0);
+//                scrollView.setScrollY(0);
+                scrollView.smoothScrollTo(scrollView.getScrollX(), 0);
             }
         });
 
@@ -125,10 +132,31 @@ public class MainFragment extends Fragment {
             }
         });
 
+        buttonFAQ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentMan.changeFragment(getActivity(), FaqFragment.class);
+            }
+        });
+
         buttonVideos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentMan.changeFragment(getActivity(), VideoFragment.class);
+            }
+        });
+
+        buttonFundaments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentMan.changeFragment(getActivity(), FundamentsFragment.class);
+            }
+        });
+
+        buttonAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentMan.changeFragment(getActivity(), AboutFragment.class);
             }
         });
 
@@ -138,8 +166,8 @@ public class MainFragment extends Fragment {
                 Uri uri = Uri.parse("https://www.facebook.com/concienciaabundancia"); // missing 'http://' will cause crashed
                 try {
                     int versionCode = getContext().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
-                    boolean activated =  getContext().getPackageManager().getApplicationInfo("com.facebook.katana", 0).enabled;
-                    if(activated) {
+                    boolean activated = getContext().getPackageManager().getApplicationInfo("com.facebook.katana", 0).enabled;
+                    if (activated) {
                         if ((versionCode >= 3002850)) {
                             uri = Uri.parse("fb://facewebmodal/f?href=" + "https://www.facebook.com/concienciaabundancia");
                         } else {
@@ -215,11 +243,57 @@ public class MainFragment extends Fragment {
                 dialog.show();
             }
         });
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.ADMINISTRATORS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null && dataSnapshot.getValue(boolean.class))
+                                buttonShare.setVisibility(View.VISIBLE);
+                            else {
+                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                        .child(References.SHARE)
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.getValue() != null) {
+                                                    long currentTime = Calendar.getInstance().getTime().getTime();
+                                                    long sharedTime = dataSnapshot.getValue(long.class);
+                                                    long difference = currentTime - sharedTime;
+                                                    if (difference > 86400000) {
+                                                        buttonShare.setVisibility(View.GONE);
+                                                        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                                                .child(References.SHARE)
+                                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                .removeValue();
+                                                    }
+                                                    else
+                                                        buttonShare.setVisibility(View.VISIBLE);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                            }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 shareDialog();
+//                FragmentMan.changeFragment(getActivity(), ShareFragment.class);
             }
         });
 
@@ -227,28 +301,6 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Notify.email(getContext());
-            }
-        });
-
-        buttonInformation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Context context = getContext();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                builder
-                        .setMessage("Todavía no hemos podido verificar tu celular, si está mal escrito avisanos para corregirlo.")
-                        .setTitle("VERIFICACIÓN")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
             }
         });
 
@@ -291,31 +343,46 @@ public class MainFragment extends Fragment {
     }
 
     private void shareDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//
+//        builder
+//                .setNeutralButton("ENVIAR", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        final Dialog d = (Dialog) dialog;
+        final String invitationCode = FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.INVITATION_CODES)
+                .push()
+                .getKey();
 
-        builder
-                .setView(R.layout.dialog_share)
-                .setNeutralButton("ENVIAR", new DialogInterface.OnClickListener() {
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.INVITATION_CODES)
+                .child(invitationCode)
+                .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Dialog d = (Dialog) dialog;
-                        EditText editText = (EditText) d.findViewById(R.id.edit_text_dialog_share);
-                        if (editText.getText().toString().length() > 5) {
-                            String message = "Conciencia de abundancia:\n" +
-                                    editText.getText().toString() +
-                                    "\n\nDescargá la App: \n\nhttps://play.google.com/store/apps/details?id=com.bnvlab.concienciadeabundancia";
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            String message = "Quiero compartir una hermosa experiencia con vos, que va a cambiar tu vida!\nPrimero instalá la app:\n\n" +
+                                    "https://play.google.com/store/apps/details?id=com.bnvlab.concienciadeabundancia\n\nDespués abrí este link con la App para registrarte\n" +
+                                    "http://concienciadeabundancia.com/code=" + invitationCode;
 
                             Notify.share(message, getContext());
-                            dialog.dismiss();
+//                                            d.dismiss();
                         } else {
-                            Toast.makeText(getContext(), "Escibe tu experiencia!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+//                                            d.dismiss();
                         }
                     }
                 });
 
-        Dialog dialog = builder.create();
 
-        dialog.show();
+//                    }
+//                });
+//
+//        Dialog dialog = builder.create();
+//
+//        dialog.show();
     }
 
     private void checkPhone() {
@@ -326,21 +393,19 @@ public class MainFragment extends Fragment {
         final String email = userFB.getEmail();
 
 
-            FirebaseDatabase.getInstance()
-                    .getReference(MainActivity.REFERENCE)
-                    .child("users")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot data : dataSnapshot.getChildren())
-                            {
-                                User user = data.getValue(User.class);
-                                if (user.getEmail().equals(email))
-                                {
-                                    MainActivity.user = user;
-                                    break;
-                                }
+        FirebaseDatabase.getInstance()
+                .getReference(References.REFERENCE)
+                .child(References.USERS)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            User user = data.getValue(User.class);
+                            if (user.getEmail().equals(email)) {
+                                MainActivity.user = user;
+                                break;
                             }
+                        }
 //                            User user = dataSnapshot.getValue(User.class);
 //                            if (user != null) {
 //                                MainActivity.user = user;
@@ -348,13 +413,13 @@ public class MainFragment extends Fragment {
 //                                        View.GONE
 //                                        : View.VISIBLE);
 //                            }
-                        }
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
+                    }
+                });
 
     }
 

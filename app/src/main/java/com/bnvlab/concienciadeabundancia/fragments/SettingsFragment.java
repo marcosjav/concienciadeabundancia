@@ -18,6 +18,7 @@ import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -79,7 +80,7 @@ public class SettingsFragment extends Fragment {
         user = MainActivity.user;
 
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
+                .getReference(References.REFERENCE)
                 .child("locations")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -142,9 +143,9 @@ public class SettingsFragment extends Fragment {
     private void updateDataFields()
     {
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child(User.CHILD)
-                .orderByChild("email")
+                .getReference(References.REFERENCE)
+                .child(References.USERS)
+                .orderByChild(References.USERS_CHILD_EMAIL)
                 .equalTo(FirebaseAuth.getInstance().getCurrentUser().getEmail())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -304,9 +305,9 @@ public class SettingsFragment extends Fragment {
         if (isModified)
         {
             FirebaseDatabase.getInstance()
-                    .getReference(MainActivity.REFERENCE)
-                    .child(User.CHILD)
-                    .child(user.getPhone())
+                    .getReference(References.REFERENCE)
+                    .child(References.USERS)
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .setValue(user)
             .addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

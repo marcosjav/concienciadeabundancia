@@ -13,10 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.ConferenceAdapter;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.ConferenceItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -93,28 +94,33 @@ public class ConferenceFragment extends Fragment {
     private void getConfereces() {
         progressBar.setVisibility(View.VISIBLE);
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child("conferences")
+                .getReference(References.REFERENCE)
+                .child(References.CONFERENCES)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        boolean isEmpty = true;
                         for (DataSnapshot data :
                                 dataSnapshot.getChildren()) {
 
                             ConferenceItem item = new ConferenceItem();
 
-                            item.setTitle((String) data.child("title").getValue());
-                            item.setDate((String) data.child("date").getValue());
-                            item.setDuration((String) data.child("duration").getValue());
-                            item.setGps((String) data.child("gps").getValue());
-                            item.setInfo((String) data.child("info").getValue());
-                            item.setLocation((String) data.child("location").getValue());
-                            item.setPlace((String) data.child("place").getValue());
+                            item.setTitle((String) data.child(References.CONFERENCES_CHILD_TITLE).getValue());
+                            item.setDate((String) data.child(References.CONFERENCES_CHILD_DATE).getValue());
+                            item.setDuration((String) data.child(References.CONFERENCES_CHILD_DURATION).getValue());
+                            item.setGps((String) data.child(References.CONFERENCES_CHILD_GPS).getValue());
+                            item.setInfo((String) data.child(References.CONFERENCES_CHILD_INFO).getValue());
+                            item.setLocation((String) data.child(References.CONFERENCES_CHILD_LOCATION).getValue());
+                            item.setPlace((String) data.child(References.CONFERENCES_CHILD_PLACE).getValue());
 
+                            isEmpty = false;
 
                             list.add(item);
                             adapter.notifyDataSetChanged();
                         }
+                        if (isEmpty)
+                            Toast.makeText(getContext(), "No hay próximos encuestros todavía", Toast.LENGTH_LONG).show();
+
                         progressBar.setVisibility(View.GONE);
                     }
 

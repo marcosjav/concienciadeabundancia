@@ -6,23 +6,24 @@ package com.bnvlab.concienciadeabundancia.clases;
 
 public class User {
     public static String CHILD = "users";
-    String uId, name, lastName, locale, phone, email, lastNumber;
-    boolean verified, signInWithEmail, paidUser;
+    String uId, name, secondName, lastName, locale, phone, email, lastNumber, invitationUID, deviceId;
+    boolean verified, signInWithEmail, active;
 
     public User() {
     }
 
-    public User(String name, String lastName, String locale, String phone, String email, String uId) {
+    public User(String name,String secondName, String lastName, String locale, String phone, String email, String invitationUID) {
 
-        this.uId = uId;
+        this.invitationUID = invitationUID;
         this.name = name;
+        this.secondName = secondName;
         this.lastName = lastName;
         this.locale = locale;
         this.phone = phone;
         this.email = email;
         this.verified = false;
         this.signInWithEmail = true;
-        this.paidUser = false;
+        this.active = false;
     }
     public User(String name, String lastName, String locale, String phone, String email) {
 
@@ -33,7 +34,7 @@ public class User {
         this.email = email;
         this.verified = false;
         this.signInWithEmail = true;
-        this.paidUser = false;
+        this.active = false;
     }
 
     public String getuId() {
@@ -108,11 +109,35 @@ public class User {
         this.signInWithEmail = signInWithEmail;
     }
 
-    public boolean isPaidUser() {
-        return paidUser;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setPaidUser(boolean paidUser) {
-        this.paidUser = paidUser;
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
+    }
+
+    public String getInvitationUID() {
+        return invitationUID;
+    }
+
+    public void setInvitationUID(String invitationUID) {
+        this.invitationUID = invitationUID;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 }

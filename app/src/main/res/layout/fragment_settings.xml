@@ -151,7 +151,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_gravity="center"
-                        android:spinnerMode="dialog"></Spinner>
+                        android:spinnerMode="dialog"/>
 
 
                 </ViewSwitcher>
@@ -237,6 +237,7 @@
                 <ViewSwitcher
                     android:id="@+id/view_switcher_settings_ok"
                     android:layout_width="match_parent"
+                    android:layout_marginBottom="20dp"
                     android:layout_height="wrap_content">
 
                     <Button
@@ -245,6 +246,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dip"
+                        style="@style/button"
                         android:text="@string/settings_button_ok" />
 
                     <ProgressBar

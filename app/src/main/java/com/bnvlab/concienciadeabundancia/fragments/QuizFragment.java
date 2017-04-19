@@ -15,9 +15,9 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
-import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.QuizAdapter;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -91,27 +91,31 @@ public class QuizFragment extends Fragment {
 
     private void getQuiz() {
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
-                .child(QuizItem.CHILD)
+                .getReference(References.REFERENCE)
+                .child(References.QUIZ)
                 .child(quizId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        boolean free = false;
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            if (data.getKey().equals("title"))
+                            if (data.getKey().equals(References.QUIZ_CHILD_TITLE))
                                 tvTitle.setText(data.getValue(String.class));
-                            else if (data.getKey().equals("subtitle"))
+                            else if (data.getKey().equals(References.QUIZ_CHILD_SUBTITLE))
                                 tvSubTitle.setText(data.getValue(String.class));
-                            else if (data.getKey().equals("module"))
+                            else if (data.getKey().equals(References.QUIZ_CHILD_MODULE))
                                 tvModule.setText(data.getValue(String.class));
-                            else if (data.getKey().equals("description"))
+                            else if (data.getKey().equals(References.QUIZ_CHILD_DESCRIPTION))
                                 tvDescription.setText(data.getValue(String.class));
+                            else if (data.getKey().equals(References.FREE_CONTENT))
+                                free = data.getValue(boolean.class);
                             else {
                                 QuizItem quizItem = new QuizItem(data.getValue(String.class));
                                 list.add(quizItem);
                                 adapter.notifyDataSetChanged();
 //                                Toast.makeText(getContext(), quizItem.getQuiz(), Toast.LENGTH_SHORT).show();
                             }
+
                         }
                         setListViewHeightBasedOnChildren(listView);
                         showProgress(false);
@@ -165,7 +169,7 @@ public class QuizFragment extends Fragment {
     private void sendQuiz()
     {
         FirebaseDatabase.getInstance()
-                .getReference(MainActivity.REFERENCE)
+                .getReference(References.REFERENCE)
                 .child("sent")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(quizId)

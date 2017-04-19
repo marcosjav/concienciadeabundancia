@@ -13,11 +13,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.QuizNotificationService;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.LoginFragment;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
+import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,20 +47,46 @@ public class MainActivity extends FragmentActivity {
     //    private FirebaseAuth mAuth;
 //    private FirebaseAuth.AuthStateListener mAuthListener;
     static String TAG = "CDA_INFORMATION";
-    public static String REFERENCE = "CDA";
+    //    public static String REFERENCE = "CDA";
     public static boolean newUser = false;
     public static User user = null;
     FragmentManager fragmentManager;
     LoginFragment loginFragment = new LoginFragment();
     MainFragment mainFragment = new MainFragment();
     boolean firstTime = true;
+    public static boolean databaseCalled;
     public static final String APP_SHARED_PREF_KEY = MainActivity.class.getSimpleName(), FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
+    private String android_id;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        final SharedPreferences prefs = this.getSharedPreferences(
+                this.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+
+        String value = null;
+        if (getIntent() != null && getIntent().getExtras() != null)
+            value = getIntent().getExtras().getString("android_id");
+
+        if (value != null) {
+            android_id = value;
+            prefs.edit().putString("android_id", android_id).apply();
+        } else if (prefs.getString("android_id", "").equals("")) {
+            prefs.edit().putString("android_id", android_id).apply();
+        } else {
+            android_id = prefs.getString("android_id", "");
+        }
+
+        if (!prefs.getBoolean("databaseCalled", false)) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            prefs.edit().putBoolean("databaseCalled", true).apply();
+        }
+
+        Firebase.getDefaultConfig().setPersistenceEnabled(true);
 
         // REVISO SI HAY UNA NUEVA VERSIÓN
         VersionChecker versionChecker = new VersionChecker();
@@ -68,29 +97,28 @@ public class MainActivity extends FragmentActivity {
 
 //            Toast.makeText(this, "this: " + thisVersion + "\nPlay: " +playVersion, Toast.LENGTH_SHORT).show();
 
-            if (playVersion > thisVersion)
-            {
+            if (playVersion > thisVersion) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-                                    builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            // User clicked OK button
-                                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                                            try {
-                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                                            } catch (ActivityNotFoundException anfe) {
-                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                                            }
-                                        }
-                                    })
-                                            .setMessage("Hay una nueva versión de esta aplicación disponible.\nPor favor descargala antes de seguir.")
-                                            .setTitle("Nueva actualización")
-                                            .setCancelable(false)
-                                            .setIcon(R.drawable.attention_yellow);
+                builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                        } catch (ActivityNotFoundException anfe) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                        }
+                    }
+                })
+                        .setMessage("Hay una nueva versión de esta aplicación disponible.\nPor favor descargala antes de seguir.")
+                        .setTitle("Nueva actualización")
+                        .setCancelable(false)
+                        .setIcon(R.drawable.attention_yellow);
 
-                                    AlertDialog dialog = builder.create();
+                AlertDialog dialog = builder.create();
 
-                                    dialog.show();
+                dialog.show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,23 +169,29 @@ public class MainActivity extends FragmentActivity {
 //                    }
 //                });
 
+        if (prefs.getBoolean("firstLogin", true)) {
+            FirebaseAuth.getInstance().signOut();
+            prefs.edit().putBoolean("firstLogin", false).apply();
+        }
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             showLogin();
 //            stopService(new Intent(this, QuizNotificationService.class));
         } else {
             FirebaseDatabase.getInstance()
-                    .getReference(REFERENCE)
-                    .child(User.CHILD)
+                    .getReference(References.REFERENCE)
+                    .child(References.USERS)
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                User user = data.getValue(User.class);
+//                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            User user = dataSnapshot.getValue(User.class);
 
-                                if (user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
-                                    MainActivity.user = user;
-                            }
+//                                if (user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
+                            MainActivity.user = user;
+//                            }
                         }
 
                         @Override
@@ -165,18 +199,45 @@ public class MainActivity extends FragmentActivity {
 
                         }
                     });
+
+            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                    .child(References.USERS)
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(References.USERS_CHILD_DEVICEID)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null)
+                                if (!dataSnapshot.getValue(String.class).equals(android_id)) {
+                                    Toast.makeText(MainActivity.this, "Se inició sesión en otro dispositivo", Toast.LENGTH_LONG).show();
+                                    FirebaseAuth.getInstance().signOut();
+                                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    MainActivity.this.startActivity(myIntent);
+                                    MainActivity.this.finish();
+                                }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 //                if (getSystemService(QuizNotificationService.class) == null)
 //                    startService(new Intent(this, QuizNotificationService.class));
 //            }else{
-                if (!isMyServiceRunning(QuizNotificationService.class))
-                    startService(new Intent(this, QuizNotificationService.class));
-//            }
+            if (!isMyServiceRunning(QuizNotificationService.class)) {
+                startService(new Intent(this, QuizNotificationService.class));
+//                QuizNotificationService quizNotificationService = new QuizNotificationService();
+//                Notification note = new Notification( 0, null, System.currentTimeMillis() );
+//                note.flags |= Notification.FLAG_NO_CLEAR;
+//                quizNotificationService.startForeground(33, note);
+            }
 
         }
-
-        final SharedPreferences prefs = this.getSharedPreferences(
-                this.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
         // use a default value using new Date()
         firstTime = prefs.getBoolean(this.FIRST_TIME_PREF_KEY, true);

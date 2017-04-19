@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="3dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="aasdasdasdasd"
+        android:textSize="16sp"
+        android:background="@drawable/question_shape"/>
+</LinearLayout>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+    <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:background="@drawable/button_red_background"/>&ndash;&gt;-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/text"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="3dp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textColor="@android:color/black"-->
+        <!--android:text="Para quien es este entrenamiento? "/>-->
+
+<!--</FrameLayout>-->
