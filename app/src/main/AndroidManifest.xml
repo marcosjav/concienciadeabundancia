@@ -54,13 +54,11 @@
             </intent-filter>
             </activity>
 
-        <service android:name=".clases.QuizNotificationService"
+        <service android:name="com.bnvlab.concienciadeabundancia.clases.QuizNotificationService"
             android:exported="true"
-            android:externalService="true"
             android:enabled="true"
             android:singleUser="true"
-            tools:targetApi="n"
-            android:permission="" />
+            android:process=":remote"/>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.VideoActivity;
 import com.bnvlab.concienciadeabundancia.adapters.QuizAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
@@ -42,6 +44,7 @@ public class QuizFragment extends Fragment {
     ViewSwitcher viewSwitcher;
     ListView listView;
     Button buttonOk;
+    Button buttonTestVideo;
 
     String quizId;
 
@@ -67,6 +70,16 @@ public class QuizFragment extends Fragment {
             public void onClick(View v) {
                 sendQuiz();
                 viewSwitcher.showNext();
+            }
+        });
+        buttonTestVideo = (Button) view.findViewById(R.id.video_test_button);
+        buttonTestVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(getContext(), VideoActivity.class);
+                myIntent.putExtra("video", "https://youtu.be/WSVH_nF18Ls"); //Optional parameters
+//                myIntent.putExtra("list", list);
+                getActivity().startActivity(myIntent);
             }
         });
 
@@ -109,7 +122,7 @@ public class QuizFragment extends Fragment {
                                 tvDescription.setText(data.getValue(String.class));
                             else if (data.getKey().equals(References.FREE_CONTENT))
                                 free = data.getValue(boolean.class);
-                            else {
+                            else if (!data.getKey().equals(References.QUIZ_CHILD_HIDDEN)){
                                 QuizItem quizItem = new QuizItem(data.getValue(String.class));
                                 list.add(quizItem);
                                 adapter.notifyDataSetChanged();

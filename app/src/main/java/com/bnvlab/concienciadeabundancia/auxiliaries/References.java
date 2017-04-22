@@ -24,6 +24,7 @@ public class References {
             , QUIZ_CHILD_MODULE = "module"
             , QUIZ_CHILD_SUBTITLE = "subtitle"
             , QUIZ_CHILD_TITLE = "title"
+            , QUIZ_CHILD_HIDDEN = "hidden"
 
             , SENT = "sent"
             , SENT_CHILD_ANSWER = "answer"
@@ -39,7 +40,7 @@ public class References {
             , USERS_CHILD_PHONE = "phone"
             , USERS_CHILD_SIGNINWHITEMAIL = "signInWithEmail"
             , USERS_CHILD_VERIFIED = "verified"
-            , USERS_CHILD_INVITED_FOR  = ""
+            , USERS_CHILD_INVITED_FOR  = "invited_by"
             , USERS_CHILD_DEVICEID = "device_id"
 
             , VERIFICATION_CODES = "verification_codes"

@@ -10,11 +10,13 @@ import android.support.annotation.Nullable;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Marcos on 10/04/2017.
@@ -32,23 +34,7 @@ public class QuizNotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        super.onStartCommand(intent, flags, startId);
-//        if (intent != null) {
-//            Notification note = new Notification(0, null, System.currentTimeMillis());
-//            note.flags |= Notification.FLAG_NO_CLEAR;
-//            startForeground(0, note);
-//            checkTrainings();
-//            checkConferences();
-//            Toast.makeText(this, "SERVICIO INICIADO", Toast.LENGTH_SHORT).show();
-//        }
-//        return START_STICKY;
-//        showToast("onStart");
-
-//        Intent intent2 = new Intent(this, MainActivity.class);
-//        intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent2, 0);
-
-//        Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
+        FirebaseApp.initializeApp(this);
 
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
@@ -56,6 +42,22 @@ public class QuizNotificationService extends Service {
 
         final SharedPreferences prefs = this.getSharedPreferences(
                 MainActivity.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.USERS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(References.USERS_CHILD_ACTIVE)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        prefs.edit().putBoolean(References.USERS_CHILD_ACTIVE,dataSnapshot.getValue(boolean.class));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
         if (prefs.getBoolean(References.SHARED_PREFERENCES_FIRST_TIME,true))
             prefs.edit().putBoolean(References.SHARED_PREFERENCES_FIRST_TIME, false).apply();
@@ -68,7 +70,6 @@ public class QuizNotificationService extends Service {
 
     @Override
     public void onDestroy() {
-//        super.onDestroy();
     }
 
 
@@ -82,8 +83,13 @@ public class QuizNotificationService extends Service {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                            final String title = dataSnapshot.child("title").getValue(String.class);
+                        boolean active = prefs.getBoolean(References.USERS_CHILD_ACTIVE,false);
+                        boolean freeContent = dataSnapshot.child(References.FREE_CONTENT).getValue(boolean.class);
+
+                        if (FirebaseAuth.getInstance().getCurrentUser() != null
+                                && !dataSnapshot.child(References.QUIZ_CHILD_HIDDEN).getValue(boolean.class)
+                                && ( freeContent || ( !freeContent && active))) {
+                            final String title = dataSnapshot.child(References.QUIZ_CHILD_TITLE).getValue(String.class);
                             if (!prefs.getBoolean(References.SHARED_PREFERENCES_NOTIFICATION_TRAINING + dataSnapshot.getKey(), false)) {
                                 String message = "Se agregó: \"" + title + "\"";
                                 Notify.message(getApplicationContext(), "Nuevo entrenamiento!", message, 1);

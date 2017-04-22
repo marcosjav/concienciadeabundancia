@@ -96,9 +96,10 @@ public class TrainingFragment extends Fragment implements ICallback {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            String title = data.child(References.CONFERENCES_CHILD_TITLE).getValue(String.class);
+                            String title = data.child(References.QUIZ_CHILD_TITLE).getValue(String.class);
                             boolean freeContent = data.child(References.FREE_CONTENT).getValue(boolean.class);
-                            if ( freeContent || ( !freeContent && active)) {
+                            boolean hidden = data.child(References.QUIZ_CHILD_HIDDEN).getValue(boolean.class);
+                            if (!hidden && ( freeContent || ( !freeContent && active))) {
                                 list.add(new TrainingItem(title));
                                 listId.add(data.getKey());
                             }

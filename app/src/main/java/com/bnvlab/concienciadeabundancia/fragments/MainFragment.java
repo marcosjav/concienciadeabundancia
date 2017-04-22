@@ -184,16 +184,17 @@ public class MainFragment extends Fragment {
         buttonTweeterLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("https://twitter.com/FacundoCda"); // missing 'http://' will cause crashed
-                try {
-                    // get the Twitter app if possible
-                    getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
-                    uri = Uri.parse("twitter://user?user_id=FacundoCda");
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                } catch (Exception e) {
-                }
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+//                Uri uri = Uri.parse("https://twitter.com/FacundoCda"); // missing 'http://' will cause crashed
+//                try {
+//                    // get the Twitter app if possible
+//                    getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
+//                    uri = Uri.parse("twitter://user?user_id=FacundoCda");
+////                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                } catch (Exception e) {
+//                }
+//                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//                startActivity(intent);
+                Toast.makeText(getContext(), "No disponible", Toast.LENGTH_SHORT).show();
             }
         });
 

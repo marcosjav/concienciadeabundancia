@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     android:background="@android:color/white"
     android:gravity="center_horizontal"
@@ -78,44 +79,61 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
-                    <TextView
+                    <!--<TextView
                         style="@style/textViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:text="@string/prompt_phone_or_email" />
+                        android:text="@string/prompt_phone_or_email" />-->
 
-                    <AutoCompleteTextView
-                        android:id="@+id/email"
-                        style="@style/editTextStyle"
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/prompt_phone_or_email"
-                        android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:nextFocusForward="@+id/password"
-                        android:imeOptions="actionNext"/>
+                        android:textColorHint="@android:color/black"
+                        android:layout_margin="5dp">
 
-                    <TextView
+                        <AutoCompleteTextView
+                            android:id="@+id/email"
+                            style="@style/editTextStyle"
+                            android:textColor="@android:color/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/prompt_phone_or_email"
+                            android:imeOptions="actionNext"
+                            android:inputType="textEmailAddress"
+                            android:maxLines="1"
+                            android:nextFocusForward="@+id/password"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!--<TextView
                         style="@style/textViewStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
                         android:layout_marginTop="15dp"
                         android:text="@string/prompt_password" />
-
-                    <EditText
-                        android:id="@+id/password"
-                        style="@style/editTextStyle"
+-->
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:hint="@string/prompt_password"
-                        android:imeActionId="@+id/login"
-                        android:imeActionLabel="@string/action_sign_in_short"
-                        android:imeOptions="actionSend"
-                        android:inputType="textPassword"
-                        android:maxLines="1" />
+                        app:passwordToggleEnabled="true"
+                        android:textColorHint="@android:color/black"
+                        android:layout_margin="5dp">
+
+                        <EditText
+                            android:id="@+id/password"
+                            style="@style/editTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="15dp"
+                            android:hint="@string/prompt_password"
+                            android:imeActionId="@+id/login"
+                            android:imeActionLabel="@string/action_sign_in_short"
+                            android:imeOptions="actionSend"
+                            android:inputType="textPassword"
+                            android:textColorHint="@android:color/black"
+                            android:maxLines="1" />
+                    </android.support.design.widget.TextInputLayout>
 
                     <Button
                         android:id="@+id/email_sign_in_button"
@@ -300,7 +318,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_gravity="center"
-                        android:spinnerMode="dialog"/>
+                        android:spinnerMode="dialog" />
 
 
                 </ViewSwitcher>

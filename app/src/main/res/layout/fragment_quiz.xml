@@ -34,25 +34,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:gravity="center"-->
+                    <!--android:orientation="vertical">-->
 
-                    <ProgressBar
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:indeterminate="true"/>
+                    <!--<ProgressBar-->
+                        <!--android:layout_width="100dp"-->
+                        <!--android:layout_height="100dp"-->
+                        <!--android:indeterminate="true"/>-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="cargando..."
-                        android:textColor="@android:color/black"/>
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="cargando..."-->
+                        <!--android:textColor="@android:color/black"/>-->
 
-                </LinearLayout>
+                <!--</LinearLayout>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -100,6 +100,15 @@
                         android:text="DESCRIPTION"
                         android:textColor="@android:color/black"
                         android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/video_test_button"
+                        style="@android:style/Widget.Button.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dip"
+                        android:text="video de cómo testear" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
