@@ -92,6 +92,7 @@ public class TrainingFragment extends Fragment implements ICallback {
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.QUIZ)
+                .orderByChild(References.QUIZ_CHILD_INDEX)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

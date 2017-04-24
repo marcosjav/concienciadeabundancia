@@ -80,6 +80,7 @@ public class FaqFragment extends Fragment {
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.FAQ)
+                .orderByChild(References.FAQ_CHILD_INDEX)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

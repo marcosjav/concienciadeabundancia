@@ -40,12 +40,13 @@ public class QuizFragment extends Fragment {
     QuizAdapter adapter;
     View view;
 
-    TextView tvTitle, tvSubTitle, tvModule, tvDescription;
+    TextView tvTitle, tvSubTitle, tvModule, tvDescription, tvFoot;
     ViewSwitcher viewSwitcher;
     ListView listView;
     Button buttonOk;
     Button buttonTestVideo;
 
+    String video;
     String quizId;
 
     public QuizFragment() {
@@ -64,6 +65,8 @@ public class QuizFragment extends Fragment {
         tvSubTitle = (TextView) view.findViewById(R.id.text_view_quiz_subtitle);
         tvModule = (TextView) view.findViewById(R.id.text_view_quiz_module);
         tvDescription = (TextView) view.findViewById(R.id.text_view_quiz_description);
+        tvFoot = (TextView) view.findViewById(R.id.text_view_foot);
+
         buttonOk = (Button) view.findViewById(R.id.button_quiz_ok);
         buttonOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +80,11 @@ public class QuizFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(getContext(), VideoActivity.class);
-                myIntent.putExtra("video", "https://youtu.be/WSVH_nF18Ls"); //Optional parameters
+
+                if (video.equals(""))
+                    video = "https://youtu.be/WSVH_nF18Ls";
+
+                myIntent.putExtra("video", video); //Optional parameters
 //                myIntent.putExtra("list", list);
                 getActivity().startActivity(myIntent);
             }
@@ -107,6 +114,7 @@ public class QuizFragment extends Fragment {
                 .getReference(References.REFERENCE)
                 .child(References.QUIZ)
                 .child(quizId)
+                .orderByKey()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -122,6 +130,15 @@ public class QuizFragment extends Fragment {
                                 tvDescription.setText(data.getValue(String.class));
                             else if (data.getKey().equals(References.FREE_CONTENT))
                                 free = data.getValue(boolean.class);
+                            else if (data.getKey().equals(References.QUIZ_CHILD_INDEX))
+                                free = free;
+                            else if (data.getKey().equals(References.QUIZ_CHILD_FOOT)){
+                                String text = data.getValue(String.class);
+                                if (!text.equals(""))
+                                    tvFoot.setText(text);
+                            }
+                            else if (data.getKey().equals(References.QUIZ_CHILD_VIDEO))
+                                video = data.getValue(String.class);
                             else if (!data.getKey().equals(References.QUIZ_CHILD_HIDDEN)){
                                 QuizItem quizItem = new QuizItem(data.getValue(String.class));
                                 list.add(quizItem);

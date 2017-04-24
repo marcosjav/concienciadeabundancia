@@ -27,6 +27,7 @@ import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.User;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -295,6 +296,7 @@ public class MainFragment extends Fragment {
             public void onClick(View v) {
                 shareDialog();
 //                FragmentMan.changeFragment(getActivity(), ShareFragment.class);
+//                onInviteClicked();
             }
         });
 
@@ -469,5 +471,15 @@ public class MainFragment extends Fragment {
         Toast.makeText(getContext(), "SMS sent.",
                 Toast.LENGTH_LONG).show();
     }*/
+
+    private void onInviteClicked() {
+        Intent intent = new AppInviteInvitation.IntentBuilder("titulo")
+                .setMessage("mensaje")
+                .setDeepLink(Uri.parse("deep.link"))
+                .setCallToActionText("invitation_cta")
+                .build();
+        Toast.makeText(getContext(), intent.getStringExtra(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
+//        startActivityForResult(intent, 123);
+    }
 
 }

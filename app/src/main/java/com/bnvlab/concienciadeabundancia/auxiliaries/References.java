@@ -24,6 +24,9 @@ public class References {
             , QUIZ_CHILD_MODULE = "module"
             , QUIZ_CHILD_SUBTITLE = "subtitle"
             , QUIZ_CHILD_TITLE = "title"
+            , QUIZ_CHILD_VIDEO = "video"
+            , QUIZ_CHILD_FOOT = "foot"
+            , QUIZ_CHILD_INDEX = "index"
             , QUIZ_CHILD_HIDDEN = "hidden"
 
             , SENT = "sent"
@@ -48,6 +51,8 @@ public class References {
 
             , VIDEOS = "videos"
             , VIDEOS_CHILD_URL = "url"
+            , VIDEOS_CHILD_HIDDEN = "hidden"
+            , VIDEOS_INDEX = "index"
 
             , FREE_CONTENT = "freeContent"
 
@@ -61,6 +66,7 @@ public class References {
             , FAQ = "faq"
             , FAQ_CHILD_QUESTION = "question"
             , FAQ_CHILD_ANSWER = "answer"
+            , FAQ_CHILD_INDEX = "index"
 
             , FUNDAMENTS = "fundaments"
 

@@ -85,6 +85,7 @@ public class ResumeFragment extends Fragment {
                 .child(References.SENT)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(quizId)
+                .orderByKey()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

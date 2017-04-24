@@ -19,6 +19,7 @@ import com.bnvlab.concienciadeabundancia.adapters.VideoItemAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.SimpleYouTubeHelper;
 import com.bnvlab.concienciadeabundancia.clases.VideoItem;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -38,6 +39,7 @@ public class VideoFragment extends Fragment {
     ListView listView;
     Context context;
     ProgressBar progressBar;
+    static boolean active;
 
     @Nullable
     @Override
@@ -66,10 +68,29 @@ public class VideoFragment extends Fragment {
             }
         });
 
-        getVideoList();
+        isActive();
         return view;
     }
 
+    private void isActive(){
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.USERS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(References.USERS_CHILD_ACTIVE)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        active = dataSnapshot.getValue(boolean.class);
+                        getVideoList();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        active = false;
+                        getVideoList();
+                    }
+                });
+    }
 
     private void getVideoList() {
         progressBar.setVisibility(View.VISIBLE);
@@ -77,13 +98,15 @@ public class VideoFragment extends Fragment {
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.VIDEOS)
+                .orderByChild(References.VIDEOS_INDEX)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data :
                                 dataSnapshot.getChildren()) {
 
-                            if (data.child(References.FREE_CONTENT).getValue(boolean.class))
+                            if (!data.child(References.VIDEOS_CHILD_HIDDEN).getValue(boolean.class)
+                                    && (active || data.child(References.FREE_CONTENT).getValue(boolean.class)))
                                 (new VideoPreview()).execute(data.child(References.VIDEOS_CHILD_URL).getValue(String.class));
 
                         }

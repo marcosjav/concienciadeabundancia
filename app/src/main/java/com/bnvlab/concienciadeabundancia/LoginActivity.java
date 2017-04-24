@@ -15,8 +15,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -59,7 +59,7 @@ import static com.bnvlab.concienciadeabundancia.fragments.SettingsFragment.isVal
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends FragmentActivity {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -198,41 +198,27 @@ public class LoginActivity extends AppCompatActivity {
         buttonPasswordRecovery.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
 
                 builder
                         .setPositiveButton("ENVIAR", new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog, int id) {
                                 // User clicked OK button
-                                final String email = mPasswordView.getText().toString();
+                                final String email = mEmailView.getText().toString();
                                 if (isValidEmail(email))
                                     sendRecoveryPass(email, dialog);
                                 else if (isPhoneValid(email)) {
                                     FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                                             .child(References.USERS)
-                                            .endAt(email)
                                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                                     boolean isFinished = false;
                                                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                                                         User user = data.getValue(User.class);
-                                                        if (user.getEmail().equals(email) || user.getPhone().equals(email)) {
-//                                    Toast.makeText(LoginActivity.this, "Usuario encontrado!", Toast.LENGTH_SHORT).show();
-                                                            FirebaseAuth.getInstance()
-                                                                    .sendPasswordResetEmail(user.getEmail())
-                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            if (task.isSuccessful()) {
-                                                                                Toast.makeText(LoginActivity.this, "Se envió el correo!", Toast.LENGTH_SHORT).show();
-                                                                                dialog.dismiss();
-                                                                            } else {
-                                                                                Toast.makeText(LoginActivity.this, "Ocurrió un error\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                                                dialog.dismiss();
-                                                                            }
-                                                                        }
-                                                                    });
+                                                        if (user.getPhone().equals(email)) {
+                                                            sendRecoveryPass(user.getEmail(), dialog);
+                                                            isFinished = true;
                                                         }
                                                     }
                                                     if (!isFinished) {
@@ -247,7 +233,8 @@ public class LoginActivity extends AppCompatActivity {
                                                 }
                                             });
                                 } else
-                                    Toast.makeText(LoginActivity.this, "No es un mail válido", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(LoginActivity.this, "No es un mail válido", Toast.LENGTH_SHORT).show();
+                                        mEmailView.setError("No es un email o teléfono válido");
                             }
                         }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
