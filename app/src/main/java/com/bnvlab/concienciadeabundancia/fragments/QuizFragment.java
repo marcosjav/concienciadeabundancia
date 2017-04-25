@@ -81,7 +81,7 @@ public class QuizFragment extends Fragment {
             public void onClick(View v) {
                 Intent myIntent = new Intent(getContext(), VideoActivity.class);
 
-                if (video.equals(""))
+                if (video == null || video.equals(""))
                     video = "https://youtu.be/WSVH_nF18Ls";
 
                 myIntent.putExtra("video", video); //Optional parameters
