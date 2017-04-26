@@ -64,6 +64,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checks();
 
         final SharedPreferences prefs = this.getSharedPreferences(
                 this.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
@@ -88,158 +89,12 @@ public class MainActivity extends FragmentActivity {
 
         Firebase.getDefaultConfig().setPersistenceEnabled(true);
 
-        // REVISO SI HAY UNA NUEVA VERSIÓN
-        VersionChecker versionChecker = new VersionChecker();
-        try {
-            String latestVersion = versionChecker.execute().get();
-            double playVersion = Double.valueOf(latestVersion);
-            double thisVersion = Double.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-
-//            Toast.makeText(this, "this: " + thisVersion + "\nPlay: " +playVersion, Toast.LENGTH_SHORT).show();
-
-            if (playVersion > thisVersion) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-                builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK button
-                        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                        try {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                        } catch (ActivityNotFoundException anfe) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                        } finally {
-                            finish();
-                        }
-                    }
-                })
-                        .setMessage("Hay una nueva versión de esta aplicación disponible.\nPor favor descargala antes de seguir.")
-                        .setTitle("Nueva actualización")
-                        .setCancelable(false)
-                        .setIcon(R.drawable.attention_yellow);
-
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-//        FirebaseDatabase.getInstance()
-//                .getReference(MainActivity.REFERENCE)
-//                .child("last_version")
-//                .addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        if (dataSnapshot.getValue() != null)
-//                            try {
-//                                long lastVersionCode = (long) dataSnapshot.getValue();
-//                                long thisVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-//
-//                                if (lastVersionCode > thisVersionCode) {
-//                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//
-//                                    builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
-//                                        public void onClick(DialogInterface dialog, int id) {
-//                                            // User clicked OK button
-//                                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-//                                            try {
-//                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-//                                            } catch (android.content.ActivityNotFoundException anfe) {
-//                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-//                                            }
-//                                        }
-//                                    })
-//                                            .setMessage("Hay una nueva versión de esta aplicación disponible.\nPor favor descargala antes de seguir.")
-//                                            .setTitle("Nueva actualización")
-//                                            .setCancelable(false)
-//                                            .setIcon(R.drawable.attention_yellow);
-//
-//                                    AlertDialog dialog = builder.create();
-//
-//                                    dialog.show();
-//                                }
-//                            } catch (PackageManager.NameNotFoundException e) {
-//                                e.printStackTrace();
-//                            }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
-
         if (prefs.getBoolean("firstLogin", true)) {
             FirebaseAuth.getInstance().signOut();
             prefs.edit().putBoolean("firstLogin", false).apply();
         }
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            showLogin();
-//            stopService(new Intent(this, QuizNotificationService.class));
-        } else {
-            FirebaseDatabase.getInstance()
-                    .getReference(References.REFERENCE)
-                    .child(References.USERS)
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-//                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            User user = dataSnapshot.getValue(User.class);
-
-//                                if (user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
-                            MainActivity.user = user;
-//                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                    .child(References.USERS)
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child(References.USERS_CHILD_DEVICEID)
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() != null)
-                                if (!dataSnapshot.getValue(String.class).equals(android_id)) {
-                                    Toast.makeText(MainActivity.this, "Se inició sesión en otro dispositivo", Toast.LENGTH_LONG).show();
-                                    FirebaseAuth.getInstance().signOut();
-                                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-                                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                    MainActivity.this.startActivity(myIntent);
-                                    MainActivity.this.finish();
-                                }
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                if (getSystemService(QuizNotificationService.class) == null)
-//                    startService(new Intent(this, QuizNotificationService.class));
-//            }else{
-            if (!isMyServiceRunning(QuizNotificationService.class)) {
-                startService(new Intent(this, QuizNotificationService.class));
-//                QuizNotificationService quizNotificationService = new QuizNotificationService();
-//                Notification note = new Notification( 0, null, System.currentTimeMillis() );
-//                note.flags |= Notification.FLAG_NO_CLEAR;
-//                quizNotificationService.startForeground(33, note);
-            }
-
-        }
+        ///////////////////////
 
         // use a default value using new Date()
         firstTime = prefs.getBoolean(this.FIRST_TIME_PREF_KEY, true);
@@ -261,10 +116,9 @@ public class MainActivity extends FragmentActivity {
                     prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
                 }
             })
-                    .setMessage("Creemos que el amor y la unidad van a transformar positiva-mente al mundo. \n" +
-                            "Creemos que al solucionar la escasez, crearemos un mundo igualitario para todos sus habitantes. \n" +
-                            "Es nuestro compromiso principal generar abundancia y libertad absoluta en 10 Millones de personas para el 2030.")
-                    .setTitle("ELEGIMOS crear un mundo UNIDO");
+                    .setMessage("Nuestra empresa esta dedicada a lograr la Felicidad en toda la humanidad.\n" +
+                            "¿Cómo? Expandiendo la Conciencia, el Amor a todo, la Salud y el Disfrute de la Vida.")
+                    .setTitle("ELEGIMOS CREAR UN MUNDO FELIZ Y UNIDO");
 
             AlertDialog dialog = builder.create();
 
@@ -329,6 +183,116 @@ public class MainActivity extends FragmentActivity {
             }
 
             return newVersion;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checks();
+    }
+
+    private void checks(){
+        // REVISO SI HAY UNA NUEVA VERSIÓN
+        VersionChecker versionChecker = new VersionChecker();
+        try {
+            String latestVersion = versionChecker.execute().get();
+            double playVersion = Double.valueOf(latestVersion);
+            double thisVersion = Double.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+
+//            Toast.makeText(this, "this: " + thisVersion + "\nPlay: " +playVersion, Toast.LENGTH_SHORT).show();
+
+            if (playVersion > thisVersion) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                        } catch (ActivityNotFoundException anfe) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                        } finally {
+                            finish();
+                        }
+                    }
+                })
+                        .setMessage("Hay una nueva versión de esta aplicación disponible.\nPor favor descargala antes de seguir.")
+                        .setTitle("Nueva actualización")
+                        .setCancelable(false)
+                        .setIcon(R.drawable.attention_yellow);
+
+                AlertDialog dialog = builder.create();
+
+                dialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            showLogin();
+        } else {
+            FirebaseDatabase.getInstance()
+                    .getReference(References.REFERENCE)
+                    .child(References.USERS)
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+//                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            User user = dataSnapshot.getValue(User.class);
+
+//                                if (user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
+                            MainActivity.user = user;
+//                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                    .child(References.USERS)
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(References.USERS_CHILD_DEVICEID)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null)
+                                if (!dataSnapshot.getValue(String.class).equals(android_id)) {
+                                    Toast.makeText(MainActivity.this, "Se inició sesión en otro dispositivo", Toast.LENGTH_LONG).show();
+                                    FirebaseAuth.getInstance().signOut();
+                                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+                                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                    MainActivity.this.startActivity(myIntent);
+                                    MainActivity.this.finish();
+                                }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                if (getSystemService(QuizNotificationService.class) == null)
+//                    startService(new Intent(this, QuizNotificationService.class));
+//            }else{
+            if (!isMyServiceRunning(QuizNotificationService.class)) {
+                startService(new Intent(this, QuizNotificationService.class));
+//                QuizNotificationService quizNotificationService = new QuizNotificationService();
+//                Notification note = new Notification( 0, null, System.currentTimeMillis() );
+//                note.flags |= Notification.FLAG_NO_CLEAR;
+//                quizNotificationService.startForeground(33, note);
+            }
+
         }
     }
 }

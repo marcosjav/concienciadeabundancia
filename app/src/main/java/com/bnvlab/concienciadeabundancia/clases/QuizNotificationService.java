@@ -64,6 +64,7 @@ public class QuizNotificationService extends Service {
         else{
             checkConferences();
             checkTrainings();
+            checkSentTraining();
         }
         return Service.START_STICKY;
     }
@@ -143,6 +144,51 @@ public class QuizNotificationService extends Service {
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void checkSentTraining(){
+        final SharedPreferences prefs = this.getSharedPreferences(
+                MainActivity.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.SENT)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()){
+                                if (data.child(References.SENT_CHILD_CHECKED).getValue(boolean.class)){
+                                    if (!prefs.getBoolean(References.SHARED_PREFERENCES_NOTIFICATION_RESULT + dataSnapshot.getKey(), false))
+                                    {
+                                        String message = "Entrá a la app y compartila con tus seres queridos";
+                                        Notify.message(getApplicationContext(), "Se cambiaron tus creencias!", message, 3);
+                                        prefs.edit().putBoolean(References.SHARED_PREFERENCES_NOTIFICATION_RESULT + dataSnapshot.getKey(), true).apply();
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     @Override

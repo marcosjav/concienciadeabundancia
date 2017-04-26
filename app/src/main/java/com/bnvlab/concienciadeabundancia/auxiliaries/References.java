@@ -32,6 +32,7 @@ public class References {
             , SENT = "sent"
             , SENT_CHILD_ANSWER = "answer"
             , SENT_CHILD_QUIZ = "quiz"
+            , SENT_CHILD_CHECKED = "checked"
 
             , USERS = "users"
             , USERS_CHILD_EMAIL = "email"
@@ -59,6 +60,7 @@ public class References {
             , SHARED_PREFERENCES_FIRST_TIME = "shared_prefs_first_time"
             , SHARED_PREFERENCES_NOTIFICATION_CONFERENCE = "conference_notification"
             , SHARED_PREFERENCES_NOTIFICATION_TRAINING = "training_notification"
+            , SHARED_PREFERENCES_NOTIFICATION_RESULT = "training_result"
 
             , INVITATION_CODES = "invitation_codes"
             , INVITATION_CODES_SENDER_UID = "sender_uid"
