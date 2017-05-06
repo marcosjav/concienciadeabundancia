@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,6 +27,7 @@ import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -50,6 +52,7 @@ public class MainFragment extends Fragment {
     ImageButton buttonQuiz, buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonFundaments, buttonShare, buttonLogout, buttonSettings, buttonFAQ,
             buttonAbout;
     ScrollView scrollView;
+    Typeface typeface;
 
     public MainFragment() {
     }
@@ -58,6 +61,12 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
+
+//        AssetManager am = getContext().getAssets();
+//
+//        typeface = Typeface.createFromAsset(am, String.format(Locale.US, "fonts/%s", "coffee.ttf"));
+//
+//        ((TextView)view.findViewById(R.id.text_view_conciencia)).setTypeface(typeface);
 
         buttonConference = (ImageButton) view.findViewById(R.id.button_main_conference);
         buttonVideos = (ImageButton) view.findViewById(R.id.button_main_videos);
@@ -103,6 +112,9 @@ public class MainFragment extends Fragment {
                     upArroy.setVisibility(View.VISIBLE);
             }
         });
+        int max = scrollView.getChildAt(0).getHeight() - scrollView.getMeasuredHeightAndState();
+        if (max>=scrollView.getMaxScrollAmount())
+            downArroy.setVisibility(View.GONE);
 
         downArroy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,37 +263,36 @@ public class MainFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null && dataSnapshot.getValue(boolean.class))
-                                buttonShare.setVisibility(View.VISIBLE);
-                            else {
-                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                        .child(References.SHARE)
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .addValueEventListener(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                if (dataSnapshot.getValue() != null) {
-                                                    long currentTime = Calendar.getInstance().getTime().getTime();
-                                                    long sharedTime = dataSnapshot.getValue(long.class);
-                                                    long difference = currentTime - sharedTime;
-                                                    if (difference > 86400000) {
-                                                        buttonShare.setVisibility(View.GONE);
-                                                        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                                                .child(References.SHARE)
-                                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                                .removeValue();
-                                                    }
-                                                    else
-                                                        buttonShare.setVisibility(View.VISIBLE);
-                                                }
+                        if (dataSnapshot.getValue() != null)
+                            buttonShare.setVisibility(View.VISIBLE);
+                        else {
+                            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                    .child(References.SHARE)
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.getValue() != null) {
+                                                long currentTime = Calendar.getInstance().getTime().getTime();
+                                                long sharedTime = dataSnapshot.getValue(long.class);
+                                                long difference = currentTime - sharedTime;
+                                                if (difference > 43200000) {
+                                                    buttonShare.setVisibility(View.GONE);
+                                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                                            .child(References.SHARE)
+                                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                            .removeValue();
+                                                } else
+                                                    buttonShare.setVisibility(View.VISIBLE);
                                             }
+                                        }
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
 
-                                            }
-                                        });
-                            }
+                                        }
+                                    });
+                        }
 
                     }
 
@@ -482,4 +493,10 @@ public class MainFragment extends Fragment {
 //        startActivityForResult(intent, 123);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null)
+            Utils.showLogin(getActivity());
+    }
 }

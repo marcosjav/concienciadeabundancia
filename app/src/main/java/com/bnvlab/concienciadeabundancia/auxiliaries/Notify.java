@@ -26,13 +26,19 @@ import com.bnvlab.concienciadeabundancia.R;
 public class Notify {
 
     public static void message(Context mContext, String title, String text, int id) {
+        message(mContext, title, text, id, false);
+    }
+
+    public static void message(Context mContext, String title, String text, int id, boolean share) {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mContext)
-                        .setSmallIcon(R.mipmap.ic_notification)
+                        .setSmallIcon(R.mipmap.ico_app)
                         .setContentTitle(title)
                         .setContentText(text)
                         .setAutoCancel(true);
+        if (share)
+            mBuilder.setPriority(NotificationCompat.PRIORITY_MAX|NotificationCompat.PRIORITY_HIGH);
 
         // Creats an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(mContext, MainActivity.class);
@@ -45,6 +51,8 @@ public class Notify {
         // Adds the back stack for the Intent (but not the Intent itself)
         stackBuilder.addParentStack(MainActivity.class);
         // Adds the Intent that starts the Activity to the top of the stack
+        if (share)
+            resultIntent.putExtra(References.SHARE_FROM_NOTIFICATION, true);
 
         stackBuilder.addNextIntent(resultIntent);
 
@@ -63,12 +71,11 @@ public class Notify {
 
     }
 
-    public static void message(Context mContext, String title, String text){
-        message(mContext,title,text,0);
+    public static void message(Context mContext, String title, String text) {
+        message(mContext, title, text, 0);
     }
 
-    public static void share(String message, Context context)
-    {
+    public static void share(String message, Context context) {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, message);
@@ -77,8 +84,7 @@ public class Notify {
         context.startActivity(Intent.createChooser(sendIntent, context.getResources().getText(R.string.app_name)));
     }
 
-    public static void shareTo(String phone, String message, Context context)
-    {
+    public static void shareTo(String phone, String message, Context context) {
 //        Intent sendIntent = new Intent();
 //        sendIntent.setAction(Intent.ACTION_SENDTO);
 //        sendIntent.putExtra(Intent.EXTRA_PHONE_NUMBER, phone);
@@ -87,17 +93,16 @@ public class Notify {
 ////        startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
 //        context.startActivity(Intent.createChooser(sendIntent, context.getResources().getText(R.string.app_name)));
         Intent sendIntent = new Intent("android.intent.action.MAIN");
-        sendIntent.setComponent(new ComponentName("com.whatsapp","com.whatsapp.Conversation"));
-        sendIntent.putExtra("jid", PhoneNumberUtils.stripSeparators(phone)+"@s.whatsapp.net");//phone number without "+" prefix
+        sendIntent.setComponent(new ComponentName("com.whatsapp", "com.whatsapp.Conversation"));
+        sendIntent.putExtra("jid", PhoneNumberUtils.stripSeparators(phone) + "@s.whatsapp.net");//phone number without "+" prefix
 
         context.startActivity(sendIntent);
     }
 
-    public static void email(Context context)
-    {
+    public static void email(Context context) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "info@concienciadeabundancia.com" });
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"info@concienciadeabundancia.com"});
         context.startActivity(Intent.createChooser(intent, ""));
     }
 
@@ -170,15 +175,14 @@ public class Notify {
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
 
-    public static void sendSms(String phonenumber,String message, Context context)
-    {
+    public static void sendSms(String phonenumber, String message, Context context) {
         try {
             PendingIntent pi = PendingIntent.getActivity(context, 0,
                     new Intent(context, MainActivity.class), 0);
             SmsManager sms = SmsManager.getDefault();
             // this is the function that does all the magic
             sms.sendTextMessage(phonenumber, null, message, pi, null);
-        }catch (Exception e) {
+        } catch (Exception e) {
             Toast.makeText(context, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
@@ -205,7 +209,7 @@ public class Notify {
 //                            values.put("body", MessageText.getText().toString());
 //                        }
                         values.put("address", phoneNumber);
-                        values.put("body",message);
+                        values.put("body", message);
                         context.getContentResolver().insert(
                                 Uri.parse("content://sms/sent"), values);
                         Toast.makeText(context, "SMS sent",

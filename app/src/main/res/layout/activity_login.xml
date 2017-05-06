@@ -151,7 +151,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:text="@string/action_sign_up"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
 
                     <Button
                         android:id="@+id/button_password_recovery"
@@ -271,15 +272,15 @@
                     android:inputType="textPersonName"
                     android:nextFocusDown="@+id/spinner_sign_up_location" />
 
-                <TextView
-                    style="@style/textViewStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="15dip"
-                    android:text="Invitado por:"
-                    android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
+                <!--<TextView-->
+                    <!--style="@style/textViewStyle"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="left"-->
+                    <!--android:layout_marginBottom="5dp"-->
+                    <!--android:layout_marginTop="15dip"-->
+                    <!--android:text="Invitado por:"-->
+                    <!--android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />-->
 
                 <TextView
                     android:id="@+id/sign_up_invitation_code"
@@ -288,7 +289,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="2dp"
                     android:hint=""
-                    android:nextFocusDown="@+id/spinner_sign_up_location" />
+                    android:nextFocusDown="@+id/spinner_sign_up_location"
+                    android:visibility="gone"/>
 
                 <TextView
                     style="@style/textViewStyle"

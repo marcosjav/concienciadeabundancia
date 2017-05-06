@@ -10,14 +10,15 @@
     <!--<uses-permission android:name="android.permission.SEND_SMS"/>-->
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
- <!--   <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
-    <supports-screens android:smallScreens="true"
-        android:normalScreens="true"
+    <!--   <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+       <uses-permission android:name="android.permission.READ_PROFILE" />
+       <uses-permission android:name="android.permission.READ_CONTACTS" />-->
+    <supports-screens
+        android:anyDensity="true"
         android:largeScreens="true"
-        android:xlargeScreens="true"
-        android:anyDensity="true"/>
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
 
     <application
@@ -29,7 +30,8 @@
         android:theme="@style/Theme.Design.NoActionBar">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -51,21 +53,34 @@
             android:screenOrientation="portrait">
             <!-- To open app using link -->
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="http"
-                    android:host="concienciadeabundancia.com"
-                    android:pathPrefix="/code">
-                </data>
-            </intent-filter>
-            </activity>
+                <action android:name="android.intent.action.VIEW" />
 
-        <service android:name="com.bnvlab.concienciadeabundancia.clases.QuizNotificationService"
-            android:exported="true"
-            android:enabled="true"
-            android:singleUser="true"
-            android:process=":remote"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="concienciadeabundancia.com"
+                    android:pathPrefix="/code"
+                    android:scheme="http"/>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".FirebaseBackgroundService"
+            android:exported="false"
+            android:process=":remote">
+            <!--<intent-filter>
+                <action android:name="com.bnvlab.concienciadeabundancia.ListeningService" />
+            </intent-filter>-->
+        </service>
+
+        <receiver android:name=".StartFirebaseAtBoot" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" >
+                </action>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 

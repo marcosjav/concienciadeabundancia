@@ -62,6 +62,8 @@ public class References {
             , SHARED_PREFERENCES_NOTIFICATION_TRAINING = "training_notification"
             , SHARED_PREFERENCES_NOTIFICATION_RESULT = "training_result"
 
+            ,SHARE_FROM_NOTIFICATION = "share_from_notification"
+
             , INVITATION_CODES = "invitation_codes"
             , INVITATION_CODES_SENDER_UID = "sender_uid"
 

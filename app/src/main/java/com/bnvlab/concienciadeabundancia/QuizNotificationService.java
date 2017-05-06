@@ -1,4 +1,4 @@
-package com.bnvlab.concienciadeabundancia.clases;
+package com.bnvlab.concienciadeabundancia;
 
 import android.app.Service;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.google.firebase.FirebaseApp;
@@ -50,7 +49,7 @@ public class QuizNotificationService extends Service {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        prefs.edit().putBoolean(References.USERS_CHILD_ACTIVE,dataSnapshot.getValue(boolean.class));
+                        prefs.edit().putBoolean(References.USERS_CHILD_ACTIVE, dataSnapshot.getValue(boolean.class));
                     }
 
                     @Override
@@ -59,9 +58,9 @@ public class QuizNotificationService extends Service {
                     }
                 });
 
-        if (prefs.getBoolean(References.SHARED_PREFERENCES_FIRST_TIME,true))
+        if (prefs.getBoolean(References.SHARED_PREFERENCES_FIRST_TIME, true))
             prefs.edit().putBoolean(References.SHARED_PREFERENCES_FIRST_TIME, false).apply();
-        else{
+        else {
             checkConferences();
             checkTrainings();
             checkSentTraining();
@@ -84,12 +83,12 @@ public class QuizNotificationService extends Service {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        boolean active = prefs.getBoolean(References.USERS_CHILD_ACTIVE,false);
+                        boolean active = prefs.getBoolean(References.USERS_CHILD_ACTIVE, false);
                         boolean freeContent = dataSnapshot.child(References.FREE_CONTENT).getValue(boolean.class);
 
                         if (FirebaseAuth.getInstance().getCurrentUser() != null
                                 && !dataSnapshot.child(References.QUIZ_CHILD_HIDDEN).getValue(boolean.class)
-                                && ( freeContent || ( !freeContent && active))) {
+                                && (freeContent || (!freeContent && active))) {
                             final String title = dataSnapshot.child(References.QUIZ_CHILD_TITLE).getValue(String.class);
                             if (!prefs.getBoolean(References.SHARED_PREFERENCES_NOTIFICATION_TRAINING + dataSnapshot.getKey(), false)) {
                                 String message = "Se agregó: \"" + title + "\"";
@@ -163,42 +162,42 @@ public class QuizNotificationService extends Service {
                 });
     }
 
-    private void checkSentTraining(){
+    private void checkSentTraining() {
         final SharedPreferences prefs = this.getSharedPreferences(
                 MainActivity.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
         FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                 .child(References.SENT)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .addChildEventListener(new ChildEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    }
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (final DataSnapshot data : dataSnapshot.getChildren()) {
+                            if (!data.child(References.SENT_CHILD_CHECKED).getValue(boolean.class))
+                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                        .child(References.SENT)
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(data.getKey())
+                                        .child(References.SENT_CHILD_CHECKED)
+                                        .addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                                                    if (dataSnapshot.getValue(boolean.class)
+                                                            && !prefs.getBoolean(References.SHARED_PREFERENCES_NOTIFICATION_RESULT + data.getKey(), false)) {
+                                                        Notify.message(getApplicationContext(), "Felicidades", "Se cambiaron tus creencias.\nEntrá a la app y compartila!", 3);
+                                                        prefs.edit().putBoolean(References.SHARED_PREFERENCES_NOTIFICATION_RESULT + data.getKey(), true).apply();
+                                                    }
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                            for (DataSnapshot data : dataSnapshot.getChildren()){
-                                if (data.child(References.SENT_CHILD_CHECKED).getValue(boolean.class)){
-                                    if (!prefs.getBoolean(References.SHARED_PREFERENCES_NOTIFICATION_RESULT + dataSnapshot.getKey(), false))
-                                    {
-                                        String message = "Entrá a la app y compartila con tus seres queridos";
-                                        Notify.message(getApplicationContext(), "Se cambiaron tus creencias!", message, 3);
-                                        prefs.edit().putBoolean(References.SHARED_PREFERENCES_NOTIFICATION_RESULT + dataSnapshot.getKey(), true).apply();
-                                    }
-                                }
-                            }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
                         }
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
                     }
 
                     @Override

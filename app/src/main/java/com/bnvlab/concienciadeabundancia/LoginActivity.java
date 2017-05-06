@@ -7,14 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -45,14 +43,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import me.srodrigo.androidhintspinner.HintAdapter;
 import me.srodrigo.androidhintspinner.HintSpinner;
 
-import static android.Manifest.permission.READ_CONTACTS;
-import static android.os.Build.VERSION_CODES.M;
 import static com.bnvlab.concienciadeabundancia.R.id.sign_up_first_name;
 import static com.bnvlab.concienciadeabundancia.fragments.SettingsFragment.isValidEmail;
 
@@ -251,15 +248,10 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-        Uri data = getIntent().getData();
+        final Uri data = getIntent().getData();
         if (data != null) {
             invitationCode = data.toString()
                     .replaceAll("http://concienciadeabundancia.com/code=", "");
-
-            ViewSwitcher viewSwitcher = (ViewSwitcher) findViewById(R.id.login_switcher);
-            viewSwitcher.setInAnimation(LoginActivity.this, android.R.anim.fade_in);
-            viewSwitcher.setOutAnimation(LoginActivity.this, android.R.anim.fade_out);
-            viewSwitcher.showNext();
 
             FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                     .child(References.INVITATION_CODES)
@@ -267,10 +259,23 @@ public class LoginActivity extends FragmentActivity {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getValue() != null){
+                                ViewSwitcher viewSwitcher = (ViewSwitcher) findViewById(R.id.login_switcher);
+                                viewSwitcher.setInAnimation(LoginActivity.this, android.R.anim.fade_in);
+                                viewSwitcher.setOutAnimation(LoginActivity.this, android.R.anim.fade_out);
+                                viewSwitcher.showNext();
 
-                            invitationSenderUID = dataSnapshot.getValue(String.class);
+                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                        .child(References.INVITATION_CODES)
+                                        .child(invitationCode)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                                invitationSenderUID = dataSnapshot.getValue(String.class);
+                                                ((TextView) findViewById(R.id.sign_up_invitation_code)).setText(invitationSenderUID);
+
+                            /*FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                                     .child(References.USERS)
                                     .child(invitationSenderUID)
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -285,14 +290,26 @@ public class LoginActivity extends FragmentActivity {
                                         public void onCancelled(DatabaseError databaseError) {
 
                                         }
-                                    });
+                                    });*/
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                            }
+                            else
+                                Toast.makeText(LoginActivity.this, "Código de invitación erroneo o no encontrado\n Por favor solicítelo nuevamente", Toast.LENGTH_LONG).show();
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-
+                            Toast.makeText(LoginActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
+
+
 
 
         }
@@ -321,27 +338,27 @@ public class LoginActivity extends FragmentActivity {
 //        getLoaderManager().initLoader(0, null, this);
 //    }
 
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
+//    private boolean mayRequestContacts() {
+//        if (Build.VERSION.SDK_INT < M) {
+//            return true;
+//        }
+//        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+//            return true;
+//        }
+//        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+//            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+//                    .setAction(android.R.string.ok, new View.OnClickListener() {
+//                        @Override
+//                        @TargetApi(M)
+//                        public void onClick(View v) {
+//                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+//                        }
+//                    });
+//        } else {
+//            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+//        }
+//        return false;
+//    }
 
     ArrayList<String> locationList = new ArrayList<String>();
 
@@ -349,7 +366,8 @@ public class LoginActivity extends FragmentActivity {
         final Spinner spinnerLocation = (Spinner) findViewById(R.id.spinner_sign_up_location);
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
-                .child("locations")
+                .child(References.LOCATIONS)
+                .orderByValue()
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -359,7 +377,7 @@ public class LoginActivity extends FragmentActivity {
                             String location = (String) postSnapshot.getValue();
                             locationList.add(location);
                         }
-
+                        Collections.sort(locationList);
                         //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER  https://github.com/srodrigo/Android-Hint-Spinner
                         HintSpinner<String> hintSpinner = new HintSpinner<>(
                                 spinnerLocation,

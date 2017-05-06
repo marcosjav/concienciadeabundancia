@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.bnvlab.concienciadeabundancia.FirebaseBackgroundService;
 import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.VideoActivity;
@@ -30,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by bort0 on 21/03/2017.
@@ -96,7 +98,6 @@ public class QuizFragment extends Fragment {
 //        setListViewHeightBasedOnChildren(listView);
 
 
-
         Bundle bundle = this.getArguments();
 
         if (bundle != null) {
@@ -132,14 +133,13 @@ public class QuizFragment extends Fragment {
                                 free = data.getValue(boolean.class);
                             else if (data.getKey().equals(References.QUIZ_CHILD_INDEX))
                                 free = free;
-                            else if (data.getKey().equals(References.QUIZ_CHILD_FOOT)){
+                            else if (data.getKey().equals(References.QUIZ_CHILD_FOOT)) {
                                 String text = data.getValue(String.class);
                                 if (!text.equals(""))
                                     tvFoot.setText(text);
-                            }
-                            else if (data.getKey().equals(References.QUIZ_CHILD_VIDEO))
+                            } else if (data.getKey().equals(References.QUIZ_CHILD_VIDEO))
                                 video = data.getValue(String.class);
-                            else if (!data.getKey().equals(References.QUIZ_CHILD_HIDDEN)){
+                            else if (!data.getKey().equals(References.QUIZ_CHILD_HIDDEN)) {
                                 QuizItem quizItem = new QuizItem(data.getValue(String.class));
                                 list.add(quizItem);
                                 adapter.notifyDataSetChanged();
@@ -165,18 +165,16 @@ public class QuizFragment extends Fragment {
             viewSwitcher.showNext();
     }
 
-    public static void setListViewHeightBasedOnChildren(ListView listView)
-    {
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
             return;
 
         int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight=0;
+        int totalHeight = 0;
         View view = null;
 
-        for (int i = 0; i < listAdapter.getCount(); i++)
-        {
+        for (int i = 0; i < listAdapter.getCount(); i++) {
             view = listAdapter.getView(i, view, listView);
 
             if (i == 0)
@@ -189,21 +187,26 @@ public class QuizFragment extends Fragment {
         }
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + ((listView.getDividerHeight()) * (listAdapter.getCount()))*2;
+        params.height = totalHeight + ((listView.getDividerHeight()) * (listAdapter.getCount())) * 2;
 
         listView.setLayoutParams(params);
         listView.requestLayout();
 
     }
 
-    private void sendQuiz()
-    {
+    private void sendQuiz() {
+        HashMap map = new HashMap();
+        for (int i = 0; i < list.size(); i++) {
+            map.put(i+"", list.get(i));
+        }
+        map.put(References.SENT_CHILD_CHECKED, false);
+
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
-                .child("sent")
+                .child(References.SENT)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(quizId)
-                .setValue(list)
+                .setValue(map)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -211,6 +214,8 @@ public class QuizFragment extends Fragment {
                             getActivity().onBackPressed();
                             getActivity().onBackPressed();
                             FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
+                            getActivity().stopService(new Intent(getActivity(), FirebaseBackgroundService.class));
+                            getActivity().startService(new Intent(getActivity(), FirebaseBackgroundService.class));
                         }
                     }
                 });

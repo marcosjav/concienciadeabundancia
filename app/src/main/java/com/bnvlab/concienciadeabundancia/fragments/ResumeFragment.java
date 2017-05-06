@@ -89,8 +89,10 @@ public class ResumeFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data: dataSnapshot.getChildren())
-                            list.add(data.getValue(QuizItem.class));
+                        for (DataSnapshot data: dataSnapshot.getChildren()) {
+                            if (!data.getKey().equals(References.SENT_CHILD_CHECKED))
+                                list.add(data.getValue(QuizItem.class));
+                        }
 
                         adapter.notifyDataSetChanged();
                         viewSwitcher.showNext();

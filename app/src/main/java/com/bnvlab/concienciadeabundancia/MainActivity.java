@@ -16,7 +16,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
-import com.bnvlab.concienciadeabundancia.clases.QuizNotificationService;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.LoginFragment;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
@@ -31,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 /*
 NORMAS:
@@ -64,14 +65,61 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checks();
-
         final SharedPreferences prefs = this.getSharedPreferences(
                 this.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
 
+        if (!prefs.getBoolean("databaseCalled", false)) {
+            try {
+                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            } catch (Exception e) {
+                Log.d("MAIN_ACTIVITY", e.getMessage());
+            }
+            prefs.edit().putBoolean("databaseCalled", true).apply();
+        }
+
+        checks();
+
         String value = null;
-        if (getIntent() != null && getIntent().getExtras() != null)
-            value = getIntent().getExtras().getString("android_id");
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            String v = getIntent().getExtras().getString("android_id");
+            if (v != null)
+                value = v;
+
+            if (getIntent().getBooleanExtra(References.SHARE_FROM_NOTIFICATION, false)) {
+                setShareStartTime();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                final Context context = this;
+                builder.setTitle("FELICIDADES!")
+                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
+                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
+                                " solo por 12hs.\nEmpieza ahora!!!")
+                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Utils.shareDialog(context);
+                            }
+                        });
+                builder.create().show();
+            }
+        }
+
+//        if (prefs.getBoolean(References.SHARE_FROM_NOTIFICATION, false)) {
+//            setShareStartTime();
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            final Context context = this;
+//            builder.setTitle("FELICIDADES!")
+//                    .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
+//                            " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
+//                            " solo por 12hs.\nEmpieza ahora!!!")
+//                    .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            Utils.shareDialog(context);
+//                            prefs.edit().putBoolean(References.SHARE_FROM_NOTIFICATION, false);
+//                        }
+//                    });
+//            builder.create().show();
+//        }
 
         if (value != null) {
             android_id = value;
@@ -82,10 +130,6 @@ public class MainActivity extends FragmentActivity {
             android_id = prefs.getString("android_id", "");
         }
 
-        if (!prefs.getBoolean("databaseCalled", false)) {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            prefs.edit().putBoolean("databaseCalled", true).apply();
-        }
 
         Firebase.getDefaultConfig().setPersistenceEnabled(true);
 
@@ -192,7 +236,7 @@ public class MainActivity extends FragmentActivity {
         checks();
     }
 
-    private void checks(){
+    private void checks() {
         // REVISO SI HAY UNA NUEVA VERSIÓN
         VersionChecker versionChecker = new VersionChecker();
         try {
@@ -285,15 +329,50 @@ public class MainActivity extends FragmentActivity {
 //                if (getSystemService(QuizNotificationService.class) == null)
 //                    startService(new Intent(this, QuizNotificationService.class));
 //            }else{
-            if (!isMyServiceRunning(QuizNotificationService.class)) {
-                startService(new Intent(this, QuizNotificationService.class));
+//            if (!isMyServiceRunning(QuizNotificationService.class)) {
+//                startService(new Intent(this, QuizNotificationService.class));
+//            // use this to start and trigger a service
+//            Intent i= new Intent(this, FirebaseBackgroundService.class);
+//// potentially add data to the intent
+//            i.putExtra("firstTime", true);
+//            startService(i);
 //                QuizNotificationService quizNotificationService = new QuizNotificationService();
 //                Notification note = new Notification( 0, null, System.currentTimeMillis() );
 //                note.flags |= Notification.FLAG_NO_CLEAR;
 //                quizNotificationService.startForeground(33, note);
-            }
+//            }
 
+            //        startService(new Intent(FirebaseBackgroundService.class.getName()));
+            startService(new Intent(this, FirebaseBackgroundService.class)); // para android 5
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getExtras() != null)
+            if (intent.getExtras().getBoolean(References.SHARE_FROM_NOTIFICATION, false)) {
+                setShareStartTime();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                builder.setTitle("FELICIDADES!")
+                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
+                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
+                                " solo por 12hs.\nEmpieza ahora!!!")
+                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Utils.shareDialog(getBaseContext());
+                            }
+                        });
+                builder.create().show();
+            }
+    }
+
+    private void setShareStartTime() {
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.SHARE)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .setValue(Calendar.getInstance().getTime().getTime());
     }
 }
 

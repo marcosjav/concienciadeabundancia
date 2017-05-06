@@ -46,6 +46,7 @@
                     android:layout_margin="15dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/ic_share"
+                    android:background="@null"
                     android:visibility="gone"/>
 
                 <!--<ImageButton-->
@@ -75,6 +76,7 @@
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="40dp"
                     android:scaleType="fitXY"
+                    android:background="@null"
                     android:src="@drawable/settings" />
 
                 <ImageButton
@@ -85,6 +87,7 @@
                     android:layout_gravity="right"
                     android:layout_margin="15dp"
                     android:scaleType="fitXY"
+                    android:background="@null"
                     android:src="@drawable/logout" />
 
             </LinearLayout>
@@ -102,6 +105,7 @@
                     android:src="@drawable/logo" />
 
                 <TextView
+                    android:id="@+id/text_view_conciencia"
                     style="@style/textViewStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -159,6 +163,7 @@
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:adjustViewBounds="true"
+                            android:background="@null"
                             android:scaleType="fitCenter"
                             android:src="@drawable/ico_brain" />
 
@@ -185,6 +190,7 @@
                             android:layout_height="100dp"
                             android:layout_margin="10dp"
                             android:adjustViewBounds="true"
+                            android:background="@null"
                             android:scaleType="fitCenter"
                             android:src="@drawable/youtube" />
 
@@ -220,7 +226,8 @@
                             android:layout_height="100dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/about_us" />
+                            android:background="@null"
+                            android:src="@drawable/about_us"/>
 
                         <TextView
                             style="@style/textViewStyle"
@@ -245,7 +252,8 @@
                             android:layout_height="100dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/fundamentals" />
+                            android:background="@null"
+                            android:src="@drawable/fundamentals"/>
 
                         <TextView
                             style="@style/textViewStyle"
@@ -280,7 +288,8 @@
                             android:layout_height="100dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/conference" />
+                            android:background="@null"
+                            android:src="@drawable/conference"/>
 
                         <TextView
                             style="@style/textViewStyle"
@@ -305,7 +314,8 @@
                             android:layout_height="100dp"
                             android:adjustViewBounds="true"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/question" />
+                            android:background="@null"
+                            android:src="@drawable/question"/>
 
                         <TextView
                             style="@style/textViewStyle"
@@ -329,17 +339,17 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:scaleType="fitCenter"
-                android:background="@drawable/imagebutton_background"
                 android:src="@drawable/up_arrow_sketch"
                 android:layout_gravity="end"
+                android:background="@null"
                 android:visibility="gone"/>
 
             <ImageButton
                 android:id="@+id/down_arrow_main"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/imagebutton_background"
                 android:scaleType="fitCenter"
+                android:background="@null"
                 android:src="@drawable/down_arrow_sketch"
                 android:layout_gravity="bottom|end"/>
 

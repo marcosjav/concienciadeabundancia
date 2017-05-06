@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import me.srodrigo.androidhintspinner.HintAdapter;
 import me.srodrigo.androidhintspinner.HintSpinner;
@@ -91,6 +92,7 @@ public class SettingsFragment extends Fragment {
                             String location = (String) postSnapshot.getValue();
                             locationList.add(location);
                         }
+                        Collections.sort(locationList);
 
                         //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER  https://github.com/srodrigo/Android-Hint-Spinner
                         HintSpinner<String> hintSpinner = new HintSpinner<>(
