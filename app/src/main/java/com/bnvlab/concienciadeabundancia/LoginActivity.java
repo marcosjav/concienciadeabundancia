@@ -734,7 +734,7 @@ public class LoginActivity extends FragmentActivity {
             if (lastName.length() > 2) {
                 if (spinnerLocation.getSelectedItemPosition() < spinnerLocation.getCount()) {
 //                    Toast.makeText(this, spinnerLocation.getSelectedItemPosition() + "", Toast.LENGTH_SHORT).show();
-                    if (phone.length() == 10) {
+                    if (phone.length() > 5) {
                         if (isValidEmail(email)) {
                             if (password.length() > 5) {
                                 if (password.equals(repassword)) {
@@ -753,7 +753,8 @@ public class LoginActivity extends FragmentActivity {
 //                            Toast.makeText(getContext(), "Correo incorrecto", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        edPhone.setError("Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15");
+                        edPhone.setError("Ingresá tu teléfono");
+                        edPhone.requestFocus();
 //                        Toast.makeText(getContext(), "Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15", Toast.LENGTH_SHORT).show();
                     }
                 } else {

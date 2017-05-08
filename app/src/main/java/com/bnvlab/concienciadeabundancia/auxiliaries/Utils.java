@@ -3,9 +3,12 @@ package com.bnvlab.concienciadeabundancia.auxiliaries;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spanned;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.LoginActivity;
@@ -14,16 +17,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Locale;
+
 /**
  * Created by Marcos on 19/04/2017.
  */
 
 public class Utils {
+    private static Typeface typeface;
+
     @SuppressWarnings("deprecation")
-    public static Spanned fromHtml(String html){
+    public static Spanned fromHtml(String html) {
         Spanned result;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            result = Html.fromHtml(html,Html.FROM_HTML_MODE_LEGACY);
+            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
         } else {
             result = Html.fromHtml(html);
         }
@@ -61,5 +68,17 @@ public class Utils {
         myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activity.startActivity(myIntent);
         activity.finish();
+    }
+
+    public static void setTypeface(TextView textView, Context context) {
+        textView.setTypeface(getTypeface(context));
+    }
+
+    public static Typeface getTypeface(Context context) {
+        if (typeface == null) {
+            AssetManager am = context.getAssets();
+            typeface = Typeface.createFromAsset(am, String.format(Locale.US, "fonts/%s", "coffee.ttf"));
+        }
+        return typeface;
     }
 }

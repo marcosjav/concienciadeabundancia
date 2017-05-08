@@ -5,16 +5,18 @@
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/text"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
-        android:textColor="@android:color/black"
+        android:paddingEnd="?android:attr/expandableListPreferredItemPaddingLeft"
+        android:layout_marginStart="10dp"
+        android:textColor="@android:color/white"
         android:layout_marginTop="3dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:text="aasdasdasdasd"
-        android:textSize="16sp"
-        android:background="@drawable/question_shape"/>
+        android:text="+ Item FAQ Question?"
+        android:textSize="18sp"
+        android:background="@drawable/new_item"/>
 </LinearLayout>
 <!--<?xml version="1.0" encoding="utf-8"?>-->
 <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->

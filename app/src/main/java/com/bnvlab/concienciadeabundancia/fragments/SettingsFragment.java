@@ -43,13 +43,13 @@ public class SettingsFragment extends Fragment {
     Button buttonUpdate;
     Spinner spinnerLocation;
     EditText editTextName,
+            editTextSecondName,
             editTextLastName,
             editTextPhone,
             editTextMail,
             editTextPassword,
             editTextRePassword;
-    boolean isReady = false, locationsReady = false, userReady=false
-            ,nameModify, lastNameModify, phoneModify, mailModify, passModify;
+    boolean isReady = false, locationsReady = false, userReady = false, nameModify, lastNameModify, phoneModify, mailModify, passModify;
     ViewSwitcher viewSwitcherOK;
     User user;
 
@@ -68,6 +68,7 @@ public class SettingsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         editTextName = (EditText) view.findViewById(R.id.edittext_settings_name);
+        editTextSecondName = (EditText) view.findViewById(R.id.edittext_settings_second_name);
         editTextLastName = (EditText) view.findViewById(R.id.edittext_settings_lastname);
         editTextPhone = (EditText) view.findViewById(R.id.edittext_settings_phone);
         editTextMail = (EditText) view.findViewById(R.id.edittext_settings_mail);
@@ -104,7 +105,7 @@ public class SettingsFragment extends Fragment {
                                     @Override
                                     public void onItemSelected(int position, String itemAtPosition) {
                                         // Here you handle the on item selected event (this skips the hint selected event)
-                                        ((TextView)spinnerLocation.getSelectedView()).setTextColor(Color.BLACK);
+                                        ((TextView) spinnerLocation.getSelectedView()).setTextColor(Color.BLACK);
                                     }
                                 });
                         hintSpinner.init();
@@ -142,8 +143,7 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-    private void updateDataFields()
-    {
+    private void updateDataFields() {
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.USERS)
@@ -156,6 +156,7 @@ public class SettingsFragment extends Fragment {
                             user = data.getValue(User.class);
                             userReady = true;
                             editTextName.setText(user.getName());
+                            editTextSecondName.setText(user.getSecondName() == null? "" : user.getSecondName());
                             editTextLastName.setText(user.getLastName());
                             editTextPhone.setText(user.getPhone());
                             editTextMail.setText(user.getEmail());
@@ -171,8 +172,8 @@ public class SettingsFragment extends Fragment {
         //        FILLING USER DATA IN EDITTEXTS
     }
 
-    private void updateSpinner(){
-        if(userReady && locationsReady) {
+    private void updateSpinner() {
+        if (userReady && locationsReady) {
             spinnerLocation.setSelection(locationList.indexOf(user.getLocale()));
         }
     }
@@ -219,7 +220,7 @@ public class SettingsFragment extends Fragment {
                         editTextPhone.setError("Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15");
                     }
                 } else {
-                    TextView errorText = (TextView)spinnerLocation.getSelectedView();
+                    TextView errorText = (TextView) spinnerLocation.getSelectedView();
                     errorText.setError("");
                     errorText.setTextColor(Color.RED);//just to highlight that this is an error
                     errorText.setText("Debe elegir una localidad");//changes the selected item text to this
@@ -235,19 +236,13 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    private void saveData(){
+    private void saveData() {
         boolean isModified = false;
-        String nName = editTextName.getText().toString()
-                , nLastName = editTextLastName.getText().toString()
-                , nPhone = editTextPhone.getText().toString()
-                , nEmail = editTextMail.getText().toString()
-                , nLocation = locationList.get(spinnerLocation.getSelectedItemPosition())
-                , nPassword = editTextPassword.getText().toString()
-                , registredPhone = user.getPhone();
+        String nName = editTextName.getText().toString(), nLastName = editTextLastName.getText().toString(), nPhone = editTextPhone.getText().toString(), nEmail = editTextMail.getText().toString(), nLocation = locationList.get(spinnerLocation.getSelectedItemPosition()), nPassword = editTextPassword.getText().toString(), registredPhone = user.getPhone();
 
         String salida = "";
 
-        if(!nPassword.equals("")) {
+        if (!nPassword.equals("")) {
 //            salida += "no password";
             FirebaseAuth.getInstance().getCurrentUser().updatePassword(nPassword);
         }
@@ -255,8 +250,7 @@ public class SettingsFragment extends Fragment {
 //            salida += "new pass: " + nPassword;
 //        }
 
-        if (!nName.equals(user.getName()))
-        {
+        if (!nName.equals(user.getName())) {
             user.setName(nName);
             isModified = true;
         }
@@ -264,8 +258,7 @@ public class SettingsFragment extends Fragment {
 //        else
 //            salida += "\nNuevo nombre: " + nName;
 
-        if (!nLastName.equals(user.getLastName()))
-        {
+        if (!nLastName.equals(user.getLastName())) {
             user.setLastName(nLastName);
             isModified = true;
         }
@@ -273,8 +266,7 @@ public class SettingsFragment extends Fragment {
 //        else
 //            salida += "\nNuevo apellido: " + nLastName;
 
-        if (!nPhone.equals(user.getPhone()))
-        {
+        if (!nPhone.equals(user.getPhone())) {
             user.setLastNumber(user.getPhone());
             registredPhone = user.getPhone();
             user.setPhone(nPhone);
@@ -285,8 +277,7 @@ public class SettingsFragment extends Fragment {
 //        else
 //            salida += "\nNuevo telefoni: " + nPhone;
 
-        if (!nEmail.equals(user.getEmail()))
-        {
+        if (!nEmail.equals(user.getEmail())) {
             user.setEmail(nEmail);
             isModified = true;
         }
@@ -294,8 +285,7 @@ public class SettingsFragment extends Fragment {
 //        else
 //            salida += "\nNuevo correo: " + nEmail;
 
-        if (!nLocation.equals(user.getLocale()))
-        {
+        if (!nLocation.equals(user.getLocale())) {
             user.setLocale(nLocation);
             isModified = true;
         }
@@ -304,26 +294,23 @@ public class SettingsFragment extends Fragment {
 //            salida += "\nNueva localidad: " + nLocation;
 
 
-        if (isModified)
-        {
+        if (isModified) {
             FirebaseDatabase.getInstance()
                     .getReference(References.REFERENCE)
                     .child(References.USERS)
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .setValue(user)
-            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful())
-                    {
-                        viewSwitcherOK.showPrevious();
-                        Toast.makeText(getContext(), "LISTO!", Toast.LENGTH_SHORT).show();
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                viewSwitcherOK.showPrevious();
+                                Toast.makeText(getContext(), "LISTO!", Toast.LENGTH_SHORT).show();
 
-                    }
-                    else
-                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+                            } else
+                                Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
         }
 
     }

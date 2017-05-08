@@ -2,39 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="5dp"
     android:orientation="horizontal"
-    android:background="@drawable/training_item_rounder_cornes">
+    android:padding="8dp"
+    android:background="@drawable/new_item">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_weight="1"
+    <TextView
+        android:id="@+id/text_view_training_row_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:orientation="vertical">
+        android:layout_weight="3"
+        android:text="TITLE"
+        style="@style/textViewStyle"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"/>
 
-        <TextView
-            android:id="@+id/text_view_training_row_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="TITLE"
-            style="@style/textViewStyle"
-            android:textStyle="bold"
-            android:textSize="18sp"/>
-
-        <TextView
-            android:id="@+id/text_view_training_row_state"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="STATE"
-            android:layout_marginStart="10dp"
-            android:textColor="@android:color/black" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/image_view_training_row"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:src="@android:drawable/ic_dialog_info" />
+    <TextView
+        android:id="@+id/text_view_training_row_state"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="STATE"
+        android:layout_marginStart="10dp"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

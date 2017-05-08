@@ -3,7 +3,7 @@
     android:id="@+id/layout_quiz"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/fodo7"
     android:orientation="vertical">
 
     <TextView
@@ -12,12 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dip"
-        android:background="@drawable/title_rounder_corner"
+        android:background="@drawable/new_title_bar"
         android:gravity="center"
-        android:text="ENTRENAMIENTO DE DESARROLLO PERSONAL"
-        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:text="Entrenamiento Desarrollo Personal"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+           <!-- <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -46,10 +45,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="cargando..."
-                    android:textColor="@android:color/black" />
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
-
+-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -58,17 +57,18 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Este es el resultado enviado:"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold" />
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp"/>
 
                 <ListView
                     android:id="@+id/list_view_quiz_resume"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:divider="#FF9900"
+                    android:divider="#AAAAFF"
                     android:dividerHeight="1dp">
 
                 </ListView>

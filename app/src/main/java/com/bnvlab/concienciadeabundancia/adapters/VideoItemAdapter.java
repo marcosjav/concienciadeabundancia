@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.VideoItem;
 import com.squareup.picasso.Picasso;
 
@@ -107,6 +108,7 @@ public class VideoItemAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
 
         holder.textViewTitle.setText(data.get(position).getTitle());
+        holder.textViewTitle.setTypeface(Utils.getTypeface(context));
 //        holder.imageViewThumbnail.setImageBitmap(data.get(position).getThumbnail());
         String thumbnailURL = data.get(position).getThumbnail();
         if (!thumbnailURL.isEmpty() && !thumbnailURL.equals(""))

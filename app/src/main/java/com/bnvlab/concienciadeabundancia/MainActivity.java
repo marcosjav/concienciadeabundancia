@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.User;
-import com.bnvlab.concienciadeabundancia.fragments.LoginFragment;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,7 +51,6 @@ public class MainActivity extends FragmentActivity {
     public static boolean newUser = false;
     public static User user = null;
     FragmentManager fragmentManager;
-    LoginFragment loginFragment = new LoginFragment();
     MainFragment mainFragment = new MainFragment();
     boolean firstTime = true;
     public static boolean databaseCalled;
@@ -103,24 +101,6 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
-//        if (prefs.getBoolean(References.SHARE_FROM_NOTIFICATION, false)) {
-//            setShareStartTime();
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//            final Context context = this;
-//            builder.setTitle("FELICIDADES!")
-//                    .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
-//                            " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
-//                            " solo por 12hs.\nEmpieza ahora!!!")
-//                    .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            Utils.shareDialog(context);
-//                            prefs.edit().putBoolean(References.SHARE_FROM_NOTIFICATION, false);
-//                        }
-//                    });
-//            builder.create().show();
-//        }
-
         if (value != null) {
             android_id = value;
             prefs.edit().putString("android_id", android_id).apply();
@@ -168,10 +148,6 @@ public class MainActivity extends FragmentActivity {
 
             dialog.show();
         }
-//
-//        SecureRandom secureRandom = new SecureRandom();
-//        Toast.makeText(this,         new BigInteger(40, secureRandom).toString(32)
-//                , Toast.LENGTH_LONG).show();
 
         FragmentMan.changeFragment(this, MainFragment.class);
     }

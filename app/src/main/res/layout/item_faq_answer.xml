@@ -7,10 +7,13 @@
         android:id="@+id/text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
-        android:paddingTop="10dp"
-        android:textColor="@android:color/black"
-        android:paddingBottom="10dp" />
+        android:layout_marginStart="?android:attr/expandableListPreferredChildPaddingLeft"
+        android:layout_marginEnd="10dp"
+        android:padding="5dp"
+        android:textColor="@android:color/white"
+        android:textSize="16dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/new_background_black"/>
 </LinearLayout>
 <!--<?xml version="1.0" encoding="utf-8"?>-->
 <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->

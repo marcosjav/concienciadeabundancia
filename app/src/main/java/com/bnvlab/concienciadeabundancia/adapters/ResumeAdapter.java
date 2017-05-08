@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class ResumeAdapter extends ArrayAdapter<QuizItem> {
 
         if (p != null) {
             TextView tt1 = (TextView) v.findViewById(R.id.text_view_resume_quiz);
+            tt1.setTypeface(Utils.getTypeface(getContext()));
             ImageView iv = (ImageView) v.findViewById(R.id.image_view_resume_check);
 
             if (tt1 != null) {

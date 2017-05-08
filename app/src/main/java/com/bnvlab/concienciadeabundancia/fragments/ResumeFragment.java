@@ -13,6 +13,7 @@ import android.widget.ViewSwitcher;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.ResumeAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -48,7 +49,12 @@ public class ResumeFragment extends Fragment {
         list = new ArrayList<>();
         adapter = new ResumeAdapter(getContext(), R.layout.item_resume_row, list);
 
+        TextView title = (TextView) view.findViewById(R.id.textView);
+        title.setTypeface(Utils.getTypeface(getContext()));
+
         tvTitle = (TextView) view.findViewById(R.id.text_view_quiz_resume_layout_title);
+        tvTitle.setTypeface(Utils.getTypeface(getContext()));
+
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_quiz_resume_layout);
         listView = (ListView) view.findViewById(R.id.list_view_quiz_resume);
 

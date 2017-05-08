@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.TrainingItem;
 
 import java.util.List;
@@ -38,20 +38,22 @@ public class TrainingAdapter extends ArrayAdapter<TrainingItem> {
 
         if (p != null) {
             TextView tt1 = (TextView) v.findViewById(R.id.text_view_training_row_title);
+            tt1.setTypeface(Utils.getTypeface(getContext()));
+
             TextView tt2 = (TextView) v.findViewById(R.id.text_view_training_row_state);
-            ImageView iv = (ImageView) v.findViewById(R.id.image_view_training_row);
+            tt2.setTypeface(Utils.getTypeface(getContext()));
 
             if (tt1 != null) {
                 tt1.setText(p.getTitle());
             }
 
             if (tt2 != null) {
-                tt2.setText(p.isComplete()? "Enviado" : "Pendiente");
+                if (p.isFinished())
+                    tt2.setText("Finalizado");
+                else
+                    tt2.setText(p.isComplete()? "Enviado" : "Pendiente");
             }
 
-            if (iv != null) {
-                iv.setImageResource(p.isComplete()? R.drawable.complete : R.drawable.incomplete);
-            }
         }
 
         return v;

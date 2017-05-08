@@ -11,13 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.VideoActivity;
 import com.bnvlab.concienciadeabundancia.adapters.VideoItemAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.SimpleYouTubeHelper;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.VideoItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -38,8 +39,8 @@ public class VideoFragment extends Fragment {
 //    ArrayAdapter adapter;
     ListView listView;
     Context context;
-    ProgressBar progressBar;
     static boolean active;
+    View progress, layoutList;
 
     @Nullable
     @Override
@@ -48,7 +49,15 @@ public class VideoFragment extends Fragment {
 
         context = getContext();
 
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_video_fragment);
+        TextView textView = (TextView) view.findViewById(R.id.textView);
+        textView.setTypeface(Utils.getTypeface(getContext()));
+
+        TextView textViewTitle = (TextView) view.findViewById(R.id.textView_title);
+        textViewTitle.setTypeface(Utils.getTypeface(getContext()));
+
+        progress = view.findViewById(R.id.layout_progress);
+        layoutList = view.findViewById(R.id.layout_list);
+
         listView = (ListView) view.findViewById(R.id.list_view_fragment_videos);
         adapter = new VideoItemAdapter(context, list);
 //        adapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_list_item_1,urlList);
@@ -93,7 +102,7 @@ public class VideoFragment extends Fragment {
     }
 
     private void getVideoList() {
-        progressBar.setVisibility(View.VISIBLE);
+        showProgress(true);
 
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
@@ -110,7 +119,7 @@ public class VideoFragment extends Fragment {
                                 (new VideoPreview()).execute(data.child(References.VIDEOS_CHILD_URL).getValue(String.class));
 
                         }
-                        progressBar.setVisibility(View.GONE);
+                        showProgress(false);
                     }
 
                     @Override
@@ -147,5 +156,10 @@ public class VideoFragment extends Fragment {
 
             refresh();
         }
+    }
+
+    private void showProgress(boolean show){
+        progress.setVisibility(show?View.VISIBLE:View.GONE);
+        layoutList.setVisibility(show?View.GONE:View.VISIBLE);
     }
 }

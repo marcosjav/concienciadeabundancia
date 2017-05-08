@@ -7,6 +7,7 @@ package com.bnvlab.concienciadeabundancia.clases;
 public class TrainingItem {
     private String title;
     private boolean complete;
+    private boolean finished;
 
     public TrainingItem() {
     }
@@ -34,5 +35,13 @@ public class TrainingItem {
 
     public void setComplete(boolean complete) {
         this.complete = complete;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 }

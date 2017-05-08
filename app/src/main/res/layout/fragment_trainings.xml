@@ -2,20 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/fodo5"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/textView"
         style="@style/textViewStyle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:layout_marginBottom="10dip"
-        android:background="@drawable/title_rounder_corner"
+        android:background="@drawable/new_title_bar"
         android:gravity="center"
-        android:text="ENTRENAMIENTO DE DESARROLLO PERSONAL"
-        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:layout_gravity="center_horizontal"
+        android:text="Entrenamiento Desarrollo Personal"
         android:textColor="@android:color/white"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     <ViewSwitcher
         android:id="@+id/view_switcher_trainings"
@@ -38,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="cargando..."
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 

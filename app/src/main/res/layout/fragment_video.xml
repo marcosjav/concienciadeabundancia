@@ -4,64 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:background="@android:color/white"
+    android:background="@drawable/fodo9"
     android:orientation="vertical">
 
-<!--    <ImageView
+    <LinearLayout
+        android:id="@+id/layout_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/background"
-        android:scaleType="centerCrop"/>-->
+        android:layout_height="wrap_content"
+        android:indeterminate="true"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cargando..."
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical">
 
-<!--        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="75dip"
-            android:src="@drawable/logo" />
-
         <TextView
+            android:id="@+id/textView_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_half_name_1"
-            android:textSize="22dp"
-            style="@style/textViewStyle"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="10dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_half_name_2"
-            android:textSize="26dp"
-            style="@style/textViewStyle"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"/>-->
-
-        <TextView
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dip"
-            android:text="VIDEOS"
+            android:padding="10dp"
+            android:text="Videos Explicativos"
             style="@style/textViewStyle"
             android:gravity="center"
-            android:background="@drawable/title_rounder_corner"
+            android:background="@drawable/new_title_bar"
             android:textColor="@android:color/white"
             android:textStyle="bold"
-            android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
-
-        <ProgressBar
-            android:id="@+id/progress_bar_video_fragment"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:indeterminate="true"/>
+            android:textSize="20dp"/>
 
         <ListView
             android:id="@+id/list_view_fragment_videos"
@@ -69,6 +56,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
+            android:layout_gravity="center_horizontal"
             android:divider="@android:color/transparent"
             android:dividerHeight="10.0sp">
 

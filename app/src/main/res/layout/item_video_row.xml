@@ -1,31 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_video_item"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginBottom="5dp"
     android:gravity="center_horizontal"
-    android:background="@drawable/item_rounder_cornes"
-    android:layout_marginBottom="5dp">
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/image_view_video_item_thumbnail"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/no_video"/>
+        android:background="@drawable/new_item_video"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/image_view_video_item_thumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_delete" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/text_view_video_item_title"
+        android:layout_margin="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:text="TÍTULO DEL VIDEO"
-        android:gravity="center_horizontal"
-        style="@style/textViewStyle"/>
+        android:textColor="@android:color/white"
+        android:background="@drawable/new_background_black"/>
 
     <TextView
         android:id="@+id/text_view_video_item_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </LinearLayout>

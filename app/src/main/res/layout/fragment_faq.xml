@@ -2,19 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/fodo3"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView"
         style="@style/textViewStyle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/title_rounder_corner"
+        android:background="@drawable/new_title_bar"
         android:layout_marginBottom="5dp"
+        android:padding="10dp"
         android:gravity="center"
-        android:text="PREGUNTAS FRECUENTES"
-        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:layout_gravity="center_horizontal"
+        android:text="Preguntas Frecuentes"
+        android:textSize="20dp"
         android:textColor="@android:color/white"
         android:textStyle="bold" />
 
@@ -28,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+<!--        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -46,13 +48,14 @@
                 android:text="cargando..."
                 android:textColor="@android:color/black" />
 
-        </LinearLayout>
+        </LinearLayout>-->
 
         <ExpandableListView
             android:id="@+id/expandable_list_faq"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft" />
+            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
+            android:divider="@null"/>
 
     </ViewSwitcher>
 

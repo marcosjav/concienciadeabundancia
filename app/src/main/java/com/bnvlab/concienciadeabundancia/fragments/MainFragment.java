@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,9 +15,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
@@ -48,11 +46,8 @@ import java.util.Calendar;
 public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
-    ImageButton buttonConference, buttonVideos;
-    ImageButton buttonQuiz, buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonPhoneLink, buttonFundaments, buttonShare, buttonLogout, buttonSettings, buttonFAQ,
-            buttonAbout;
-    ScrollView scrollView;
-    Typeface typeface;
+    ImageButton buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden;
+    Button buttonQuiz, buttonFAQ, buttonAbout, buttonFundaments, buttonShare, buttonConference, buttonVideos;
 
     public MainFragment() {
     }
@@ -62,14 +57,13 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-//        AssetManager am = getContext().getAssets();
-//
-//        typeface = Typeface.createFromAsset(am, String.format(Locale.US, "fonts/%s", "coffee.ttf"));
-//
-//        ((TextView)view.findViewById(R.id.text_view_conciencia)).setTypeface(typeface);
+        /*AssetManager am = getContext().getAssets();
 
-        buttonConference = (ImageButton) view.findViewById(R.id.button_main_conference);
-        buttonVideos = (ImageButton) view.findViewById(R.id.button_main_videos);
+        typeface = Typeface.createFromAsset(am, String.format(Locale.US, "fonts/%s", "coffee.ttf"));
+
+//        ((TextView)view.findViewById(R.id.text_view_conciencia)).setTypeface(typeface);*/
+
+
 //        buttonProgress = (ImageButton) view.findViewById(R.id.button_main_progress);
 //        buttonTest = (ImageButton) view.findViewById(R.id.button_main_test);
 
@@ -77,59 +71,31 @@ public class MainFragment extends Fragment {
         buttonMaillink = (ImageButton) view.findViewById(R.id.button_email_link);
         buttonTweeterLink = (ImageButton) view.findViewById(R.id.button_tweeter_link);
         buttonWebLink = (ImageButton) view.findViewById(R.id.button_web_link);
-        buttonPhoneLink = (ImageButton) view.findViewById(R.id.button_phone_link);
-        buttonShare = (ImageButton) view.findViewById(R.id.button_share_main);
+        buttonInstaLink = (ImageButton) view.findViewById(R.id.button_insta_link);
         buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
         buttonSettings = (ImageButton) view.findViewById(R.id.button_settings);
-        buttonQuiz = (ImageButton) view.findViewById(R.id.button_main_quiz);
-        buttonFAQ = (ImageButton) view.findViewById(R.id.button_main_faq);
-        buttonFundaments = (ImageButton) view.findViewById(R.id.button_main_fundaments);
-        buttonAbout = (ImageButton) view.findViewById(R.id.button_main_about_us);
+        buttonAddChilden = (ImageButton) view.findViewById(R.id.add_children);
 
-        final ImageButton downArroy = (ImageButton) view.findViewById(R.id.down_arrow_main);
-        final ImageButton upArroy = (ImageButton) view.findViewById(R.id.up_arrow_main);
-        scrollView = (ScrollView) view.findViewById(R.id.scroll_view_main);
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int max = scrollView.getChildAt(0).getHeight() - scrollView.getMeasuredHeightAndState();
-                int yScroll = scrollView.getScrollY();
+        buttonShare = (Button) view.findViewById(R.id.button_share_main);
+        buttonShare.setTypeface(Utils.getTypeface(getContext()));
 
-//                Toast.makeText(getContext(), "value: " + yScroll + "\nMesured: " +
-//                        scrollView.getMeasuredHeightAndState()+
-//                        "\nTotal: " + scrollView.getChildAt(0).getHeight()+
-//                        "\nDif: " + ( - ) , Toast.LENGTH_LONG).show();
+        buttonQuiz = (Button) view.findViewById(R.id.button_main_quiz);
+        buttonQuiz.setTypeface(Utils.getTypeface(getContext()));
 
+        buttonFAQ = (Button) view.findViewById(R.id.button_main_faq);
+        buttonFAQ.setTypeface(Utils.getTypeface(getContext()));
 
-                if (yScroll < max)
-                    downArroy.setVisibility(View.VISIBLE);
-                else
-                    downArroy.setVisibility(View.GONE);
+        buttonFundaments = (Button) view.findViewById(R.id.button_main_fundaments);
+        buttonFundaments.setTypeface(Utils.getTypeface(getContext()));
 
-                if (yScroll == 0)
-                    upArroy.setVisibility(View.GONE);
-                else
-                    upArroy.setVisibility(View.VISIBLE);
-            }
-        });
-        int max = scrollView.getChildAt(0).getHeight() - scrollView.getMeasuredHeightAndState();
-        if (max>=scrollView.getMaxScrollAmount())
-            downArroy.setVisibility(View.GONE);
+        buttonAbout = (Button) view.findViewById(R.id.button_main_about_us);
+        buttonAbout.setTypeface(Utils.getTypeface(getContext()));
 
-        downArroy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                scrollView.setScrollY(scrollView.getMaxScrollAmount());
-                scrollView.smoothScrollTo(scrollView.getScrollX(), scrollView.getMaxScrollAmount());
-            }
-        });
-        upArroy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                scrollView.setScrollY(0);
-                scrollView.smoothScrollTo(scrollView.getScrollX(), 0);
-            }
-        });
+        buttonConference = (Button) view.findViewById(R.id.button_main_conference);
+        buttonConference.setTypeface(Utils.getTypeface(getContext()));
+
+        buttonVideos = (Button) view.findViewById(R.id.button_main_videos);
+        buttonVideos.setTypeface(Utils.getTypeface(getContext()));
 
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,16 +163,6 @@ public class MainFragment extends Fragment {
         buttonTweeterLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Uri uri = Uri.parse("https://twitter.com/FacundoCda"); // missing 'http://' will cause crashed
-//                try {
-//                    // get the Twitter app if possible
-//                    getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
-//                    uri = Uri.parse("twitter://user?user_id=FacundoCda");
-////                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                } catch (Exception e) {
-//                }
-//                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//                startActivity(intent);
                 Toast.makeText(getContext(), "No disponible", Toast.LENGTH_SHORT).show();
             }
         });
@@ -220,12 +176,10 @@ public class MainFragment extends Fragment {
             }
         });
 
-        buttonPhoneLink.setOnClickListener(new View.OnClickListener() {
+        buttonInstaLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.fromParts("tel", "3624376536", null); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_DIAL, uri);
-                startActivity(intent);
+                Toast.makeText(getContext(), "No disponible", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -237,7 +191,7 @@ public class MainFragment extends Fragment {
                 builder
                         .setMessage("Seguro de cerrar sesión?")
                         .setTitle("SALIR")
-                        .setIcon(R.drawable.attention_red)
+                        .setIcon(R.drawable.attention_yellow)
                         .setPositiveButton("SÍ", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -257,6 +211,7 @@ public class MainFragment extends Fragment {
                 dialog.show();
             }
         });
+
         FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                 .child(References.ADMINISTRATORS)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -306,8 +261,6 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 shareDialog();
-//                FragmentMan.changeFragment(getActivity(), ShareFragment.class);
-//                onInviteClicked();
             }
         });
 
@@ -322,6 +275,14 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
+            }
+        });
+
+        buttonAddChilden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
             }
         });
 

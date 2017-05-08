@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
@@ -15,6 +16,7 @@ import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.TrainingAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.ICallback;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.TrainingItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -43,6 +45,9 @@ public class TrainingFragment extends Fragment implements ICallback {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trainings, container, false);
 
+        TextView title = (TextView) view.findViewById(R.id.textView);
+        title.setTypeface(Utils.getTypeface(getContext()));
+
         list = new ArrayList<>();
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_trainings);
 
@@ -69,7 +74,7 @@ public class TrainingFragment extends Fragment implements ICallback {
         return view;
     }
 
-    private void getTrainings(){
+    private void getTrainings() {
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.USERS)
@@ -88,7 +93,7 @@ public class TrainingFragment extends Fragment implements ICallback {
                 });
     }
 
-    private void getTrainings(final boolean active){
+    private void getTrainings(final boolean active) {
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.QUIZ)
@@ -100,7 +105,7 @@ public class TrainingFragment extends Fragment implements ICallback {
                             String title = data.child(References.QUIZ_CHILD_TITLE).getValue(String.class);
                             boolean freeContent = data.child(References.FREE_CONTENT).getValue(boolean.class);
                             boolean hidden = data.child(References.QUIZ_CHILD_HIDDEN).getValue(boolean.class);
-                            if (!hidden && ( freeContent || ( !freeContent && active))) {
+                            if (!hidden && (freeContent || (!freeContent && active))) {
                                 list.add(new TrainingItem(title));
                                 listId.add(data.getKey());
                             }
@@ -125,8 +130,11 @@ public class TrainingFragment extends Fragment implements ICallback {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             int index = listId.indexOf(data.getKey());
-                            if (index != -1)
+                            if (index != -1) {
                                 list.get(index).setComplete(true);
+                                if (data.child(References.SENT_CHILD_CHECKED).getValue() != null)
+                                    list.get(index).setFinished(data.child(References.SENT_CHILD_CHECKED).getValue(boolean.class));
+                            }
 //                            Toast.makeText(getContext(), data.getKey(), Toast.LENGTH_SHORT).show();
                         }
                         adapter.notifyDataSetChanged();

@@ -1,24 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
-        style="@style/textViewStyle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/title_rounder_corner"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:text="QUIÉNES SOMOS"
-        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:background="@drawable/fodo8"
+        android:gravity="center_horizontal"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:orientation="vertical">
 
-    <WebView
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/new_title_bar"
+            android:gravity="center"
+            android:text="QUIÉNES SOMOS"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ELEGIMOS CREAR UN MUNDO FELIZ Y UNIDO"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nuestra empresa esta dedicada a lograr la Felicidad en toda la humanidad.
+¿Cómo? Expandiendo la Conciencia, el Amor a todo, la Salud y el Disfrute de la Vida." />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/new_item"
+            android:padding="10dp"
+            android:text="Pablo Alberto Azar - Fundador CDA"
+            android:textStyle="bold"
+            android:textSize="17dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:padding="3dp"
+                android:src="@drawable/pablo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Se ha dedicado 8 años de su vida al estudio y creación de sistemas de interconexión informática, estudiando en la Fundación Proydesa, área de formación de la empresa Cisco Systems, tres carreras con certificación internacional." />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Desarrollándose primariamente en el ámbito privado, desarrollo y creo 5 empresas en diferentes rubros y a partir de observar un patrón reiterado en sus emprendimientos relacionados a la continuidad y falta de expansión, sumado al estrés con el cuál vivía esas empresas, cambió radicalmente su punto de vista y empezó a estudiar al Ser Humano y cuáles eran las causas  que lo hacía actuar de determinadas formas en diversas situaciones y así poder cambiar esos patrones y también sus resultados y su calidad de vida." />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comenzó a desarrollarse en entrenamientos de liderazgo personal, formándose como coach ontológico y realizando también, una maestría internacional de coaching avalado por International Coach Federation (ICF es la organización de mayores estándares y envergadura en el ámbito del coaching internacional, con presencia en más de 125 países). Agrego a su formación diferentes miradas de abordaje al Ser, como constelaciones sistémicas; biodescodificación; psych-k; entre otras. También se dedicó por años a la meditación y al estudio y contemplación de la conciencia humana. Desde el 2014 a la actualidad se dedica a entrenar la mente subconsciente, ha ofrecido conferencias y cursos presenciales a más de 4000 personas solo en 2016, en diferentes provincias de Argentina y también en Uruguay. Diseño y creo un sistema innovador en el área de empoderamiento y desarrollo personal llamado Entrenamiento de Libertad Absoluta, con el fin de poder desprogramar las limitaciones subconscientes de todas las personas y asistirlos, junto a su equipo de entrenadores, en un diseño completo de vida, alineando toda la formación a los objetivos e intereses de cada participante para lograr una vida de plenitud, abundancia y libertad absoluta." />
+
+    </LinearLayout>
+</ScrollView>

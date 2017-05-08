@@ -4,24 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:background="@drawable/item_rounder_cornes"
+    android:background="@drawable/new_item"
     android:orientation="vertical"
     android:padding="10dp"
     android:layout_marginBottom="5dp">
 
     <TextView
         android:id="@+id/text_view_conference_item_title"
-        style="@style/textViewStyle"
+        android:textColor="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center|start"
+        android:gravity="center"
         android:textStyle="bold"
-        android:text="TÍTULO"
+        android:text="cómmo lograr el proposito en tu vioda?"
         android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
     <TextView
         android:id="@+id/text_view_conference_item_date"
-        style="@style/textViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -29,15 +28,14 @@
 
     <TextView
         android:id="@+id/text_view_conference_item_place"
-        style="@style/textViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:linksClickable="true"
         android:text="LUGAR" />
 
     <TextView
         android:id="@+id/text_view_conference_item_location"
-        style="@style/textViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
