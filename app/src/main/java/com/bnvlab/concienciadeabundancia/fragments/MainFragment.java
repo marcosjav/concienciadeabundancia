@@ -87,10 +87,10 @@ public class MainFragment extends Fragment {
         final Context context = getActivity();
 
         try {
-            SharedPreferences prefs = getActivity().getSharedPreferences(
+            prefs = getActivity().getSharedPreferences(
                     MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
         } catch (Exception e) {
-            Log.e("ERRORR", "MainFragment - OnCreage\n" + e.getMessage());
+            Log.e("ERRORR", "MainFragment - OnCreate - line 93\n    " + e.getMessage());
         }
 
         TextView version = (TextView) view.findViewById(R.id.version);
@@ -101,8 +101,8 @@ public class MainFragment extends Fragment {
 
         try {
             Utils.showLoginDelay(getActivity());
-            final SharedPreferences prefs = context.getSharedPreferences(
-                    MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
+//            final SharedPreferences prefs = context.getSharedPreferences(
+//                    MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
             notificationsList = new ArrayList<>();
             try {
@@ -135,7 +135,7 @@ public class MainFragment extends Fragment {
                 }
                 notificationsList = list;
             } catch (Exception e) {
-                Log.d("ERROR_PREFS2", e.getMessage());
+                Log.d("ERRORR", "MainFragment - OnCreate - Line 138\n    " + e.getMessage());
             }
         } catch (Exception e) {
 
@@ -208,6 +208,7 @@ public class MainFragment extends Fragment {
                         }
                     }
                 } catch (Exception e) {
+                    Log.e("ERRORR", "MainFragment - OnCreate - Line 211\n    " + e.getMessage());
                 }
 
                 getActivity().setIntent(null);
@@ -322,6 +323,7 @@ public class MainFragment extends Fragment {
                         }
                     }
                 } catch (PackageManager.NameNotFoundException ignored) {
+                    Log.e("ERRORR", "MainFragment - OnCreate - Line 326\n    " + ignored.getMessage());
                 }
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
@@ -387,7 +389,7 @@ public class MainFragment extends Fragment {
                                 try {
                                     FirebaseInstanceId.getInstance().deleteInstanceId();
                                 } catch (IOException e) {
-                                    Log.d("ERROR_ADMIN", "MAIN_ACTIVITY_deleteInstanse: " + e.getMessage());
+                                    Log.e("ERRORR", "MainFragment - OnCreate - Line 392\n    " + e.getMessage());
                                 }
                                 Utils.showLogin(getActivity());
                             }
@@ -403,15 +405,18 @@ public class MainFragment extends Fragment {
         });
 
         Utils.showLoginDelay(getActivity());
+        showShare(prefs.getBoolean(References.SHARED_PREFERENCES_CAN_SHARE,false));
+
         FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                 .child(References.ADMINISTRATORS)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null)
+                        if (dataSnapshot.getValue() != null) {
                             showShare(true);
-                        else {
+                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE,true).apply();
+                        } else {
                             FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                                     .child(References.USERS)
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -421,6 +426,7 @@ public class MainFragment extends Fragment {
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.getValue() != null)
                                                 showShare(dataSnapshot.getValue(boolean.class));
+                                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, dataSnapshot.getValue(boolean.class)).apply();
                                            /* if (dataSnapshot != null && dataSnapshot.getValue() != null && dataSnapshot.getValue(boolean.class))
                                                 showShare(true);
                                             else
@@ -454,7 +460,7 @@ public class MainFragment extends Fragment {
 
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
-
+                                            Log.e("ERRORR", "MainFragment - OnCreate - Line 459\n    " + databaseError.getMessage());
                                         }
                                     });
                         }
@@ -463,7 +469,7 @@ public class MainFragment extends Fragment {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.e("ERRORR", "MainFragment - OnCreate - Line 468\n    " + databaseError.getMessage());
                     }
                 });
 
@@ -554,6 +560,7 @@ public class MainFragment extends Fragment {
                             Notify.share(message, getContext());
                         } else {
                             Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Log.e("ERRORR", "MainFragment - shareDialog - Line 559\n    " + task.getException().getMessage());
                         }
                     }
                 });
@@ -609,10 +616,13 @@ public class MainFragment extends Fragment {
                 wr.close();
 
             } catch (MalformedURLException e) {
+                Log.e("ERRORR", "MainFragment - class AsyncT - Line 615\n    " + e.getMessage());
                 e.printStackTrace();
             } catch (IOException e) {
+                Log.e("ERRORR", "MainFragment - class AsyncT - Line 618\n    " + e.getMessage());
                 e.printStackTrace();
             } catch (JSONException e) {
+                Log.e("ERRORR", "MainFragment - class AsyncT - Line 621\n    " + e.getMessage());
                 e.printStackTrace();
             }
 
@@ -643,7 +653,7 @@ public class MainFragment extends Fragment {
             prefs.edit().putStringSet("notifications", list).apply();
             notificationsIndicator.setVisibility(View.GONE);
         } catch (Exception e) {
-            Log.d("NotificationDialog", e.getMessage());
+            Log.e("ERRORR", "MainFragment - NotificationDialog - Line 652\n    " + e.getMessage());
         }
 
         builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {

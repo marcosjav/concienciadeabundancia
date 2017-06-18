@@ -8,6 +8,8 @@ public class User {
     public static String CHILD = "users";
     String uId, name, secondName, lastName, locale, phone, email, lastNumber, invitationUID, deviceId;
     boolean verified, signInWithEmail, active;
+    int counter = 0;
+    long lastSent = 0;
 
     public User() {
     }
@@ -139,5 +141,21 @@ public class User {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
+    public long getLastSent() {
+        return lastSent;
+    }
+
+    public void setLastSent(long lastSent) {
+        this.lastSent = lastSent;
     }
 }

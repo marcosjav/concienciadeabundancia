@@ -11,6 +11,7 @@ public class TrainingItem {
     private boolean free;
     private String require;
     private int index;
+    private String video = "";
 
     public TrainingItem() {
         this.title = "";
@@ -75,5 +76,13 @@ public class TrainingItem {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
     }
 }

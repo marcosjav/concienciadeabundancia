@@ -48,6 +48,8 @@ public class References {
             , USERS_CHILD_VERIFIED = "verified"
             , USERS_CHILD_INVITED_FOR  = "invited_by"
             , USERS_CHILD_DEVICEID = "device_id"
+            , USERS_CHILD_COUNTER = "counter"
+            , USERS_CHILD_LAST_SENT = "lastSent"
 
             , VERIFICATION_CODES = "verification_codes"
             , VERIFICATION_CODES_CHILD_CODE = "code"
@@ -63,6 +65,7 @@ public class References {
             , SHARED_PREFERENCES_NOTIFICATION_CONFERENCE = "conference_notification"
             , SHARED_PREFERENCES_NOTIFICATION_TRAINING = "training_notification"
             , SHARED_PREFERENCES_NOTIFICATION_RESULT = "training_result"
+            , SHARED_PREFERENCES_CAN_SHARE = "can_share"
 
             ,SHARE_FROM_NOTIFICATION = "share_from_notification"
             ,TRAININGS_FROM_NOTIFICATION = "trainings_from_notifications"

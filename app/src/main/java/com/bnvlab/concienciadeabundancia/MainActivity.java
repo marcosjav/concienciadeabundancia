@@ -16,7 +16,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
 import com.bnvlab.concienciadeabundancia.fragments.TrainingFragment;
@@ -32,10 +34,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 
 /*
 NORMAS:
@@ -68,11 +73,12 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         boolean showTrainings = false;
+        final SharedPreferences prefs;
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null)
             showLogin();
         else {
-            final SharedPreferences prefs = this.getSharedPreferences(
+            prefs = this.getSharedPreferences(
                     this.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
             if (!prefs.getBoolean("databaseCalled", false)) {
@@ -87,7 +93,7 @@ public class MainActivity extends FragmentActivity {
             checks();
 
             String value = null;
-            /*if (getIntent() != null && getIntent().getExtras() != null) {
+            if (getIntent() != null && getIntent().getExtras() != null) {
                 String v = getIntent().getExtras().getString("android_id");
                 if (v != null)
                     value = v;
@@ -110,26 +116,27 @@ public class MainActivity extends FragmentActivity {
 //            } if (getIntent().getBooleanExtra(References.TRAININGS_FROM_NOTIFICATION, false)) {
 //                showTrainings = true;
 //            }
-                HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
-                ArrayList<JSONObject> list = new ArrayList<>();
-                String title = "";
-                String message = "";
                 try {
+                    HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
+                    ArrayList<JSONObject> list = new ArrayList<>();
+                    String title = "";
+                    String message = "";
+
                     for (String n : notifications) {
                         JSONObject object = new JSONObject(n);
                         list.add(object);
                         boolean read = object.getBoolean("read");
-                        title = prefs.getString("title","");
-                        message = prefs.getString("message","");
+                        title = prefs.getString("title", "");
+                        message = prefs.getString("message", "");
                         switch (getIntent().getIntExtra("launchedBy", 0)) {
                             case Notify.ACTION_SHARE:
-                        Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
                                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
                                 if (!title.equals("") || !message.equals("")) {
                                     builder.setTitle(title)
                                             .setMessage(message)
-                                            .setPositiveButton("OK",null)
+                                            .setPositiveButton("OK", null)
                                             .setCancelable(true)
                                             .create()
                                             .show();
@@ -138,12 +145,12 @@ public class MainActivity extends FragmentActivity {
                             case Notify.ACTION_TRAININGS:
                                 showTrainings = true;
                                 AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-                                String title1 = prefs.getString("title","");
-                                String message1 = prefs.getString("message","");
+                                String title1 = prefs.getString("title", "");
+                                String message1 = prefs.getString("message", "");
                                 if (!title1.equals("") || !message1.equals("")) {
                                     builder1.setTitle(title1)
                                             .setMessage(message1)
-                                            .setPositiveButton("OK",null)
+                                            .setPositiveButton("OK", null)
                                             .setCancelable(true)
                                             .create()
                                             .show();
@@ -167,10 +174,13 @@ public class MainActivity extends FragmentActivity {
                                 break;
                         }
                     }
-                }catch (Exception e){}
+                } catch (Exception e) {
+                    Log.e("ERRORR", "MainActivity - OnCreate - Line 178\n    " + e.getMessage());
+                    e.printStackTrace();
+                }
 
                 setIntent(null);
-            }*/
+            }
 
             if (value != null) {
                 android_id = value;
@@ -344,7 +354,6 @@ public class MainActivity extends FragmentActivity {
                             FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 //                            for (DataSnapshot data : dataSnapshot.getChildren()) {
                             User user = dataSnapshot.getValue(User.class);
-
 //                                if (user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
                             MainActivity.user = user;
 //                            }
