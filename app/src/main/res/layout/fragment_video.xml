@@ -1,68 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_video"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:background="@drawable/fodo9"
-    android:orientation="vertical">
+    android:gravity="center"
+    android:orientation="vertical"
+    android:clickable="true" >
 
-    <LinearLayout
-        android:id="@+id/layout_progress"
+    <TextView
+        android:id="@+id/textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"/>
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="cargando..."
-            android:textColor="@android:color/white"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:layout_marginBottom="10dip"
+        android:padding="10dp"
+        android:text="Videos Explicativos"
+        style="@style/textViewStyle"
         android:gravity="center"
-        android:orientation="vertical">
+        android:background="@drawable/new_title_bar"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="20dp"/>
 
-        <TextView
-            android:id="@+id/textView_title"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dip"
-            android:padding="10dp"
-            android:text="Videos Explicativos"
-            style="@style/textViewStyle"
-            android:gravity="center"
-            android:background="@drawable/new_title_bar"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="20dp"/>
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
-        <ListView
-            android:id="@+id/list_view_fragment_videos"
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="cargando..."
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_gravity="center_horizontal"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="10.0sp">
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/list_view_fragment_videos"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10.0sp">
 
 
-        </ListView>
+            </ListView>
 
-    </LinearLayout>
-
-</FrameLayout>
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

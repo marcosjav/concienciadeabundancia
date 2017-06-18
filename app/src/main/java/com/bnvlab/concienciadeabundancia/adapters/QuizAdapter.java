@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class QuizAdapter extends BaseAdapter {
 
     Context context;
     ArrayList<QuizItem> list;
+    public boolean disable;
 
     public QuizAdapter(@NonNull Context context, @LayoutRes int resource, ArrayList<QuizItem> list) {
         this.context = context;
@@ -57,6 +60,7 @@ public class QuizAdapter extends BaseAdapter {
 
             holder = new QuizHolder();
             holder.quizText = (TextView) view.findViewById(R.id.quiz_item_string);
+            holder.quizText.setTypeface(Utils.getTypeface(context));
             holder.quizSwitch = (SwitchCompat) view.findViewById(R.id.quiz_item_switch);
 
             holder.quizSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -75,6 +79,15 @@ public class QuizAdapter extends BaseAdapter {
 
         holder.quizText.setText(item.getQuiz());
         holder.quizSwitch.setChecked(item.getAnswer());
+        if (disable) {
+            holder.quizSwitch.setClickable(false);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
         return view;
     }

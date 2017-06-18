@@ -11,13 +11,15 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/new_item_video"
-        android:padding="10dp">
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:background="@drawable/new_item_video">
 
         <ImageView
             android:id="@+id/image_view_video_item_thumbnail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:src="@android:drawable/ic_delete" />
 
     </FrameLayout>

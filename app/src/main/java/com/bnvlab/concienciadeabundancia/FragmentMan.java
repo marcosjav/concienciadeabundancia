@@ -16,6 +16,12 @@ import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
 public class FragmentMan {
 
     public static Fragment actualFragment;
+    private static FragmentManager fm;
+
+    public static void changeFragment(FragmentActivity activity, Class fragmentClass, String tag, String secondTag) {
+        changeFragment(activity, fragmentClass, false, tag, secondTag);
+    }
+
     /**
      * This method allow us to change, or add if is the case, a fragment in the FragmentMannager. The fragments cant be repeated
      *
@@ -23,15 +29,15 @@ public class FragmentMan {
      * @param fragmentClass The class of the fragment to show, add.
      */
     public static void changeFragment(FragmentActivity activity, Class fragmentClass, String tag) {
-        changeFragment(activity, fragmentClass, false, tag);
+        changeFragment(activity, fragmentClass, false, tag, null);
     }
 
     public static void changeFragment(FragmentActivity activity, Class fragmentClass) {
-        changeFragment(activity, fragmentClass, false, null);
+        changeFragment(activity, fragmentClass, false, null, null);
     }
 
     public static void changeFragment(FragmentActivity activity, Class fragmentClass, boolean clear) {
-        changeFragment(activity, fragmentClass, clear, null);
+        changeFragment(activity, fragmentClass, clear, null, null);
     }
 
     /**
@@ -41,7 +47,7 @@ public class FragmentMan {
      * @param fragmentClass The class of the fragment to show, add.
      * @param clearAll      if true all the other fragments will be erased
      */
-    public static void changeFragment(FragmentActivity activity, Class fragmentClass, boolean clearAll, String tag) {
+    public static void changeFragment(FragmentActivity activity, Class fragmentClass, boolean clearAll, String tag, String secondTag) {
 
         // ERASE ALL FRAGMENTS
        /* if (clearAll) {
@@ -52,6 +58,7 @@ public class FragmentMan {
         }*/
 
         FragmentManager fm = activity.getSupportFragmentManager();
+        FragmentMan.fm = fm;
         /*List<Fragment> fragmentsList = fm.getFragments();
         if (fragmentsList != null)
             for (Fragment f :
@@ -70,35 +77,35 @@ public class FragmentMan {
                 if (tag != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString("tag", tag);
+                    if (secondTag != null)
+                        bundle.putString("secondTag", secondTag);
                     fragment.setArguments(bundle);
                 }
             } catch (Exception e) {
                 Log.d("CDA_EXCEPTION", "EXCEPTION: " + e.getMessage());
             }
             if (fragment != null) {
-                    actualFragment = fragment;
-                    if (className != MainFragment.class.getSimpleName()) {
-                        activity
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
-                                .add(R.id.fragment_main, fragment, className)
-                                .addToBackStack(className)
-                                .commit();
+                actualFragment = fragment;
+                if (className != MainFragment.class.getSimpleName()) {
+                    activity
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
+                            .add(R.id.fragment_main, fragment, className)
+                            .addToBackStack(className)
+                            .commit();
 
-                        if (fragment instanceof ICallback)
-                        {
-                            ((ICallback)fragment).callback();
-                        }
-                    }else
-                    {
-                        activity
-                                .getSupportFragmentManager()
-                                .beginTransaction()
-                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
-                                .add(R.id.fragment_main, fragment, className)
-                                .commit();
+                    if (fragment instanceof ICallback) {
+                        ((ICallback) fragment).callback();
                     }
+                } else {
+                    activity
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
+                            .add(R.id.fragment_main, fragment, className)
+                            .commit();
+                }
 
             }
 
@@ -166,8 +173,7 @@ public class FragmentMan {
         }
     }
 
-    public static void eraseAll(FragmentActivity activity)
-    {
+    public static void eraseAll(FragmentActivity activity) {
         // ERASE ALL FRAGMENTS
         FragmentManager fm = activity.getSupportFragmentManager();
         for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
@@ -209,5 +215,9 @@ public class FragmentMan {
                         .commit();
         }
     }*/
+
+    public static FragmentManager getFragmentManager() {
+        return fm;
+    }
 
 }

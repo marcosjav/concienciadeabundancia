@@ -11,27 +11,7 @@
         android:layout_marginEnd="10dp"
         android:padding="5dp"
         android:textColor="@android:color/white"
-        android:textSize="16dp"
+        android:textSize="14dp"
         android:paddingBottom="10dp"
         android:background="@drawable/new_background_black"/>
 </LinearLayout>
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--android:orientation="vertical" android:layout_width="match_parent"-->
-    <!--android:layout_marginStart="5dp"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<ImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@drawable/item_rounder_cornes"/>-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/text"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:textColor="@android:color/black"-->
-        <!--android:text="Este entrenamiento está destinado a todas las personas, no importa su pasado o sus traumas, ni su edad, ni capacitación previa. Tampoco sostiene ningún tipo de filosofía, pensamiento o credo religioso o político. Se basa en el comportamiento celular y la conciencia humana, y en esas áreas somos todos iguales. "/>-->
-
-<!--</FrameLayout>-->

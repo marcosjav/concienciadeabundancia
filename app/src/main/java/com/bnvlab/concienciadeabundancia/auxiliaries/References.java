@@ -28,6 +28,8 @@ public class References {
             , QUIZ_CHILD_FOOT = "foot"
             , QUIZ_CHILD_INDEX = "index"
             , QUIZ_CHILD_HIDDEN = "hidden"
+            , QUIZ_CHILD_REQUIRE = "require"
+            , PAY = "pay_report"
 
             , SENT = "sent"
             , SENT_CHILD_ANSWER = "answer"
@@ -63,6 +65,7 @@ public class References {
             , SHARED_PREFERENCES_NOTIFICATION_RESULT = "training_result"
 
             ,SHARE_FROM_NOTIFICATION = "share_from_notification"
+            ,TRAININGS_FROM_NOTIFICATION = "trainings_from_notifications"
 
             , INVITATION_CODES = "invitation_codes"
             , INVITATION_CODES_SENDER_UID = "sender_uid"
@@ -76,5 +79,6 @@ public class References {
 
             , ADMINISTRATORS = "administrators"
 
-            , SHARE = "share";
+            , SHARE = "share"
+            , NOTIFICATIONS = "notifications";
 }

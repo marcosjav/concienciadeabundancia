@@ -3,179 +3,220 @@
     android:id="@+id/layout_quiz"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:background="@drawable/fodo6"
+    android:orientation="vertical"
+    android:clickable="true" >
 
     <TextView
         style="@style/textViewStyle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="10dip"
+        android:background="@drawable/new_title_bar"
+        android:gravity="center_horizontal"
         android:text="ENTRENAMIENTO DE DESARROLLO PERSONAL"
         android:textColor="@android:color/white"
-        android:gravity="center"
-        android:background="@drawable/title_rounder_corner"
-        android:textAppearance="@style/Base.TextAppearance.Widget.AppCompat.Toolbar.Title"
         android:textSize="16sp" />
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/layout_wait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="vertical">
 
+            <ProgressBar
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:indeterminate="true" />
 
-            <ViewSwitcher
-                android:id="@+id/view_switcher_quiz_layout"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="cargando..."
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/myCoordinatorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <!--<LinearLayout-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center"-->
-                    <!--android:gravity="center"-->
-                    <!--android:orientation="vertical">-->
-
-                    <!--<ProgressBar-->
-                        <!--android:layout_width="100dp"-->
-                        <!--android:layout_height="100dp"-->
-                        <!--android:indeterminate="true"/>-->
-
-                    <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="cargando..."-->
-                        <!--android:textColor="@android:color/black"/>-->
-
-                <!--</LinearLayout>-->
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/text_view_quiz_title"
-                        style="@style/textViewStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="TITLE"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/text_view_quiz_subtitle"
-                        style="@style/textViewStyle"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/layout"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="SUBTITLE"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/text_view_quiz_module"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_marginTop="10dp"
-                        android:text="MODULE"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/text_view_quiz_description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_marginTop="10dp"
-                        android:text="DESCRIPTION"
-                        android:textColor="@android:color/black"
-                        android:textSize="18sp" />
-
-                    <Button
-                        android:id="@+id/video_test_button"
-                        style="@style/button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dip"
-                        android:text="cómo testear?" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/text_view_quiz_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Creencias a testear"
-                            android:textColor="@android:color/black" />
+                            android:background="@drawable/button_shape_enabled"
+                            android:gravity="center_horizontal"
+                            android:padding="5dp"
+                            android:text="TITLE"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/text_view_quiz_subtitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:text="Resultado del testeo"
-                            android:textColor="@android:color/black" />
-                    </LinearLayout>
+                            android:layout_gravity="center"
+                            android:padding="5dp"
+                            android:text="SUBTITLE"
+                            android:textSize="14sp" />
 
-                    <ListView
-                        android:id="@+id/list_view_quiz"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:divider="#FF9900"
-                        android:dividerHeight="1dp">
+                        <TextView
+                            android:id="@+id/text_view_quiz_module"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/button_shape_enabled"
+                            android:padding="5dp"
+                            android:text="MODULE"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
 
-                    </ListView>
-
-                    <TextView
-                        android:id="@+id/text_view_foot"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginBottom="30dp"
-                        android:text="Siempre recuerden que todo empieza y termina en uno mismo, al cambiar estos patrones
-mentales, transformaran todas sus relaciones de forma nutritiva y permanente."
-                        android:textColor="@android:color/black"
-                        android:gravity="center"/>
-
-                    <ViewSwitcher
-                        android:id="@+id/view_switcher_quiz_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/text_view_quiz_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_marginTop="10dp"
+                            android:text="DESCRIPTION"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp" />
 
                         <Button
-                            android:id="@+id/button_quiz_ok"
+                            android:id="@+id/video_test_button"
                             style="@style/button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="10dip"
-                            android:text="ENVIAR" />
+                            android:text="cómo testear?"
+                            android:visibility="gone" />
 
-                        <ProgressBar
-                            android:layout_width="50dip"
-                            android:layout_height="50dip"
+                        <TextView
+                            android:id="@+id/textView4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
-                            android:indeterminate="true"
-                            android:indeterminateDrawable="@drawable/custom_progress_bar" />
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/button_shape_enabled"
+                            android:gravity="center_horizontal"
+                            android:padding="5dp"
+                            android:text="CÓMO TESTEAR?"
+                            android:textColor="@android:color/white"
+                            android:textSize="14sp" />
 
-                    </ViewSwitcher>
+                        <fragment
+                            android:id="@+id/youtube_fragment"
+                            android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp" />
+
+                        <CheckBox
+                            android:id="@+id/checkbox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
+                            android:text="Elijo realizar los cambios sin testear" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Elecciones a testear"
+                                android:textColor="@android:color/white" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="Resultado del testeo"
+                                android:textColor="@android:color/white" />
+                        </LinearLayout>
+
+                        <ListView
+                            android:id="@+id/list_view_quiz"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:divider="#FF9900"
+                            android:dividerHeight="1dp">
+
+                        </ListView>
+
+                        <TextView
+                            android:id="@+id/text_view_foot"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="30dp"
+                            android:layout_marginTop="0dp"
+                            android:gravity="center"
+                            android:text="Siempre recuerden que todo empieza y termina en uno mismo, al cambiar estos patrones
+mentales, transformaran todas sus relaciones de forma nutritiva y permanente."
+                            android:textColor="@android:color/white" />
+
+                        <ViewSwitcher
+                            android:id="@+id/view_switcher_quiz_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <Button
+                                android:id="@+id/button_quiz_ok"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10dip"
+                                android:background="@drawable/new_background_black"
+                                android:text="ENVIAR" />
+
+                            <ProgressBar
+                                android:layout_width="50dip"
+                                android:layout_height="50dip"
+                                android:layout_gravity="center_horizontal"
+                                android:indeterminate="true"
+                                android:indeterminateDrawable="@drawable/custom_progress_bar" />
+
+                        </ViewSwitcher>
+                    </LinearLayout>
                 </LinearLayout>
-            </ViewSwitcher>
-        </LinearLayout>
-    </ScrollView>
+            </ScrollView>
+        </android.support.design.widget.CoordinatorLayout>
+    </FrameLayout>
 </LinearLayout>

@@ -37,7 +37,7 @@ public class FundamentsFragment extends Fragment {
         title.setTypeface(Utils.getTypeface(getContext()));
 
         textView = (TextView) view.findViewById(R.id.text_view_fundaments);
-        textView.setTypeface(Utils.getTypeface(getContext()));
+
         textView.setMovementMethod(LinkMovementMethod.getInstance());  // THIS ALLOW US TO OPEN HTML LINKS IN TEXT
 
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);

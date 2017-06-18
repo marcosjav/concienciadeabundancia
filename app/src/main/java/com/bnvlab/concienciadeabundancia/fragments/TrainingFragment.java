@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
@@ -25,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by Marcos on 08/04/2017.
@@ -36,6 +39,8 @@ public class TrainingFragment extends Fragment implements ICallback {
     TrainingAdapter adapter;
     ArrayList<String> listId;
     ViewSwitcher viewSwitcher;
+    boolean active_user;
+    ListView listView;
 
     public TrainingFragment() {
     }
@@ -53,16 +58,38 @@ public class TrainingFragment extends Fragment implements ICallback {
 
         listId = new ArrayList<>();
 
-        ListView listView = (ListView) view.findViewById(R.id.list_view_trainings);
+        listView = (ListView) view.findViewById(R.id.list_view_trainings);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         adapter = new TrainingAdapter(getContext(), R.layout.item_training_row, list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (list.get(position).isComplete()) {
+                TrainingItem item = list.get(position);
+                if (item.isComplete()) {
                     FragmentMan.changeFragment(getActivity(), ResumeFragment.class, listId.get(position));
                 } else {
-                    FragmentMan.changeFragment(getActivity(), QuizFragment.class, listId.get(position));
+                    boolean complete = true;
+                    int i = -1;
+                    TrainingItem required = new TrainingItem("");
+                    if (!item.getRequire().equals("")) {
+                        i = listId.indexOf(item.getRequire());
+                        if (i != -1) {
+                            required = list.get(i);
+                            complete = required.isComplete();
+                        }
+                    }
+
+                    if (!complete) {
+                        Toast.makeText(getContext(), "Necesita hacer la guía:\n" + required.getTitle(), Toast.LENGTH_SHORT).show();
+                        listView.getChildAt(i).setBackgroundColor(0);
+                    }
+                    else if (item.isFree() || active_user) {
+                        FragmentMan.changeFragment(getActivity(), QuizFragment.class, listId.get(position));
+                    } else
+                        FragmentMan.changeFragment(getActivity(), QuizFragment.class, listId.get(position), "true");
+//                        Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
+
                 }
             }
         });
@@ -82,7 +109,11 @@ public class TrainingFragment extends Fragment implements ICallback {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        boolean active_user = dataSnapshot.child(References.USERS_CHILD_ACTIVE).getValue(boolean.class);
+                        try {
+                            active_user = dataSnapshot.child(References.USERS_CHILD_ACTIVE).getValue(boolean.class);
+                        }catch (Exception e){
+                            active_user = false;
+                        }
                         getTrainings(active_user);
                     }
 
@@ -102,14 +133,34 @@ public class TrainingFragment extends Fragment implements ICallback {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            String title = data.child(References.QUIZ_CHILD_TITLE).getValue(String.class);
+                            String title = "";
+                            String require = "";
+                            int index = -1;
                             boolean freeContent = data.child(References.FREE_CONTENT).getValue(boolean.class);
                             boolean hidden = data.child(References.QUIZ_CHILD_HIDDEN).getValue(boolean.class);
-                            if (!hidden && (freeContent || (!freeContent && active))) {
-                                list.add(new TrainingItem(title));
+
+                            if (data.child(References.QUIZ_CHILD_TITLE).exists())
+                                title = data.child(References.QUIZ_CHILD_TITLE).getValue(String.class);
+
+                            if (data.child(References.FAQ_CHILD_INDEX).exists())
+                                index = data.child(References.FAQ_CHILD_INDEX).getValue(int.class);
+
+                            if (data.child(References.QUIZ_CHILD_REQUIRE).exists())
+                                require = data.child(References.QUIZ_CHILD_REQUIRE).getValue(String.class);
+
+                            if (!hidden) {
+                                TrainingItem item = new TrainingItem();
+                                item.setTitle(title);
+                                item.setFree(freeContent);
+                                item.setRequire(require);
+                                if (index < 0 )
+                                    index = list.size();
+                                item.setIndex(index);
+                                list.add(item);
                                 listId.add(data.getKey());
                             }
                         }
+                        Collections.sort(list, new TrainingsSort());
                         getTrainingsStatus();
                     }
 
@@ -135,7 +186,6 @@ public class TrainingFragment extends Fragment implements ICallback {
                                 if (data.child(References.SENT_CHILD_CHECKED).getValue() != null)
                                     list.get(index).setFinished(data.child(References.SENT_CHILD_CHECKED).getValue(boolean.class));
                             }
-//                            Toast.makeText(getContext(), data.getKey(), Toast.LENGTH_SHORT).show();
                         }
                         adapter.notifyDataSetChanged();
                         showProgress(false);
@@ -163,6 +213,19 @@ public class TrainingFragment extends Fragment implements ICallback {
             listId.clear();
             adapter.notifyDataSetChanged();
             getTrainings();
+        }
+    }
+
+    private class TrainingsSort implements Comparator<TrainingItem>{
+
+        @Override
+        public int compare(TrainingItem o1, TrainingItem o2) {
+            return o1.getIndex() - o2.getIndex();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return false;
         }
     }
 }

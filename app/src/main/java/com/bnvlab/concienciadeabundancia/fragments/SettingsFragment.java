@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ public class SettingsFragment extends Fragment {
             editTextRePassword;
     boolean isReady = false, locationsReady = false, userReady = false, nameModify, lastNameModify, phoneModify, mailModify, passModify;
     ViewSwitcher viewSwitcherOK;
+    LinearLayout layoutLoading;
     User user;
 
     ArrayList<String> locationList = new ArrayList<String>() {{
@@ -75,15 +77,51 @@ public class SettingsFragment extends Fragment {
         editTextPassword = (EditText) view.findViewById(R.id.edittext_settings_password);
         editTextRePassword = (EditText) view.findViewById(R.id.edittext_settings_repassword);
         viewSwitcherOK = (ViewSwitcher) view.findViewById(R.id.view_switcher_settings_ok);
+        layoutLoading = (LinearLayout) view.findViewById(R.id.layout_loading);
 
         spinnerLocation = (Spinner) view.findViewById(R.id.spinner_settings_location);
         buttonUpdate = (Button) view.findViewById(R.id.button_settings_ok);
 
         user = MainActivity.user;
+        /*String url = "https://polar-tor-72537.herokuapp.com/get-locations";
+        Conn.getJSONArray(getActivity(), Conn.UrlType.LOCATIONS, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        locationList = Conn.jsonToArray(response);
+                        //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER  https://github.com/srodrigo/Android-Hint-Spinner
+                        HintSpinner<String> hintSpinner = new HintSpinner<>(
+                                spinnerLocation,
+                                // Default layout - You don't need to pass in any layout id, just your hint text and
+                                // your list data
+                                new HintAdapter(getContext(), R.string.login_edittext_hint_location, locationList),
+                                new HintSpinner.Callback<String>() {
+                                    @Override
+                                    public void onItemSelected(int position, String itemAtPosition) {
+                                        // Here you handle the on item selected event (this skips the hint selected event)
+                                        ((TextView) spinnerLocation.getSelectedView()).setTextColor(Color.BLACK);
+                                    }
+                                });
+                        hintSpinner.init();
 
+                        locationsReady = true;
+
+                        updateSpinner();
+
+                        layoutLoading.showNext();
+                        isReady = true;
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }
+        );*/
+
+//        layoutLoading.showNext();
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
-                .child("locations")
+                .child(References.LOCATIONS)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -111,11 +149,8 @@ public class SettingsFragment extends Fragment {
                         hintSpinner.init();
 
                         locationsReady = true;
-
-                        updateSpinner();
-
-                        ((ViewSwitcher) view.findViewById(R.id.view_switcher_settings_location)).showNext();
                         isReady = true;
+                        updateSpinner();
                     }
 
                     @Override
@@ -123,7 +158,6 @@ public class SettingsFragment extends Fragment {
                         Toast.makeText(getActivity(), "onCancelled", Toast.LENGTH_SHORT).show();
                     }
                 });
-
 
         buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,8 +169,6 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
-
-//        String phone = FirebaseAuth.getInstance().getCurrentUser().getEmail().split("@")[0];/
 
         updateDataFields();
 
@@ -156,11 +188,12 @@ public class SettingsFragment extends Fragment {
                             user = data.getValue(User.class);
                             userReady = true;
                             editTextName.setText(user.getName());
-                            editTextSecondName.setText(user.getSecondName() == null? "" : user.getSecondName());
+                            editTextSecondName.setText(user.getSecondName() == null ? "" : user.getSecondName());
                             editTextLastName.setText(user.getLastName());
                             editTextPhone.setText(user.getPhone());
                             editTextMail.setText(user.getEmail());
                             updateSpinner();
+                            layoutLoading.setVisibility(View.GONE);
                         }
                     }
 
@@ -320,4 +353,6 @@ public class SettingsFragment extends Fragment {
         updateDataFields();
         super.onResume();
     }
+
+
 }

@@ -1,6 +1,5 @@
 package com.bnvlab.concienciadeabundancia;
 
-import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,19 +12,25 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
+import com.bnvlab.concienciadeabundancia.fragments.TrainingFragment;
 import com.firebase.client.Firebase;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.jsoup.Jsoup;
 
@@ -54,7 +59,7 @@ public class MainActivity extends FragmentActivity {
     MainFragment mainFragment = new MainFragment();
     boolean firstTime = true;
     public static boolean databaseCalled;
-    public static final String APP_SHARED_PREF_KEY = MainActivity.class.getSimpleName(), FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
+    public static final String APP_SHARED_PREF_KEY = "ConcienciaDeAbundancia", FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
     private String android_id;
 
 
@@ -62,104 +67,181 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        boolean showTrainings = false;
 
-        final SharedPreferences prefs = this.getSharedPreferences(
-                this.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        if (FirebaseAuth.getInstance().getCurrentUser() == null)
+            showLogin();
+        else {
+            final SharedPreferences prefs = this.getSharedPreferences(
+                    this.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
-        if (!prefs.getBoolean("databaseCalled", false)) {
-            try {
-                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            } catch (Exception e) {
-                Log.d("MAIN_ACTIVITY", e.getMessage());
+            if (!prefs.getBoolean("databaseCalled", false)) {
+                try {
+                    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+                } catch (Exception e) {
+                    Log.d("MAIN_ACTIVITY", e.getMessage());
+                }
+                prefs.edit().putBoolean("databaseCalled", true).apply();
             }
-            prefs.edit().putBoolean("databaseCalled", true).apply();
-        }
 
-        checks();
+            checks();
 
-        String value = null;
-        if (getIntent() != null && getIntent().getExtras() != null) {
-            String v = getIntent().getExtras().getString("android_id");
-            if (v != null)
-                value = v;
+            String value = null;
+            /*if (getIntent() != null && getIntent().getExtras() != null) {
+                String v = getIntent().getExtras().getString("android_id");
+                if (v != null)
+                    value = v;
 
-            if (getIntent().getBooleanExtra(References.SHARE_FROM_NOTIFICATION, false)) {
-                setShareStartTime();
+//            if (getIntent().getBooleanExtra(References.SHARE_FROM_NOTIFICATION, false)) {
+//                setShareStartTime();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                final Context context = this;
+//                builder.setTitle("FELICIDADES!")
+//                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
+//                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
+//                                " solo por 12hs.\nEmpieza ahora!!!")
+//                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Utils.shareDialog(context);
+//                            }
+//                        });
+//                builder.create().show();
+//            } if (getIntent().getBooleanExtra(References.TRAININGS_FROM_NOTIFICATION, false)) {
+//                showTrainings = true;
+//            }
+                HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
+                ArrayList<JSONObject> list = new ArrayList<>();
+                String title = "";
+                String message = "";
+                try {
+                    for (String n : notifications) {
+                        JSONObject object = new JSONObject(n);
+                        list.add(object);
+                        boolean read = object.getBoolean("read");
+                        title = prefs.getString("title","");
+                        message = prefs.getString("message","");
+                        switch (getIntent().getIntExtra("launchedBy", 0)) {
+                            case Notify.ACTION_SHARE:
+                        Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                                if (!title.equals("") || !message.equals("")) {
+                                    builder.setTitle(title)
+                                            .setMessage(message)
+                                            .setPositiveButton("OK",null)
+                                            .setCancelable(true)
+                                            .create()
+                                            .show();
+                                }
+                                break;
+                            case Notify.ACTION_TRAININGS:
+                                showTrainings = true;
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+                                String title1 = prefs.getString("title","");
+                                String message1 = prefs.getString("message","");
+                                if (!title1.equals("") || !message1.equals("")) {
+                                    builder1.setTitle(title1)
+                                            .setMessage(message1)
+                                            .setPositiveButton("OK",null)
+                                            .setCancelable(true)
+                                            .create()
+                                            .show();
+                                }
+                                break;
+                            case Notify.ACTION_TRAINING_RESULT:
+                                setShareStartTime();
+                                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                                final Context context = this;
+                                builder2.setTitle("FELICIDADES!")
+                                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
+                                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
+                                                " solo por 12hs.\nEmpieza ahora!!!")
+                                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Utils.shareDialog(context);
+                                            }
+                                        });
+                                builder2.create().show();
+                                break;
+                        }
+                    }
+                }catch (Exception e){}
+
+                setIntent(null);
+            }*/
+
+            if (value != null) {
+                android_id = value;
+                prefs.edit().putString("android_id", android_id).apply();
+            } else if (prefs.getString("android_id", "").equals("")) {
+                prefs.edit().putString("android_id", android_id).apply();
+            } else {
+                android_id = prefs.getString("android_id", "");
+            }
+
+
+            Firebase.getDefaultConfig().setPersistenceEnabled(true);
+
+            if (prefs.getBoolean("firstLogin", true)) {
+                FirebaseAuth.getInstance().signOut();
+                prefs.edit().putBoolean("firstLogin", false).apply();
+            }
+
+            ///////////////////////
+
+            // use a default value using new Date()
+            firstTime = prefs.getBoolean(this.FIRST_TIME_PREF_KEY, true);
+
+            // PROPAGANDA DEL PRIMER INGRESO DEL USUSARIO
+            if (firstTime) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                final Context context = this;
-                builder.setTitle("FELICIDADES!")
-                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
-                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
-                                " solo por 12hs.\nEmpieza ahora!!!")
-                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
+
+                View view = View.inflate(this, R.layout.dialog_video, null);
+
+                final YouTubePlayerSupportFragment frag =
+                        (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
+                frag.initialize(Config.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+                    @Override
+                    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+                        if (!wasRestored) {
+                            //I assume the below String value is your video id
+                            youTubePlayer.loadVideo("GJZ45KiWLV4");
+                        }
+                    }
+
+                    @Override
+                    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                        if (youTubeInitializationResult.isUserRecoverableError()) {
+                            youTubeInitializationResult.getErrorDialog(MainActivity.this, 1).show();
+                        } else {
+                            String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
+                            Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+                builder.setView(view)
+                        .setCancelable(false)
+                        .setPositiveButton("ENTENDIDO", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Utils.shareDialog(context);
+                                prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
+                                frag.onDestroy();
+                                dialog.dismiss();
                             }
                         });
-                builder.create().show();
+
+                AlertDialog dialog = builder.create();
+
+                dialog.show();
             }
+
+            FragmentMan.changeFragment(this, MainFragment.class);
+            if (showTrainings)
+                FragmentMan.changeFragment(this, TrainingFragment.class);
         }
-
-        if (value != null) {
-            android_id = value;
-            prefs.edit().putString("android_id", android_id).apply();
-        } else if (prefs.getString("android_id", "").equals("")) {
-            prefs.edit().putString("android_id", android_id).apply();
-        } else {
-            android_id = prefs.getString("android_id", "");
-        }
-
-
-        Firebase.getDefaultConfig().setPersistenceEnabled(true);
-
-        if (prefs.getBoolean("firstLogin", true)) {
-            FirebaseAuth.getInstance().signOut();
-            prefs.edit().putBoolean("firstLogin", false).apply();
-        }
-
-        ///////////////////////
-
-        // use a default value using new Date()
-        firstTime = prefs.getBoolean(this.FIRST_TIME_PREF_KEY, true);
-
-        // PROPAGANDA DEL PRIMER INGRESO DEL USUSARIO
-        if (firstTime) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setNeutralButton("VIDEO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent myIntent = new Intent(MainActivity.this, VideoActivity.class);
-                    myIntent.putExtra("video", "https://youtu.be/e79CUFrvnK0"); //Optional parameters
-                    MainActivity.this.startActivity(myIntent);
-                }
-            }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked OK button
-                    prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
-                }
-            })
-                    .setMessage("Nuestra empresa esta dedicada a lograr la Felicidad en toda la humanidad.\n" +
-                            "¿Cómo? Expandiendo la Conciencia, el Amor a todo, la Salud y el Disfrute de la Vida.")
-                    .setTitle("ELEGIMOS CREAR UN MUNDO FELIZ Y UNIDO");
-
-            AlertDialog dialog = builder.create();
-
-            dialog.show();
-        }
-
-        FragmentMan.changeFragment(this, MainFragment.class);
-    }
-
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void showLogin() {
@@ -219,8 +301,6 @@ public class MainActivity extends FragmentActivity {
             String latestVersion = versionChecker.execute().get();
             double playVersion = Double.valueOf(latestVersion);
             double thisVersion = Double.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-
-//            Toast.makeText(this, "this: " + thisVersion + "\nPlay: " +playVersion, Toast.LENGTH_SHORT).show();
 
             if (playVersion > thisVersion) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -287,6 +367,11 @@ public class MainActivity extends FragmentActivity {
                                 if (!dataSnapshot.getValue(String.class).equals(android_id)) {
                                     Toast.makeText(MainActivity.this, "Se inició sesión en otro dispositivo", Toast.LENGTH_LONG).show();
                                     FirebaseAuth.getInstance().signOut();
+                                    try {
+                                        FirebaseInstanceId.getInstance().deleteInstanceId();
+                                    } catch (IOException e) {
+                                        Log.d("ERROR_ADMIN", "MAIN_ACTIVITY_deleteInstanse: " + e.getMessage());
+                                    }
                                     Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
                                     myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                     MainActivity.this.startActivity(myIntent);
@@ -300,48 +385,7 @@ public class MainActivity extends FragmentActivity {
 
                         }
                     });
-
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                if (getSystemService(QuizNotificationService.class) == null)
-//                    startService(new Intent(this, QuizNotificationService.class));
-//            }else{
-//            if (!isMyServiceRunning(QuizNotificationService.class)) {
-//                startService(new Intent(this, QuizNotificationService.class));
-//            // use this to start and trigger a service
-//            Intent i= new Intent(this, FirebaseBackgroundService.class);
-//// potentially add data to the intent
-//            i.putExtra("firstTime", true);
-//            startService(i);
-//                QuizNotificationService quizNotificationService = new QuizNotificationService();
-//                Notification note = new Notification( 0, null, System.currentTimeMillis() );
-//                note.flags |= Notification.FLAG_NO_CLEAR;
-//                quizNotificationService.startForeground(33, note);
-//            }
-
-            //        startService(new Intent(FirebaseBackgroundService.class.getName()));
-            startService(new Intent(this, FirebaseBackgroundService.class)); // para android 5
         }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (intent.getExtras() != null)
-            if (intent.getExtras().getBoolean(References.SHARE_FROM_NOTIFICATION, false)) {
-                setShareStartTime();
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                builder.setTitle("FELICIDADES!")
-                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
-                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
-                                " solo por 12hs.\nEmpieza ahora!!!")
-                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Utils.shareDialog(getBaseContext());
-                            }
-                        });
-                builder.create().show();
-            }
     }
 
     private void setShareStartTime() {
@@ -350,6 +394,8 @@ public class MainActivity extends FragmentActivity {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(Calendar.getInstance().getTime().getTime());
     }
+
+
 }
 
 

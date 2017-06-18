@@ -11,11 +11,11 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,12 +45,10 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 import me.srodrigo.androidhintspinner.HintAdapter;
 import me.srodrigo.androidhintspinner.HintSpinner;
 
-import static com.bnvlab.concienciadeabundancia.R.id.sign_up_first_name;
 import static com.bnvlab.concienciadeabundancia.fragments.SettingsFragment.isValidEmail;
 
 /**
@@ -274,23 +272,6 @@ public class LoginActivity extends FragmentActivity {
 
                                                 invitationSenderUID = dataSnapshot.getValue(String.class);
                                                 ((TextView) findViewById(R.id.sign_up_invitation_code)).setText(invitationSenderUID);
-
-                            /*FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                    .child(References.USERS)
-                                    .child(invitationSenderUID)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            String fullName = dataSnapshot.child(References.USERS_CHILD_LASTNAME).getValue(String.class) + ", " + dataSnapshot.child(References.USERS_CHILD_NAME).getValue(String.class);
-                                            ((TextView) findViewById(R.id.sign_up_invitation_code)).setText(fullName);
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });*/
                                             }
 
                                             @Override
@@ -330,36 +311,6 @@ public class LoginActivity extends FragmentActivity {
                 });
     }
 
-//    private void populateAutoComplete() {
-//        if (!mayRequestContacts()) {
-//            return;
-//        }
-//
-//        getLoaderManager().initLoader(0, null, this);
-//    }
-
-//    private boolean mayRequestContacts() {
-//        if (Build.VERSION.SDK_INT < M) {
-//            return true;
-//        }
-//        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-//            return true;
-//        }
-//        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-//            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-//                    .setAction(android.R.string.ok, new View.OnClickListener() {
-//                        @Override
-//                        @TargetApi(M)
-//                        public void onClick(View v) {
-//                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-//                        }
-//                    });
-//        } else {
-//            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-//        }
-//        return false;
-//    }
-
     ArrayList<String> locationList = new ArrayList<String>();
 
     private void loadLocations() {
@@ -383,12 +334,12 @@ public class LoginActivity extends FragmentActivity {
                                 spinnerLocation,
                                 // Default layout - You don't need to pass in any layout id, just your hint text and
                                 // your list data
-                                new HintAdapter(LoginActivity.this, R.string.login_edittext_hint_location, locationList),
+                                new HintAdapter(LoginActivity.this, "LOCALIDAD", locationList),
                                 new HintSpinner.Callback<String>() {
                                     @Override
                                     public void onItemSelected(int position, String itemAtPosition) {
                                         // Here you handle the on item selected event (this skips the hint selected event)
-                                        ((TextView) spinnerLocation.getSelectedView()).setTextColor(Color.BLACK);
+//                                        ((TextView) spinnerLocation.getSelectedView()).setTextColor(Color.BLACK);
                                     }
                                 });
                         hintSpinner.init();
@@ -399,7 +350,6 @@ public class LoginActivity extends FragmentActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-//                        Toast.makeText(LoginActivity.this, "onCancelled", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -452,7 +402,6 @@ public class LoginActivity extends FragmentActivity {
 
         // Check for a valid email address.
         final boolean isSignedWhitEmail = !isPhoneValid(email);
-//        Toast.makeText(this, "Teléfono: " + !isSignedWhitEmail, Toast.LENGTH_SHORT).show();
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
@@ -478,15 +427,16 @@ public class LoginActivity extends FragmentActivity {
             FirebaseDatabase.getInstance()
                     .getReference(References.REFERENCE)
                     .child(References.USERS)
-                    .endAt(email)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             boolean isFinished = false;
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 User user = data.getValue(User.class);
+                                if (user.getEmail() == null)
+                                    Log.d("CDA_ERROR", data.getKey() + " ");
+                                else
                                 if (user.getEmail().equals(email) || user.getPhone().equals(email)) {
-//                                    Toast.makeText(LoginActivity.this, "Usuario encontrado!", Toast.LENGTH_SHORT).show();
                                     if (user.isSignInWithEmail()) {
                                         signInFireBase(user.getEmail(), password);
                                         isFinished = true;
@@ -525,7 +475,6 @@ public class LoginActivity extends FragmentActivity {
                             showProgress(false);
                             if (((FirebaseAuthException) task.getException()).getErrorCode().equals("ERROR_USER_NOT_FOUND")) {
                                 mEmailView.setError("usuario no encontrado");
-                                Toast.makeText(LoginActivity.this, email + "\n" + password, Toast.LENGTH_SHORT).show();
                             } else if (((FirebaseAuthException) task.getException()).getErrorCode().equals("ERROR_WRONG_PASSWORD")) {
                                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                             } else if (((FirebaseAuthException) task.getException()).getErrorCode().equals("ERROR_INVALID_EMAIL")) {
@@ -676,26 +625,6 @@ public class LoginActivity extends FragmentActivity {
 //
 //    }
 
-    private void addEmailsTsoAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putStringArrayList("used_numbers", used_numbers);
@@ -712,7 +641,7 @@ public class LoginActivity extends FragmentActivity {
     }
 
     private void signUp() {
-        EditText edName = ((EditText) findViewById(sign_up_first_name)),
+        EditText edName = ((EditText) findViewById(R.id.sign_up_first_name)),
                 edSecondName = (EditText) findViewById(R.id.sign_up_second_name),
                 edLastName = ((EditText) findViewById(R.id.sign_up_lastname)),
                 edPhone = ((EditText) findViewById(R.id.sign_up_phone)),
@@ -733,7 +662,6 @@ public class LoginActivity extends FragmentActivity {
         if (name.length() > 2) {
             if (lastName.length() > 2) {
                 if (spinnerLocation.getSelectedItemPosition() < spinnerLocation.getCount()) {
-//                    Toast.makeText(this, spinnerLocation.getSelectedItemPosition() + "", Toast.LENGTH_SHORT).show();
                     if (phone.length() > 5) {
                         if (isValidEmail(email)) {
                             if (password.length() > 5) {
@@ -742,20 +670,16 @@ public class LoginActivity extends FragmentActivity {
                                     registerUser(name, secondName, lastName, phone, email, password);
                                 } else {
                                     edRePassword.setError("Las claves no coinciden");
-//                                    Toast.makeText(getContext(), "Las claves no coinciden", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 edPassword.setError("Clave muy corta");
-//                                Toast.makeText(getContext(), "Clave muy corta", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             edEmail.setError("Correo incorrecto");
-//                            Toast.makeText(getContext(), "Correo incorrecto", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         edPhone.setError("Ingresá tu teléfono");
                         edPhone.requestFocus();
-//                        Toast.makeText(getContext(), "Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     TextView errorText = (TextView) spinnerLocation.getSelectedView();
@@ -766,11 +690,9 @@ public class LoginActivity extends FragmentActivity {
                 }
             } else {
                 edLastName.setError("Apellido muy corto");
-//                Toast.makeText(getContext(), "Apellido corto", Toast.LENGTH_SHORT).show();
             }
         } else {
             edName.setError("Nombre muy corto");
-//            Toast.makeText(getContext(), "Nombre corto", Toast.LENGTH_SHORT).show();
         }
         ViewSwitcher viewSwitcherOK = (ViewSwitcher) findViewById(R.id.switcher_sign_up_ok);
         viewSwitcherOK.showPrevious();
@@ -798,7 +720,7 @@ public class LoginActivity extends FragmentActivity {
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "falló la autenticación" + task.getException().getMessage(),
+                            Toast.makeText(LoginActivity.this, "falló la autenticación\n" + task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             FirebaseDatabase

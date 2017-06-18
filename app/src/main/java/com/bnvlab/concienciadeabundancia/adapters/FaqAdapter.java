@@ -8,7 +8,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.FAQItem;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class FaqAdapter extends BaseExpandableListAdapter {
 
         TextView textView = (TextView) view.findViewById(R.id.text);
         textView.setText(list.get(groupPosition).getAnswer());
-        textView.setTypeface(Utils.getTypeface(context));
+//        textView.setTypeface(Utils.getTypeface(context));
         return view;
     }
 
@@ -70,7 +69,7 @@ public class FaqAdapter extends BaseExpandableListAdapter {
         View view = inflater.inflate(R.layout.item_faq_question,parent,false);
         TextView textView = (TextView) view.findViewById(R.id.text);
         textView.setText(list.get(groupPosition).getQuestion());
-        textView.setTypeface(Utils.getTypeface(context));
+//        textView.setTypeface(Utils.getTypeface(context));
         return view;
     }
 

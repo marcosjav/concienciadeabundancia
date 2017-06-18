@@ -1,43 +1,63 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
-import com.bnvlab.concienciadeabundancia.LoginActivity;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.auxiliaries.CallAPI;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
-import com.bnvlab.concienciadeabundancia.clases.User;
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.Calendar;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import static com.bnvlab.concienciadeabundancia.R.id.notifications;
 
 /**
  * Created by Marcos on 21/03/2017.
@@ -46,8 +66,16 @@ import java.util.Calendar;
 public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
-    ImageButton buttonMaillink, buttonTweeterLink, buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden;
-    Button buttonQuiz, buttonFAQ, buttonAbout, buttonFundaments, buttonShare, buttonConference, buttonVideos;
+    ImageButton buttonMaillink, buttonTwitterLink, buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden;
+    Button buttonQuiz, buttonFAQ, buttonAbout, buttonFundaments, buttonShare, buttonConference, buttonVideos, buttonSubscribe;
+    View shareRow;
+    private static final String fbUri0 = "https://www.facebook.com/";
+    private static final String fbUri1 = "cdainternacional";
+    int hsForShare = 24;
+    ArrayList<JSONObject> notificationsList;
+    View notificationsIndicator;
+    LinearLayout layoutTrainings;
+    SharedPreferences prefs;
 
     public MainFragment() {
     }
@@ -56,25 +84,162 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
+        final Context context = getActivity();
 
-        /*AssetManager am = getContext().getAssets();
+        try {
+            SharedPreferences prefs = getActivity().getSharedPreferences(
+                    MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
+        } catch (Exception e) {
+            Log.e("ERRORR", "MainFragment - OnCreage\n" + e.getMessage());
+        }
 
-        typeface = Typeface.createFromAsset(am, String.format(Locale.US, "fonts/%s", "coffee.ttf"));
+        TextView version = (TextView) view.findViewById(R.id.version);
+        try {
+            version.setText("v" + getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+        }
 
-//        ((TextView)view.findViewById(R.id.text_view_conciencia)).setTypeface(typeface);*/
+        try {
+            Utils.showLoginDelay(getActivity());
+            final SharedPreferences prefs = context.getSharedPreferences(
+                    MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
+            notificationsList = new ArrayList<>();
+            try {
+//                if (prefs != prefs)
+//                    prefs = prefs;
 
-//        buttonProgress = (ImageButton) view.findViewById(R.id.button_main_progress);
-//        buttonTest = (ImageButton) view.findViewById(R.id.button_main_test);
+                notificationsIndicator = view.findViewById(R.id.notifications_indicator);
 
+                HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
+                ArrayList<JSONObject> list = new ArrayList<>();
+                for (String n : notifications) {
+                    JSONObject object = new JSONObject(n);
+                    list.add(object);
+                    boolean read = object.getBoolean("read");
+
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                    String title = prefs.getString("title","");
+//                    String message = prefs.getString("message","");
+//                    if (!title.equals("") || !message.equals("")) {
+//                        builder.setTitle(title)
+//                                .setMessage(message)
+//                                .setPositiveButton("OK",null)
+//                                .setCancelable(true)
+//                                .create()
+//                                .show();
+//                    }
+
+                    //if (!read)
+                    //   notificationsIndicator.setVisibility(View.VISIBLE);
+                }
+                notificationsList = list;
+            } catch (Exception e) {
+                Log.d("ERROR_PREFS2", e.getMessage());
+            }
+        } catch (Exception e) {
+
+        }
+
+        ///////////////////////////////////////////
+        String value = null;
+        if (getActivity().getIntent() != null && getActivity().getIntent().getExtras() != null) {
+            String v = getActivity().getIntent().getExtras().getString("android_id");
+            if (v != null)
+                value = v;
+
+//            if (getIntent().getBooleanExtra(References.SHARE_FROM_NOTIFICATION, false)) {
+//                setShareStartTime();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                final Context context = this;
+//                builder.setTitle("FELICIDADES!")
+//                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
+//                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
+//                                " solo por 12hs.\nEmpieza ahora!!!")
+//                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Utils.shareDialog(context);
+//                            }
+//                        });
+//                builder.create().show();
+//            } if (getIntent().getBooleanExtra(References.TRAININGS_FROM_NOTIFICATION, false)) {
+//                showTrainings = true;
+//            }
+            if (this.prefs != null) {
+                HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
+                ArrayList<JSONObject> list = new ArrayList<>();
+                String title = "";
+                String message = "";
+                try {
+                    for (String n : notifications) {
+                        JSONObject object = new JSONObject(n);
+                        list.add(object);
+                        boolean read = object.getBoolean("read");
+                        title = prefs.getString("title", "");
+                        message = prefs.getString("message", "");
+                        switch (getActivity().getIntent().getIntExtra("launchedBy", 0)) {
+                            case Notify.ACTION_SHARE:
+                                Toast.makeText(getActivity(), "1", Toast.LENGTH_SHORT).show();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                                if (!title.equals("") || !message.equals("")) {
+                                    builder.setTitle(title)
+                                            .setMessage(message)
+                                            .setPositiveButton("OK", null)
+                                            .setCancelable(true)
+                                            .create()
+                                            .show();
+                                }
+                                break;
+                            case Notify.ACTION_TRAININGS:
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                                String title1 = prefs.getString("title", "");
+                                String message1 = prefs.getString("message", "");
+                                if (!title1.equals("") || !message1.equals("")) {
+                                    builder1.setTitle(title1)
+                                            .setMessage(message1)
+                                            .setPositiveButton("OK", null)
+                                            .setCancelable(true)
+                                            .create()
+                                            .show();
+                                }
+                                break;
+                        }
+                    }
+                } catch (Exception e) {
+                }
+
+                getActivity().setIntent(null);
+            }
+        }
+        //////////////////////////////////////////
+
+        Button test = (Button) view.findViewById(R.id.test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CallAPI call = new CallAPI(getContext());
+                call.execute("https://fcm.googleapis.com/fcm/send");
+            }
+        });
+        ImageButton notificationButton = (ImageButton) view.findViewById(notifications);
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notificationsDialog();
+            }
+        });
+        shareRow = view.findViewById(R.id.layout_share);
         buttonFacebookLink = (ImageButton) view.findViewById(R.id.button_facebook_link);
         buttonMaillink = (ImageButton) view.findViewById(R.id.button_email_link);
-        buttonTweeterLink = (ImageButton) view.findViewById(R.id.button_tweeter_link);
+        buttonTwitterLink = (ImageButton) view.findViewById(R.id.button_tweeter_link);
         buttonWebLink = (ImageButton) view.findViewById(R.id.button_web_link);
         buttonInstaLink = (ImageButton) view.findViewById(R.id.button_insta_link);
         buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
         buttonSettings = (ImageButton) view.findViewById(R.id.button_settings);
         buttonAddChilden = (ImageButton) view.findViewById(R.id.add_children);
+        layoutTrainings = (LinearLayout) view.findViewById(R.id.layout_button_trainings);
 
         buttonShare = (Button) view.findViewById(R.id.button_share_main);
         buttonShare.setTypeface(Utils.getTypeface(getContext()));
@@ -96,6 +261,9 @@ public class MainFragment extends Fragment {
 
         buttonVideos = (Button) view.findViewById(R.id.button_main_videos);
         buttonVideos.setTypeface(Utils.getTypeface(getContext()));
+
+        buttonSubscribe = (Button) view.findViewById(R.id.button_subscribe);
+        buttonSubscribe.setTypeface(Utils.getTypeface(getContext()));
 
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,15 +310,15 @@ public class MainFragment extends Fragment {
         buttonFacebookLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("https://www.facebook.com/concienciaabundancia"); // missing 'http://' will cause crashed
+                Uri uri = Uri.parse(fbUri0 + fbUri1); // missing 'http://' will cause crashed
                 try {
                     int versionCode = getContext().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
                     boolean activated = getContext().getPackageManager().getApplicationInfo("com.facebook.katana", 0).enabled;
                     if (activated) {
                         if ((versionCode >= 3002850)) {
-                            uri = Uri.parse("fb://facewebmodal/f?href=" + "https://www.facebook.com/concienciaabundancia");
+                            uri = Uri.parse("fb://facewebmodal/f?href=" + fbUri0 + fbUri1);
                         } else {
-                            uri = Uri.parse("fb://page/" + "concienciaabundancia");
+                            uri = Uri.parse("fb://page/" + fbUri1);
                         }
                     }
                 } catch (PackageManager.NameNotFoundException ignored) {
@@ -160,10 +328,20 @@ public class MainFragment extends Fragment {
             }
         });
 
-        buttonTweeterLink.setOnClickListener(new View.OnClickListener() {
+        buttonTwitterLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "No disponible", Toast.LENGTH_SHORT).show();
+                Intent intent = null;
+                try {
+                    // get the Twitter app if possible
+                    getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=CDAIntl"));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                } catch (Exception e) {
+                    // no Twitter app, revert to browser
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/cdaintl"));
+                }
+                getActivity().startActivity(intent);
             }
         });
 
@@ -179,7 +357,17 @@ public class MainFragment extends Fragment {
         buttonInstaLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "No disponible", Toast.LENGTH_SHORT).show();
+                Uri uri = Uri.parse("http://instagram.com/_u/cdaintl");
+                Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
+
+                likeIng.setPackage("com.instagram.android");
+
+                try {
+                    startActivity(likeIng);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://instagram.com/cdaintl")));
+                }
             }
         });
 
@@ -196,7 +384,12 @@ public class MainFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
-                                showLogin();
+                                try {
+                                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                                } catch (IOException e) {
+                                    Log.d("ERROR_ADMIN", "MAIN_ACTIVITY_deleteInstanse: " + e.getMessage());
+                                }
+                                Utils.showLogin(getActivity());
                             }
                         })
                         .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -205,13 +398,11 @@ public class MainFragment extends Fragment {
                                 dialog.dismiss();
                             }
                         });
-
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
+                builder.create().show();
             }
         });
 
+        Utils.showLoginDelay(getActivity());
         FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                 .child(References.ADMINISTRATORS)
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -219,27 +410,46 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null)
-                            buttonShare.setVisibility(View.VISIBLE);
+                            showShare(true);
                         else {
                             FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                    .child(References.SHARE)
+                                    .child(References.USERS)
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .addValueEventListener(new ValueEventListener() {
+                                    .child(References.USERS_CHILD_ACTIVE)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.getValue() != null) {
-                                                long currentTime = Calendar.getInstance().getTime().getTime();
-                                                long sharedTime = dataSnapshot.getValue(long.class);
-                                                long difference = currentTime - sharedTime;
-                                                if (difference > 43200000) {
-                                                    buttonShare.setVisibility(View.GONE);
-                                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                                            .child(References.SHARE)
-                                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                            .removeValue();
-                                                } else
-                                                    buttonShare.setVisibility(View.VISIBLE);
-                                            }
+                                            if (dataSnapshot.getValue() != null)
+                                                showShare(dataSnapshot.getValue(boolean.class));
+                                           /* if (dataSnapshot != null && dataSnapshot.getValue() != null && dataSnapshot.getValue(boolean.class))
+                                                showShare(true);
+                                            else
+                                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                                        .child(References.SHARE)
+                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                        .addValueEventListener(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                if (dataSnapshot.getValue() != null) {
+                                                                    long currentTime = Calendar.getInstance().getTime().getTime();
+                                                                    long sharedTime = dataSnapshot.getValue(long.class);
+                                                                    long difference = currentTime - sharedTime;
+                                                                    if (difference > 3600000 * hsForShare) {
+                                                                        showShare(false);
+                                                                        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                                                                .child(References.SHARE)
+                                                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                                .removeValue();
+                                                                    } else
+                                                                        showShare(true);
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(DatabaseError databaseError) {
+
+                                                            }
+                                                        });*/
                                         }
 
                                         @Override
@@ -281,24 +491,30 @@ public class MainFragment extends Fragment {
         buttonAddChilden.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
+            }
+        });
+
+        buttonSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentMan.changeFragment(getActivity(), PayFragment.class);
             }
         });
 
         checkReceive();
 
-        checkPhone();
+//        checkPhone();
 
         return view;
     }
 
-    private void showLogin() {
-        Intent myIntent = new Intent(getActivity(), LoginActivity.class);
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        this.startActivity(myIntent);
-        getActivity().finish();
-    }
+//    private void showLogin() {
+//        Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+//        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        this.startActivity(myIntent);
+//        getActivity().finish();
+//    }
 
     private void checkReceive() {
         if (ContextCompat.checkSelfPermission(getContext(),
@@ -318,13 +534,6 @@ public class MainFragment extends Fragment {
     }
 
     private void shareDialog() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//
-//        builder
-//                .setNeutralButton("ENVIAR", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        final Dialog d = (Dialog) dialog;
         final String invitationCode = FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                 .child(References.INVITATION_CODES)
                 .push()
@@ -338,126 +547,128 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            String message = "Quiero compartir una hermosa experiencia con vos, que va a cambiar tu vida!\nPrimero instalá la app:\n\n" +
-                                    "https://play.google.com/store/apps/details?id=com.bnvlab.concienciadeabundancia\n\nDespués abrí este link con la App para registrarte\n" +
+                            String message = "Hola, te invito a vivir una experiencia que va a potenciar tu vida.\n En 30 minutos lograrás potenciar tu confianza, valoración, seguridad, alegría y reducirás tu estrés diario, de forma inmediata y permanente.\n\nPrimero instalá la app:\n\n" +
+                                    "https://play.google.com/store/apps/details?id=com.bnvlab.concienciadeabundancia\n\nDespués abrí este link y cuando te pregunte con qué aplicación, elegí la que instalaste en el paso anterior\n\n" +
                                     "http://concienciadeabundancia.com/code=" + invitationCode;
 
                             Notify.share(message, getContext());
-//                                            d.dismiss();
                         } else {
                             Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
-//                                            d.dismiss();
                         }
                     }
                 });
 
-
-//                    }
-//                });
-//
-//        Dialog dialog = builder.create();
-//
-//        dialog.show();
-    }
-
-    private void checkPhone() {
-        //String phone = MainActivity.user.getPhone();
-
-        FirebaseUser userFB = FirebaseAuth.getInstance().getCurrentUser();
-//        String[] splitEmail = userFB.getEmail().split("@");
-        final String email = userFB.getEmail();
-
-
-        FirebaseDatabase.getInstance()
-                .getReference(References.REFERENCE)
-                .child(References.USERS)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            User user = data.getValue(User.class);
-                            if (user.getEmail().equals(email)) {
-                                MainActivity.user = user;
-                                break;
-                            }
-                        }
-//                            User user = dataSnapshot.getValue(User.class);
-//                            if (user != null) {
-//                                MainActivity.user = user;
-//                                buttonAttention.isVisible(user.isVerified() ?
-//                                        View.GONE
-//                                        : View.VISIBLE);
-//                            }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-    }
-
-    /*protected void sendSMSMessage() {
-
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.SEND_SMS)) {
-                Toast.makeText(getContext(), "1", Toast.LENGTH_SHORT).show();
-            } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.SEND_SMS},
-                        MY_PERMISSIONS_REQUEST_SEND_SMS);
-            }
-        } else {
-            Toast.makeText(getContext(), "2", Toast.LENGTH_SHORT).show();
-            sendSMS();
-        }
-
-        Toast.makeText(getContext(), "3", Toast.LENGTH_SHORT).show();
-    }*/
-
-/*    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    sendSMS();
-                } else {
-                    Toast.makeText(getContext(),
-                            "SMS faild, please try again.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-            }
-        }
-        Toast.makeText(getContext(), "requestcode: " + requestCode, Toast.LENGTH_SHORT).show();
-
-    }*/
-
-/*    private void sendSMS() {
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("", null, "mensaje de prueba", null, null);
-        Toast.makeText(getContext(), "SMS sent.",
-                Toast.LENGTH_LONG).show();
-    }*/
-
-    private void onInviteClicked() {
-        Intent intent = new AppInviteInvitation.IntentBuilder("titulo")
-                .setMessage("mensaje")
-                .setDeepLink(Uri.parse("deep.link"))
-                .setCallToActionText("invitation_cta")
-                .build();
-        Toast.makeText(getContext(), intent.getStringExtra(Intent.EXTRA_TEXT), Toast.LENGTH_LONG).show();
-//        startActivityForResult(intent, 123);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (FirebaseAuth.getInstance().getCurrentUser() == null)
-            Utils.showLogin(getActivity());
+        Utils.showLogin(getActivity());
+
+    }
+
+    private void showShare(boolean show) {
+        shareRow.setVisibility(show ? View.VISIBLE : View.GONE);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layoutTrainings.getLayoutParams();
+        params.gravity = show ? Gravity.START : Gravity.END;
+        layoutTrainings.setLayoutParams(params);
+    }
+
+    class AsyncT extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try {
+                URL url = new URL("https://fcm.googleapis.com/fcm/send"); //Enter URL here
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
+                httpURLConnection.setRequestProperty("Authorization", "key=AAAAJoiF3uY:APA91bFcQXSRcnKoPBiUk8MmBaRw_EQO55ekb_9WQzGDsia78SaPy3mgDAxwct3EjVY0GEXrs_4Z8qthZQrpqIv76fv9T-vLfQSf7Q-yzgqhnafwe562VV3--8Gg0dJQmyIVEW-BymC8");
+                httpURLConnection.setRequestProperty("Content-Type", "application/json"); // here you are setting the `Content-Type` for the data you are sending which is `application/json`
+                httpURLConnection.connect();
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("to", "/topics/notifications");
+                JSONObject jsonNotif = new JSONObject();
+                jsonNotif.put("title", "ESTO ES EL TITULO");
+                jsonNotif.put("text", "esto es eL CUERPO");
+                jsonObject.put("notification", jsonNotif);
+
+                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+                final JSONObject jo = jsonObject;
+                Handler h = new Handler(Looper.getMainLooper());
+                h.post(new Runnable() {
+                    public void run() {
+//                        Toast.makeText(getContext(), jo.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                wr.writeBytes("{ \"notification\": {\"title\": \"Portugal vs. Denmark\",\"text\": \"5 to 1\"},\"to\" : \"cEoIG3BAlJo:APA91bFKUoTIGcwMw9BorsCpH7DUtiXW6FC_-UkkXpDEAj8H0U_YAh5hyhSrHjkM6SXYp40g62Wz1LrylARSSZ1MFsWtev-HAgbyJ0P153-wKAr1WgHRcrs1mmMmDvvcWyCdH1BFyBnK\"}");
+                wr.flush();
+                wr.close();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+
+    }
+
+    private void notificationsDialog() {
+        final Context context = getActivity();
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
+        builderSingle.setIcon(android.R.drawable.alert_light_frame);
+        builderSingle.setTitle("Select One Name:-");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
+
+        try {
+            HashSet<String> list = new HashSet<>();
+            for (JSONObject jsonObject : notificationsList) {
+                arrayAdapter.add(jsonObject.getString("message"));
+                jsonObject.put("read", true);
+                list.add(jsonObject.toString());
+            }
+            SharedPreferences prefs = context.getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY
+                    + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
+
+            prefs.edit().putStringSet("notifications", list).apply();
+            notificationsIndicator.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Log.d("NotificationDialog", e.getMessage());
+        }
+
+        builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String strName = arrayAdapter.getItem(which);
+                AlertDialog.Builder builderInner = new AlertDialog.Builder(context);
+                builderInner.setMessage(strName);
+                builderInner.setTitle("Your Selected Item is");
+                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builderInner.show();
+            }
+        });
+        builderSingle.show();
     }
 }

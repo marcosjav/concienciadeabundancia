@@ -3,13 +3,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "com.bnvlab.concienciadeabundancia"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 20
-        versionName "2.6"
+        versionCode 29
+        versionName "3.65"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -51,6 +51,7 @@ dependencies {
     compile 'com.google.firebase:firebase-invites:9.6.1'
     compile 'com.google.android.gms:play-services-maps:9.6.1'
     compile 'com.google.firebase:firebase-messaging:9.6.1'
+    compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
 }
 
 

@@ -5,5 +5,5 @@ package com.bnvlab.concienciadeabundancia.auxiliaries;
  */
 
 public interface ICallback {
-    public void callback();
+    void callback();
 }

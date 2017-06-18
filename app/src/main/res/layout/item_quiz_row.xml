@@ -12,23 +12,15 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:layout_gravity="center">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:text="Elijo consciente y subconscientemente"
-            android:visibility="gone"/>
-
         <TextView
             android:id="@+id/quiz_item_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
             android:textStyle="bold"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
-            android:text="AMARME INCONDICIONALMENTE" />
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:text="quiz" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,13 +32,8 @@
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/quiz_item_switch"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textColor="@android:color/black"
-            android:textOff="NO"
-            android:textOn="SÍ"
-            app:showText="true"/>
+            android:layout_width="55dp"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -8,6 +8,11 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 /**
@@ -63,15 +69,34 @@ public class Utils {
                 });
     }
 
+    public static void  showLoginDelay(Activity activity){
+        Thread timer = new Thread() {
+            public void run(){
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        timer.start();
+        showLogin(activity);
+    }
     public static void showLogin(Activity activity) {
-        Intent myIntent = new Intent(activity, LoginActivity.class);
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        activity.startActivity(myIntent);
-        activity.finish();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent myIntent = new Intent(activity, LoginActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            activity.startActivity(myIntent);
+            activity.finish();
+        }
     }
 
     public static void setTypeface(TextView textView, Context context) {
-        textView.setTypeface(getTypeface(context));
+        float size = textView.getTextSize();
+        int style = textView.getTypeface().getStyle();
+        textView.setTypeface(Utils.getTypeface(context), style);
+        textView.setTextSize(size);
     }
 
     public static Typeface getTypeface(Context context) {
@@ -81,4 +106,51 @@ public class Utils {
         }
         return typeface;
     }
+
+    public static void setTypeface(Context context, View view) {
+        ArrayList<TextView> list = getTextViewList(view);
+
+        for (TextView textView : list)
+            setTypeface(textView, context);
+    }
+
+    public static ArrayList<TextView> getTextViewList(View view) {
+        ArrayList<TextView> list = new ArrayList<>();
+
+        if (view instanceof ViewGroup) {
+            ViewGroup layout = (ViewGroup) view;
+            for (int i = 0; i < layout.getChildCount(); i++) {
+                View v = layout.getChildAt(i);
+                if (v instanceof LinearLayout)
+                    list.addAll(getTextViewList(v));
+                else if (v instanceof FrameLayout)
+                    list.addAll(getTextViewList(v));
+                else if (v instanceof TextView)
+                    list.add((TextView) v);
+            }
+        } else if (view instanceof TextView)
+            list.add((TextView) view);
+
+        return list;
+    }
+
+    public static void setSwitchListDisable(View view) {
+        ArrayList<TextView> list = new ArrayList<>();
+
+        if (view instanceof ViewGroup) {
+            ViewGroup layout = (ViewGroup) view;
+            for (int i = 0; i < layout.getChildCount(); i++) {
+                View v = layout.getChildAt(i);
+                if (v instanceof LinearLayout)
+                    setSwitchListDisable(v);
+                else if (v instanceof FrameLayout)
+                    setSwitchListDisable(v);
+                else if (v instanceof Switch)
+                    v.setClickable(false);
+            }
+        } else if (view instanceof Switch)
+            view.setClickable(false);
+
+    }
+
 }

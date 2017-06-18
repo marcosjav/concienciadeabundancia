@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fodo7"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clickable="true" >
 
     <TextView
         android:id="@+id/text_view_quiz_resume_layout_title"
@@ -29,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-           <!-- <LinearLayout
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -48,7 +49,6 @@
                     android:textColor="@android:color/white" />
 
             </LinearLayout>
--->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

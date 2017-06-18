@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fodo6"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clickable="true" >
 
 
     <TextView
@@ -53,7 +54,6 @@
                 android:id="@+id/text_view_fundaments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18dp"
                 android:textColor="@android:color/white" />
         </ScrollView>
     </ViewSwitcher>
