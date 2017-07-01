@@ -5,13 +5,7 @@ package com.bnvlab.concienciadeabundancia.clases;
  */
 
 public class ConferenceItem {
-    String date
-            ,duration
-            ,gps
-            ,info
-            ,location
-            ,place
-            ,title;
+    String date, duration, gps, info, location, place, title, image;
     boolean freeContent;
 
     public String getTitle() {
@@ -23,6 +17,14 @@ public class ConferenceItem {
     }
 
     public ConferenceItem() {
+        date = "";
+        duration = "";
+        gps = "";
+        info = "";
+        location = "";
+        place = "";
+        title = "";
+        image = "";
     }
 
     public ConferenceItem(String date, String duration, String gps, String info, String location, String place, String title, boolean freeContent) {
@@ -90,5 +92,13 @@ public class ConferenceItem {
 
     public void setFreeContent(boolean freeContent) {
         this.freeContent = freeContent;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

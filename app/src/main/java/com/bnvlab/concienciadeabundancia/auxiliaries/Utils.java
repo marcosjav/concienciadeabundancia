@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +86,27 @@ public class Utils {
         timer.start();
         showLogin(activity);
     }
+
+    public static void  delayedAction(Activity activity, final long delay_ms, ICallback callback){
+        Thread timer = new Thread() {
+            public void run(){
+                try {
+                    sleep(delay_ms);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        timer.start();
+        try {
+            timer.join();
+            callback.callback();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void showLogin(Activity activity) {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent myIntent = new Intent(activity, LoginActivity.class);
@@ -150,6 +174,40 @@ public class Utils {
             }
         } else if (view instanceof Switch)
             view.setClickable(false);
+
+    }
+
+    /**
+     * Set the height of a listview based on his childs.
+     * Usefull when the listview its inside a scrollview
+     * @param listView
+     */
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth,
+                        ViewPager.LayoutParams.MATCH_PARENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + ((listView.getDividerHeight()) * (listAdapter.getCount())) * 2;
+
+        listView.setLayoutParams(params);
+        listView.requestLayout();
 
     }
 

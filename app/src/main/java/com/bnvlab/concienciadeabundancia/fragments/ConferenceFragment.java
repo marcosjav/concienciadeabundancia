@@ -1,11 +1,13 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
  */
 
 public class ConferenceFragment extends Fragment {
+    private static final int REQUEST_WRITE_PERMISSION = 20;
     ArrayList<ConferenceItem> list;
     ConferenceAdapter adapter;
     ProgressBar progressBar;
@@ -102,6 +105,8 @@ public class ConferenceFragment extends Fragment {
 
         getConfereces();
 
+        ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_WRITE_PERMISSION);
+
         this.view = view;
         return view;
     }
@@ -120,13 +125,22 @@ public class ConferenceFragment extends Fragment {
 
                             ConferenceItem item = new ConferenceItem();
 
-                            item.setTitle((String) data.child(References.CONFERENCES_CHILD_TITLE).getValue());
-                            item.setDate((String) data.child(References.CONFERENCES_CHILD_DATE).getValue());
-                            item.setDuration((String) data.child(References.CONFERENCES_CHILD_DURATION).getValue());
-                            item.setGps((String) data.child(References.CONFERENCES_CHILD_GPS).getValue());
-                            item.setInfo((String) data.child(References.CONFERENCES_CHILD_INFO).getValue());
-                            item.setLocation((String) data.child(References.CONFERENCES_CHILD_LOCATION).getValue());
-                            item.setPlace((String) data.child(References.CONFERENCES_CHILD_PLACE).getValue());
+                            if (data.child(References.CONFERENCES_CHILD_TITLE).getValue() != null)
+                                item.setTitle(data.child(References.CONFERENCES_CHILD_TITLE).getValue(String.class));
+                            if (data.child(References.CONFERENCES_CHILD_DATE).getValue() != null)
+                                item.setDate(data.child(References.CONFERENCES_CHILD_DATE).getValue(String.class));
+                            if (data.child(References.CONFERENCES_CHILD_DURATION).getValue() != null)
+                                item.setDuration(data.child(References.CONFERENCES_CHILD_DURATION).getValue(String.class));
+                            if (data.child(References.CONFERENCES_CHILD_GPS).getValue() != null)
+                                item.setGps(data.child(References.CONFERENCES_CHILD_GPS).getValue(String.class));
+                            if (data.child(References.CONFERENCES_CHILD_INFO).getValue() != null)
+                                item.setInfo(data.child(References.CONFERENCES_CHILD_INFO).getValue(String.class));
+                            if (data.child(References.CONFERENCES_CHILD_LOCATION).getValue() != null)
+                                item.setLocation(data.child(References.CONFERENCES_CHILD_LOCATION).getValue(String.class));
+                            if (data.child(References.CONFERENCES_CHILD_PLACE).getValue() != null)
+                                item.setPlace(data.child(References.CONFERENCES_CHILD_PLACE).getValue(String.class));
+                            if (data.child(References.CONFERENCES_CHILD_LOGO).getValue() != null)
+                                item.setImage(data.child(References.CONFERENCES_CHILD_LOGO).getValue(String.class));
 
                             isEmpty = false;
 

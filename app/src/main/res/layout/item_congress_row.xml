@@ -9,6 +9,15 @@
     android:padding="10dp"
     android:layout_marginBottom="5dp">
 
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="100dp"
+        android:adjustViewBounds="true"
+        android:scaleType="center" />
+
     <TextView
         android:id="@+id/text_view_conference_item_title"
         android:textColor="@android:color/white"

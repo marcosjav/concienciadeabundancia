@@ -8,24 +8,19 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
 import com.bnvlab.concienciadeabundancia.fragments.TrainingFragment;
-import com.firebase.client.Firebase;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -42,217 +37,131 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 
-/*
-NORMAS:
-    -DESCRIPCIÓN DE MÉTODOS, SUS PARÁMETROS Y DEMÁS
-    -COMENTARIOS
-    -NOMBRES DE FUNCIONES Y VARIABLES AUTODESCRIPTIVOS - PREFERENTEMENTE EN INGLÉS
-    -CADA CLASE DEBE TENER SU COMENTARIO DESCRIBIENDO EL PROPÓSITO
-    -EN MÉTODOS COMPLICADOS, ANOTAR EL PSEUDOCÓDICO EN UN COMENTARIO
-    -CREAR CÓDIGO LO MÁS GENÉRICO POSIBLE, PARA PODER REUTILIZARLO
-    -CADA COMMIT DEBE IR ACOMPAÑADO DE UNA DESCRIPCIÓN DE LO QUE SE HIZO Y DE LO QUE SE SE VA A SEGUIR EN EL PRÓXIMO
-    -LOS TEXTOS, COLORES Y DEMÁS EN SU RESPECTIVO XML
-*/
+/**
+ * Created by Marcos on 25/06/2017.
+ */
+
 public class MainActivity extends FragmentActivity {
-    //    private FirebaseAuth mAuth;
-//    private FirebaseAuth.AuthStateListener mAuthListener;
-    static String TAG = "CDA_INFORMATION";
-    //    public static String REFERENCE = "CDA";
     public static boolean newUser = false;
     public static User user = null;
-    FragmentManager fragmentManager;
-    MainFragment mainFragment = new MainFragment();
-    boolean firstTime = true;
-    public static boolean databaseCalled;
     public static final String APP_SHARED_PREF_KEY = "ConcienciaDeAbundancia", FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
     private String android_id;
+    SharedPreferences prefs;
+    boolean showTrainings = false;
+    private FirebaseAuth mAuth;
+    final static String TAG = "ERRORR - MainActivity";
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        boolean showTrainings = false;
-        final SharedPreferences prefs;
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null)
+        mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            prefs = getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                    MODE_PRIVATE);
+            begin();
+        } else {
             showLogin();
-        else {
-            prefs = this.getSharedPreferences(
-                    this.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
-
-            if (!prefs.getBoolean("databaseCalled", false)) {
-                try {
-                    FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-                } catch (Exception e) {
-                    Log.d("MAIN_ACTIVITY", e.getMessage());
-                }
-                prefs.edit().putBoolean("databaseCalled", true).apply();
-            }
-
-            checks();
-
-            String value = null;
-            if (getIntent() != null && getIntent().getExtras() != null) {
-                String v = getIntent().getExtras().getString("android_id");
-                if (v != null)
-                    value = v;
-
-//            if (getIntent().getBooleanExtra(References.SHARE_FROM_NOTIFICATION, false)) {
-//                setShareStartTime();
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                final Context context = this;
-//                builder.setTitle("FELICIDADES!")
-//                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
-//                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
-//                                " solo por 12hs.\nEmpieza ahora!!!")
-//                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                Utils.shareDialog(context);
-//                            }
-//                        });
-//                builder.create().show();
-//            } if (getIntent().getBooleanExtra(References.TRAININGS_FROM_NOTIFICATION, false)) {
-//                showTrainings = true;
-//            }
-                try {
-                    HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
-                    ArrayList<JSONObject> list = new ArrayList<>();
-                    String title = "";
-                    String message = "";
-
-                    for (String n : notifications) {
-                        JSONObject object = new JSONObject(n);
-                        list.add(object);
-                        boolean read = object.getBoolean("read");
-                        title = prefs.getString("title", "");
-                        message = prefs.getString("message", "");
-                        switch (getIntent().getIntExtra("launchedBy", 0)) {
-                            case Notify.ACTION_SHARE:
-                                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
-                                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                                if (!title.equals("") || !message.equals("")) {
-                                    builder.setTitle(title)
-                                            .setMessage(message)
-                                            .setPositiveButton("OK", null)
-                                            .setCancelable(true)
-                                            .create()
-                                            .show();
-                                }
-                                break;
-                            case Notify.ACTION_TRAININGS:
-                                showTrainings = true;
-                                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-                                String title1 = prefs.getString("title", "");
-                                String message1 = prefs.getString("message", "");
-                                if (!title1.equals("") || !message1.equals("")) {
-                                    builder1.setTitle(title1)
-                                            .setMessage(message1)
-                                            .setPositiveButton("OK", null)
-                                            .setCancelable(true)
-                                            .create()
-                                            .show();
-                                }
-                                break;
-                            case Notify.ACTION_TRAINING_RESULT:
-                                setShareStartTime();
-                                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                                final Context context = this;
-                                builder2.setTitle("FELICIDADES!")
-                                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
-                                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
-                                                " solo por 12hs.\nEmpieza ahora!!!")
-                                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Utils.shareDialog(context);
-                                            }
-                                        });
-                                builder2.create().show();
-                                break;
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.e("ERRORR", "MainActivity - OnCreate - Line 178\n    " + e.getMessage());
-                    e.printStackTrace();
-                }
-
-                setIntent(null);
-            }
-
-            if (value != null) {
-                android_id = value;
-                prefs.edit().putString("android_id", android_id).apply();
-            } else if (prefs.getString("android_id", "").equals("")) {
-                prefs.edit().putString("android_id", android_id).apply();
-            } else {
-                android_id = prefs.getString("android_id", "");
-            }
-
-
-            Firebase.getDefaultConfig().setPersistenceEnabled(true);
-
-            if (prefs.getBoolean("firstLogin", true)) {
-                FirebaseAuth.getInstance().signOut();
-                prefs.edit().putBoolean("firstLogin", false).apply();
-            }
-
-            ///////////////////////
-
-            // use a default value using new Date()
-            firstTime = prefs.getBoolean(this.FIRST_TIME_PREF_KEY, true);
-
-            // PROPAGANDA DEL PRIMER INGRESO DEL USUSARIO
-            if (firstTime) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                View view = View.inflate(this, R.layout.dialog_video, null);
-
-                final YouTubePlayerSupportFragment frag =
-                        (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
-                frag.initialize(Config.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-                    @Override
-                    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-                        if (!wasRestored) {
-                            //I assume the below String value is your video id
-                            youTubePlayer.loadVideo("GJZ45KiWLV4");
-                        }
-                    }
-
-                    @Override
-                    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                        if (youTubeInitializationResult.isUserRecoverableError()) {
-                            youTubeInitializationResult.getErrorDialog(MainActivity.this, 1).show();
-                        } else {
-                            String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
-                            Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
-                builder.setView(view)
-                        .setCancelable(false)
-                        .setPositiveButton("ENTENDIDO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
-                                frag.onDestroy();
-                                dialog.dismiss();
-                            }
-                        });
-
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
-            }
-
-            FragmentMan.changeFragment(this, MainFragment.class);
-            if (showTrainings)
-                FragmentMan.changeFragment(this, TrainingFragment.class);
         }
     }
+
+
+    private void begin() {
+        checks();
+        String value = null;
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            String v = getIntent().getExtras().getString("android_id");
+            if (v != null)
+                value = v;
+            try {
+                HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
+                ArrayList<JSONObject> list = new ArrayList<>();
+                String title = "";
+                String message = "";
+
+                for (String n : notifications) {
+                    JSONObject object = new JSONObject(n);
+                    list.add(object);
+                    boolean read = object.getBoolean("read");
+                    title = prefs.getString("title", "");
+                    message = prefs.getString("message", "");
+                    switch (getIntent().getIntExtra("launchedBy", 0)) {
+                        case Notify.ACTION_SHARE:
+                            Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                            if (!title.equals("") || !message.equals("")) {
+                                builder.setTitle(title)
+                                        .setMessage(message)
+                                        .setPositiveButton("OK", null)
+                                        .setCancelable(true)
+                                        .create()
+                                        .show();
+                            }
+                            break;
+                        case Notify.ACTION_TRAININGS:
+                            showTrainings = true;
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+                            String title1 = prefs.getString("title", "");
+                            String message1 = prefs.getString("message", "");
+                            if (!title1.equals("") || !message1.equals("")) {
+                                builder1.setTitle(title1)
+                                        .setMessage(message1)
+                                        .setPositiveButton("OK", null)
+                                        .setCancelable(true)
+                                        .create()
+                                        .show();
+                            }
+                            break;
+                        case Notify.ACTION_TRAINING_RESULT:
+                            setShareStartTime();
+                            AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
+                            final Context context = this;
+                            builder2.setTitle("FELICIDADES!")
+                                    .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
+                                            " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
+                                            " solo por 12hs.\nEmpieza ahora!!!")
+                                    .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Utils.shareDialog(context);
+                                        }
+                                    });
+                            builder2.create().show();
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "MainActivity - OnCreate - Line 131\n    " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            setIntent(null);
+        }
+
+        if (value != null) {
+            android_id = value;
+            prefs.edit().putString("android_id", android_id).apply();
+        } else if (prefs.getString("android_id", "").equals("")) {
+            prefs.edit().putString("android_id", android_id).apply();
+        } else {
+            android_id = prefs.getString("android_id", "");
+        }
+
+        if (prefs.getBoolean("firstLogin", true)) {
+            prefs.edit().putBoolean("firstLogin", false).apply();
+        }
+
+        FragmentMan.changeFragment(this, MainFragment.class);
+        if (showTrainings)
+            FragmentMan.changeFragment(this, TrainingFragment.class);
+
+    }
+
 
     private void showLogin() {
         Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
@@ -301,7 +210,63 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checks();
+
+    }
+
+
+//    private void dialogFirstTime(){
+//        // use a default value using new Date()
+//        boolean firstTime = prefs.getBoolean(MainActivity.FIRST_TIME_PREF_KEY, true);
+//
+//        // PROPAGANDA DEL PRIMER INGRESO DEL USUSARIO
+//        if (firstTime) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//
+//            View view1 = View.inflate(this, R.layout.dialog_video, null);
+//
+//            final YouTubePlayerSupportFragment frag =
+//                    (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.youtube_frame);
+//
+//            frag.initialize(Config.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+//                @Override
+//                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+//                    if (!wasRestored) {
+//                        //I assume the below String value is your video id
+//                        youTubePlayer.loadVideo("GJZ45KiWLV4");
+//                    }
+//                }
+//
+//                @Override
+//                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+//                    if (youTubeInitializationResult.isUserRecoverableError()) {
+//                        youTubeInitializationResult.getErrorDialog(MainActivity.this, 1).show();
+//                    } else {
+//                        String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
+//                        Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            });
+//
+//            builder.setView(view1)
+//                    .setCancelable(false)
+//                    .setPositiveButton("ENTENDIDO", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
+//                            frag.onDestroy();
+//                            dialog.dismiss();
+//                        }
+//                    });
+//
+//            AlertDialog dialog = builder.create();
+//
+//            dialog.show();
+//        }
+//    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
     }
 
     private void checks() {
@@ -313,7 +278,7 @@ public class MainActivity extends FragmentActivity {
             double thisVersion = Double.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
 
             if (playVersion > thisVersion) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
                 builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -341,60 +306,60 @@ public class MainActivity extends FragmentActivity {
             e.printStackTrace();
         }
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            showLogin();
-        } else {
-            FirebaseDatabase.getInstance()
-                    .getReference(References.REFERENCE)
-                    .child(References.USERS)
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase.getInstance()
+                .getReference(References.REFERENCE)
+                .child(References.USERS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 //                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            User user = dataSnapshot.getValue(User.class);
+                        User user = dataSnapshot.getValue(User.class);
 //                                if (user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
-                            MainActivity.user = user;
+                        MainActivity.user = user;
 //                            }
-                        }
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
+                    }
+                });
 
-            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                    .child(References.USERS)
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child(References.USERS_CHILD_DEVICEID)
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getValue() != null)
-                                if (!dataSnapshot.getValue(String.class).equals(android_id)) {
-                                    Toast.makeText(MainActivity.this, "Se inició sesión en otro dispositivo", Toast.LENGTH_LONG).show();
-                                    FirebaseAuth.getInstance().signOut();
-                                    try {
-                                        FirebaseInstanceId.getInstance().deleteInstanceId();
-                                    } catch (IOException e) {
-                                        Log.d("ERROR_ADMIN", "MAIN_ACTIVITY_deleteInstanse: " + e.getMessage());
-                                    }
-                                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-                                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                    MainActivity.this.startActivity(myIntent);
-                                    MainActivity.this.finish();
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.USERS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(References.USERS_CHILD_DEVICEID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            SharedPreferences prefs = MainActivity.this.getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                    MODE_PRIVATE);
+                            if (!dataSnapshot.getValue(String.class).equals(android_id) && !dataSnapshot.getValue(String.class).equals(prefs.getString("android_id", ""))) {
+                                Toast.makeText(getApplicationContext(), "Se inició sesión en otro dispositivo", Toast.LENGTH_LONG).show();
+                                FirebaseAuth.getInstance().signOut();
+                                try {
+                                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                                } catch (IOException e) {
+                                    Log.d("ERROR_ADMIN", "MAIN_ACTIVITY_deleteInstanse: " + e.getMessage());
                                 }
+//                                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+//                                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                                    MainActivity.this.startActivity(myIntent);
+//                                    MainActivity.this.finish();
+                            }
 
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
-        }
+                    }
+                });
+
     }
 
     private void setShareStartTime() {
@@ -404,7 +369,15 @@ public class MainActivity extends FragmentActivity {
                 .setValue(Calendar.getInstance().getTime().getTime());
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 }
-
-

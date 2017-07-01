@@ -111,8 +111,9 @@ public class VideoItemAdapter extends BaseAdapter {
         holder.textViewTitle.setTypeface(Utils.getTypeface(context));
 //        holder.imageViewThumbnail.setImageBitmap(data.get(position).getThumbnail());
         String thumbnailURL = data.get(position).getThumbnail();
-        if (!thumbnailURL.isEmpty() && !thumbnailURL.equals(""))
-            Picasso.with(context).load(thumbnailURL).into(holder.imageViewThumbnail);
+        if (!thumbnailURL.isEmpty() && !thumbnailURL.equals("")) {
+            Picasso.with(context).load(thumbnailURL).placeholder(R.drawable.progress_animation).into(holder.imageViewThumbnail);
+        }
         holder.url.setText(data.get(position).getUrl());
 
         return convertView;

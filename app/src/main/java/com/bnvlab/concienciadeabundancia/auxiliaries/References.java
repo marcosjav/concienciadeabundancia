@@ -16,6 +16,7 @@ public class References {
             , CONFERENCES_CHILD_LOCATION = "location"
             , CONFERENCES_CHILD_PLACE = "place"
             , CONFERENCES_CHILD_TITLE = "title"
+            , CONFERENCES_CHILD_LOGO = "logo"
 
             , LOCATIONS = "locations"
 
@@ -67,8 +68,11 @@ public class References {
             , SHARED_PREFERENCES_NOTIFICATION_RESULT = "training_result"
             , SHARED_PREFERENCES_CAN_SHARE = "can_share"
 
-            ,SHARE_FROM_NOTIFICATION = "share_from_notification"
-            ,TRAININGS_FROM_NOTIFICATION = "trainings_from_notifications"
+            , SHARE_FROM_NOTIFICATION = "share_from_notification"
+            , TRAININGS_FROM_NOTIFICATION = "trainings_from_notifications"
+            , TEXTS = "texts"
+            , TEXTS_RESUME_FINISH = "resume_finish"
+            , TEXTS_RESUME_WAITING = "resume_waiting"
 
             , INVITATION_CODES = "invitation_codes"
             , INVITATION_CODES_SENDER_UID = "sender_uid"

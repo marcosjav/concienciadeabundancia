@@ -1,6 +1,5 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
-import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,9 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
@@ -34,11 +31,15 @@ import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.CallAPI;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -65,17 +66,16 @@ import static com.bnvlab.concienciadeabundancia.R.id.notifications;
 
 public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
-    private static final int MY_PERMISSIONS_REQUEST_RECEIVE_SMS = 0;
     ImageButton buttonMaillink, buttonTwitterLink, buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden;
     Button buttonQuiz, buttonFAQ, buttonAbout, buttonFundaments, buttonShare, buttonConference, buttonVideos, buttonSubscribe;
     View shareRow;
     private static final String fbUri0 = "https://www.facebook.com/";
     private static final String fbUri1 = "cdainternacional";
-    int hsForShare = 24;
     ArrayList<JSONObject> notificationsList;
     View notificationsIndicator;
     LinearLayout layoutTrainings;
     SharedPreferences prefs;
+    final static String TAG = "ERRORR - MainFragment";
 
     public MainFragment() {
     }
@@ -84,14 +84,11 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_main, container, false);
-        final Context context = getActivity();
 
-        try {
-            prefs = getActivity().getSharedPreferences(
-                    MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
-        } catch (Exception e) {
-            Log.e("ERRORR", "MainFragment - OnCreate - line 93\n    " + e.getMessage());
-        }
+        prefs = getActivity().getSharedPreferences(
+                MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
+
+        checkUserType();
 
         TextView version = (TextView) view.findViewById(R.id.version);
         try {
@@ -100,14 +97,9 @@ public class MainFragment extends Fragment {
         }
 
         try {
-            Utils.showLoginDelay(getActivity());
-//            final SharedPreferences prefs = context.getSharedPreferences(
-//                    MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
             notificationsList = new ArrayList<>();
             try {
-//                if (prefs != prefs)
-//                    prefs = prefs;
 
                 notificationsIndicator = view.findViewById(R.id.notifications_indicator);
 
@@ -404,74 +396,8 @@ public class MainFragment extends Fragment {
             }
         });
 
-        Utils.showLoginDelay(getActivity());
-        showShare(prefs.getBoolean(References.SHARED_PREFERENCES_CAN_SHARE,false));
+        showShare(prefs.getBoolean(References.SHARED_PREFERENCES_CAN_SHARE, false));
 
-        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                .child(References.ADMINISTRATORS)
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getValue() != null) {
-                            showShare(true);
-                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE,true).apply();
-                        } else {
-                            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                    .child(References.USERS)
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .child(References.USERS_CHILD_ACTIVE)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.getValue() != null)
-                                                showShare(dataSnapshot.getValue(boolean.class));
-                                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, dataSnapshot.getValue(boolean.class)).apply();
-                                           /* if (dataSnapshot != null && dataSnapshot.getValue() != null && dataSnapshot.getValue(boolean.class))
-                                                showShare(true);
-                                            else
-                                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                                        .child(References.SHARE)
-                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                        .addValueEventListener(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                if (dataSnapshot.getValue() != null) {
-                                                                    long currentTime = Calendar.getInstance().getTime().getTime();
-                                                                    long sharedTime = dataSnapshot.getValue(long.class);
-                                                                    long difference = currentTime - sharedTime;
-                                                                    if (difference > 3600000 * hsForShare) {
-                                                                        showShare(false);
-                                                                        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                                                                .child(References.SHARE)
-                                                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                                                .removeValue();
-                                                                    } else
-                                                                        showShare(true);
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(DatabaseError databaseError) {
-
-                                                            }
-                                                        });*/
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            Log.e("ERRORR", "MainFragment - OnCreate - Line 459\n    " + databaseError.getMessage());
-                                        }
-                                    });
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.e("ERRORR", "MainFragment - OnCreate - Line 468\n    " + databaseError.getMessage());
-                    }
-                });
 
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -508,35 +434,64 @@ public class MainFragment extends Fragment {
             }
         });
 
-        checkReceive();
-
-//        checkPhone();
-
         return view;
     }
 
-//    private void showLogin() {
-//        Intent myIntent = new Intent(getActivity(), LoginActivity.class);
-//        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        this.startActivity(myIntent);
-//        getActivity().finish();
+//    private void dialogFirstTime(){
+//        // use a default value using new Date()
+//        boolean firstTime = prefs.getBoolean(MainActivity.FIRST_TIME_PREF_KEY, true);
+//
+//        // PROPAGANDA DEL PRIMER INGRESO DEL USUSARIO
+//        if (firstTime) {
+//            try {
+//                Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), Config.YOUTUBE_API_KEY, "GJZ45KiWLV4", 0, true, true);
+//                startActivity(intent);
+//                prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
+//            }catch (Exception e){
+//                Log.e(TAG, e.getMessage());
+//                e.printStackTrace();
+//            }
+//        }
 //    }
 
-    private void checkReceive() {
-        if (ContextCompat.checkSelfPermission(getContext(),
-                Manifest.permission.RECEIVE_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
+    private void checkUserType() {
+        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                .child(References.ADMINISTRATORS)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                .child(fbUid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            showShare(true);
+                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, true).apply();
+                        } else {
+                            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                    .child(References.USERS)
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(References.USERS_CHILD_ACTIVE)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.getValue() != null)
+                                                showShare(dataSnapshot.getValue(boolean.class));
+                                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, dataSnapshot.getValue(boolean.class)).apply();
+                                        }
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.RECEIVE_SMS)) {
-                //THE USER NOT ACCEPT READ SMS
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Log.e("ERRORR", "MainFragment - OnCreate - Line 459\n    " + databaseError.getMessage());
+                                        }
+                                    });
+                        }
 
-            } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.RECEIVE_SMS},
-                        MY_PERMISSIONS_REQUEST_RECEIVE_SMS);
-            }
-        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e("ERRORR", "MainFragment - OnCreate - Line 468\n    " + databaseError.getMessage());
+                    }
+                });
     }
 
     private void shareDialog() {
@@ -570,7 +525,53 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Utils.showLogin(getActivity());
+        dialogFirstTime();
+    }
+
+    private void dialogFirstTime() {
+
+        if (prefs.getBoolean(MainActivity.FIRST_TIME_PREF_KEY, true)) {
+            prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
+//            Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), Config.YOUTUBE_API_KEY, "GJZ45KiWLV4", 0, true, true);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            startActivity(intent);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            View view = View.inflate(getActivity(),R.layout.dialog_first_time,null);
+
+            final YouTubePlayerSupportFragment youTubePlayerSupportFragment = (YouTubePlayerSupportFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.youtube_fragment);
+
+            youTubePlayerSupportFragment.initialize(Config.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+                @Override
+                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+                    if (!wasRestored) {
+                        //I assume the below String value is your video id
+                        youTubePlayer.loadVideo("GJZ45KiWLV4");
+                    }
+                }
+
+                @Override
+                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                    if (youTubeInitializationResult.isUserRecoverableError()) {
+                        youTubeInitializationResult.getErrorDialog(getActivity(), 1).show();
+                    } else {
+                        String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
+                        Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
+            builder.setView(view)
+                    .setCancelable(false)
+                    .setPositiveButton("ENTENDIDO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            youTubePlayerSupportFragment.onDestroy();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
 
     }
 

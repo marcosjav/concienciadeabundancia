@@ -8,13 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.ResumeAdapter;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,11 +32,12 @@ import java.util.ArrayList;
  * Created by Marcos on 08/04/2017.
  */
 
-public class ResumeFragment extends Fragment {
-
+public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
+//public class ResumeFragment extends Fragment {
     TextView tvTitle;
     ListView listView;
     ViewSwitcher viewSwitcher;
+    TextView textViewResume;
 
     String quizId;
     ArrayList<QuizItem> list;
@@ -66,6 +72,13 @@ public class ResumeFragment extends Fragment {
             getQuiz();
         }
 
+        textViewResume = (TextView) view.findViewById(R.id.text_view_resume);
+        textViewResume.setTypeface(Utils.getTypeface(getContext()));
+
+        YouTubePlayerSupportFragment frag =
+                (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
+        frag.initialize(Config.YOUTUBE_API_KEY, this);
+
         return view;
     }
 
@@ -98,9 +111,46 @@ public class ResumeFragment extends Fragment {
                         for (DataSnapshot data: dataSnapshot.getChildren()) {
                             if (!data.getKey().equals(References.SENT_CHILD_CHECKED))
                                 list.add(data.getValue(QuizItem.class));
+                            else {
+                                if (data.getValue(boolean.class)){
+                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                            .child(References.TEXTS)
+                                            .child(References.TEXTS_RESUME_FINISH)
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    if (dataSnapshot.getValue() != null)
+                                                        textViewResume.setText(dataSnapshot.getValue(String.class));
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                }else{
+                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                            .child(References.TEXTS)
+                                            .child(References.TEXTS_RESUME_WAITING)
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    if (dataSnapshot.getValue() != null)
+                                                        textViewResume.setText(dataSnapshot.getValue(String.class));
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                }
+                            }
+
                         }
 
                         adapter.notifyDataSetChanged();
+                        Utils.setListViewHeightBasedOnChildren(listView);
                         viewSwitcher.showNext();
                     }
 
@@ -110,5 +160,22 @@ public class ResumeFragment extends Fragment {
                         viewSwitcher.showNext();
                     }
                 });
+    }
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
+        if (!wasRestored) {
+            youTubePlayer.cueVideo("WSVH_nF18Ls");
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        if (youTubeInitializationResult.isUserRecoverableError()) {
+            youTubeInitializationResult.getErrorDialog(getActivity(), 1).show();
+        } else {
+            String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
+            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+        }
     }
 }

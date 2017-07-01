@@ -55,6 +55,7 @@ import java.util.HashMap;
  */
 
 public class QuizFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
+//public class QuizFragment extends Fragment {
     ArrayList<QuizItem> list;
     QuizAdapter adapter;
     View view;
@@ -198,8 +199,7 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                     }
                     frag.initialize(Config.YOUTUBE_API_KEY, this);
                     Log.d("ERRORR", "VIDEO: " + video + "   " + s.length);
-                }
-                else
+                } else
                     frag.initialize(Config.YOUTUBE_API_KEY, this);
 
             if (!quizId.isEmpty())
@@ -299,114 +299,113 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
     private void sendQuiz() {
         if (userCounter < 1 && !require.equals("")) {
             Toast.makeText(getContext(), "No estás habilitado para enviar guías\nPor favor contáctate con nosotros", Toast.LENGTH_LONG).show();
-        } else if (lastSent == actualWeek) {
+        } else if (lastSent == actualWeek && !require.equals("")) {
             Toast.makeText(getContext(), "Esta guía todavía no está disponible\nRecuerda que se habilitará una guía semanalmente", Toast.LENGTH_LONG).show();
         } else {
-
             if (require.equals(""))
                 requiredOK = true;
-            else {
-                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                        .child(References.SENT)
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                    .child(References.SENT)
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (!requiredOK)
                                 requiredOK = dataSnapshot.hasChild(require);
 
-                                if (!requiredOK) {
-                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                            .child(References.QUIZ)
-                                            .child(require)
-                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    if (dataSnapshot.child(References.QUIZ_CHILD_MODULE).exists()
-                                                            && dataSnapshot.child(References.QUIZ_CHILD_TITLE).exists()) {
-                                                        Toast.makeText(getActivity(), "Para enviar esta guía necesitas:\n"
-                                                                + dataSnapshot.child(References.QUIZ_CHILD_MODULE).getValue(String.class) + "\n"
-                                                                + dataSnapshot.child(References.QUIZ_CHILD_TITLE).getValue(String.class), Toast.LENGTH_LONG).show();
-                                                        getActivity().onBackPressed();
-                                                        showProgress(false);
-                                                    } else {
-                                                        Toast.makeText(getActivity(), "Ocurrió un error. Inténtelo en otro momento", Toast.LENGTH_SHORT).show();
-                                                        Log.d("ERRORR", "QuizFragment - sendQuiz - Line 324\n    require: " + require + "\n    module: " + dataSnapshot.child(References.QUIZ_CHILD_MODULE).exists()
-                                                                + "\n    title: " + dataSnapshot.child(References.QUIZ_CHILD_TITLE).exists());
-                                                        getActivity().onBackPressed();
-                                                        showProgress(false);
-                                                    }
+                            if (!requiredOK) {
+                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                        .child(References.QUIZ)
+                                        .child(require)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.child(References.QUIZ_CHILD_MODULE).exists()
+                                                        && dataSnapshot.child(References.QUIZ_CHILD_TITLE).exists()) {
+                                                    Toast.makeText(getActivity(), "Para enviar esta guía necesitas:\n"
+                                                            + dataSnapshot.child(References.QUIZ_CHILD_MODULE).getValue(String.class) + "\n"
+                                                            + dataSnapshot.child(References.QUIZ_CHILD_TITLE).getValue(String.class), Toast.LENGTH_LONG).show();
+                                                    getActivity().onBackPressed();
+                                                    showProgress(false);
+                                                } else {
+                                                    Toast.makeText(getActivity(), "Ocurrió un error. Inténtelo en otro momento", Toast.LENGTH_SHORT).show();
+                                                    Log.d("ERRORR", "QuizFragment - sendQuiz - Line 324\n    require: " + require + "\n    module: " + dataSnapshot.child(References.QUIZ_CHILD_MODULE).exists()
+                                                            + "\n    title: " + dataSnapshot.child(References.QUIZ_CHILD_TITLE).exists());
+                                                    getActivity().onBackPressed();
+                                                    showProgress(false);
                                                 }
+                                            }
 
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
+                                            }
+                                        });
+                            } else {
+                                showProgress(true);
+                                HashMap map = new HashMap();
+                                for (int i = 0; i < list.size(); i++) {
+                                    map.put(i + "", list.get(i));
+                                }
+                                map.put(References.SENT_CHILD_CHECKED, false);
+
+                                FirebaseDatabase.getInstance()
+                                        .getReference(References.REFERENCE)
+                                        .child(References.SENT)
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(quizId)
+                                        .setValue(map)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                                                    builder.setTitle("FELICIDADES!")
+                                                            .setMessage("En 24HS estarán realizados los cambios. " +
+                                                                    "\n\nTIPS PARA ACELERAR EL PROCESO: " +
+                                                                    "Para acelerar el proceso te recomendamos que tomes al menos dos litros de agua al día y realices de 15 a 30 minutos" +
+                                                                    " de ejercicios aeróbicos diarios\\nA partir de mañana podrás regalarle esta experiencia a todos tus conocidos, amigos" +
+                                                                    " y familiares!")
+                                                            .setPositiveButton("ENTIENDO", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+                                                                    getActivity().onBackPressed();
+                                                                    getActivity().onBackPressed();
+                                                                    FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
+                                                                }
+                                                            })
+                                                            .setCancelable(false);
+
+                                                    builder.show();
                                                 }
-                                            });
-                                } else {
-                                    showProgress(true);
-                                    HashMap map = new HashMap();
-                                    for (int i = 0; i < list.size(); i++) {
-                                        map.put(i + "", list.get(i));
+                                            }
+                                        });
+                                try {
+                                    // uC--
+                                    if (!require.equals("")) {
+                                        userCounter--;
+                                        MainActivity.user.setCounter(userCounter);
+                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference(References.REFERENCE).child(References.USERS).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        db.child(References.USERS_CHILD_COUNTER).setValue(userCounter);
+                                        // lastSent = today
+                                        db.child(References.USERS_CHILD_LAST_SENT).setValue(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
                                     }
-                                    map.put(References.SENT_CHILD_CHECKED, false);
 
-                                    FirebaseDatabase.getInstance()
-                                            .getReference(References.REFERENCE)
-                                            .child(References.SENT)
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .child(quizId)
-                                            .setValue(map)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-                                                        builder.setTitle("FELICIDADES!")
-                                                                .setMessage("En 24HS estarán realizados los cambios. " +
-                                                                        "\n\nTIPS PARA ACELERAR EL PROCESO: " +
-                                                                        "Para acelerar el proceso te recomendamos que tomes al menos dos litros de agua al día y realices de 15 a 30 minutos" +
-                                                                        " de ejercicios aeróbicos diarios\\nA partir de mañana podrás regalarle esta experiencia a todos tus conocidos, amigos" +
-                                                                        " y familiares!")
-                                                                .setPositiveButton("ENTIENDO", new DialogInterface.OnClickListener() {
-                                                                    @Override
-                                                                    public void onClick(DialogInterface dialog, int which) {
-                                                                        dialog.dismiss();
-                                                                        getActivity().onBackPressed();
-                                                                        getActivity().onBackPressed();
-                                                                        FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
-                                                                    }
-                                                                })
-                                                                .setCancelable(false);
-
-                                                        builder.show();
-                                                    }
-                                                }
-                                            });
-                                    try {
-                                        // uC--
-                                        if (!require.equals("")) {
-                                            userCounter--;
-                                            MainActivity.user.setCounter(userCounter);
-                                            DatabaseReference db = FirebaseDatabase.getInstance().getReference(References.REFERENCE).child(References.USERS).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                            db.child(References.USERS_CHILD_COUNTER).setValue(userCounter);
-                                            // lastSent = today
-                                            db.child(References.USERS_CHILD_LAST_SENT).setValue(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
-                                        }
-
-                                    } catch (Exception e) {
-                                        Log.d("ERRORR", "QuizFragment - sendQuiz - Line 389\n    " + e.getMessage());
-                                        e.printStackTrace();
-                                    }
+                                } catch (Exception e) {
+                                    Log.d("ERRORR", "QuizFragment - sendQuiz - Line 389\n    " + e.getMessage());
+                                    e.printStackTrace();
                                 }
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.d("ERRORR", "QuizFragment - sendQuiz - Line 307\n    " + databaseError.getMessage());
-                            }
-                        });
-            }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d("ERRORR", "QuizFragment - sendQuiz - Line 307\n    " + databaseError.getMessage());
+                        }
+                    });
 
 
         }
@@ -417,11 +416,7 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
         if (!wasRestored) {
-            //I assume the below String value is your video id
-//            if (video.equals("") || video == null || video.isEmpty())
-//                youTubePlayer.cueVideo("WSVH_nF18Ls");
-//            else
-                youTubePlayer.cueVideo(video);
+            youTubePlayer.cueVideo(video);
             youTubePlayer.setShowFullscreenButton(false);
             player = youTubePlayer;
         }

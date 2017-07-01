@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fodo7"
-    android:orientation="vertical"
-    android:clickable="true" >
+    android:clickable="true"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/text_view_quiz_resume_layout_title"
@@ -49,30 +49,52 @@
                     android:textColor="@android:color/white" />
 
             </LinearLayout>
-            <LinearLayout
+
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal|top"
-                android:gravity="center_horizontal|top"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Este es el resultado enviado:"
-                    android:textColor="@android:color/white"
-                    android:textSize="18dp"/>
-
-                <ListView
-                    android:id="@+id/list_view_quiz_resume"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:divider="#AAAAFF"
-                    android:dividerHeight="1dp">
+                    android:layout_gravity="center_horizontal|top"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical">
 
-                </ListView>
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/text_view_resume"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="18dp"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+
+                    <fragment
+                        android:id="@+id/youtube_fragment"
+                        android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp" />
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Este es el resultado enviado:"
+                        android:textColor="@android:color/white"
+                        android:textSize="18dp" />
+
+                    <ListView
+                        android:id="@+id/list_view_quiz_resume"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:divider="#AAAAFF"
+                        android:dividerHeight="1dp">
+
+                    </ListView>
+                </LinearLayout>
+            </ScrollView>
         </ViewSwitcher>
     </LinearLayout>
 </LinearLayout>

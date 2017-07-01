@@ -8,8 +8,8 @@ android {
         applicationId "com.bnvlab.concienciadeabundancia"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 30
-        versionName "4"
+        versionCode 33
+        versionName "4.5"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -35,24 +35,28 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile files('libs/YouTubeAndroidPlayerApi.jar')
+    //    compile 'com.google.firebase:firebase-core:9.6.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
     compile 'me.srodrigo:androidhintspinner:1.0.0'
+    compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.google.firebase:firebase-database:9.6.1'
     compile 'com.google.firebase:firebase-auth:9.6.1'
     compile 'com.google.firebase:firebase-crash:9.6.1'
-    testCompile 'junit:junit:4.12'
+    compile 'com.google.firebase:firebase-invites:9.6.1'
+    compile 'com.google.firebase:firebase-messaging:9.6.1'
+    compile 'com.google.firebase:firebase-storage:9.6.1'
     compile 'commons-io:commons-io:2.4'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'org.jsoup:jsoup:1.10.2'
-    compile 'com.firebase:firebase-client-android:2.5.2'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.google.firebase:firebase-invites:9.6.1'
-    compile 'com.google.android.gms:play-services-maps:9.6.1'
-    compile 'com.google.firebase:firebase-messaging:9.6.1'
+    compile 'com.google.android.gms:play-services-auth:9.6.1'
     compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
+    compile 'com.google.code.gson:gson:2.8.1'
+    testCompile 'junit:junit:4.12'
 }
+
 
 
 apply plugin: 'com.google.gms.google-services'

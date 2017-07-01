@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -28,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.bnvlab.concienciadeabundancia.auxiliaries.ICallback;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,10 +38,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -93,13 +98,14 @@ public class LoginActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-////It's enough to remove the line
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//
-////But if you want to display  full screen (without action bar) write too
-//
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+            try {
+                showProgress(true);
+            }catch (Exception e){
+                Log.e("ERRORR", e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
         setContentView(R.layout.activity_login);
 
@@ -122,9 +128,22 @@ public class LoginActivity extends FragmentActivity {
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, used_numbers);
         mEmailView.setAdapter(adapter);
         //populateAutoComplete();
+        mEmailView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mPasswordView.setFocusableInTouchMode(true);
+                mPasswordView.requestFocus();
+            }
+        });
 
 
         mPasswordView = (EditText) findViewById(R.id.password);
+
+
+        mEmailView.setText("3794141560");
+        mPasswordView.setText("asdasd");
+
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -375,6 +394,13 @@ public class LoginActivity extends FragmentActivity {
      */
     private void attemptLogin() {
 
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -470,27 +496,33 @@ public class LoginActivity extends FragmentActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            close_login();
+                            FirebaseAuth.getInstance()
+                                    .signInWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            if (task.isSuccessful()) {
+//                                                close_login();
+                                            } else {
+                                                showProgress(false);
+                                                Toast.makeText(LoginActivity.this, ((FirebaseAuthException) task.getException()).getErrorCode(), Toast.LENGTH_LONG).show();
+                                                mPasswordView.requestFocus();
+                                            }
+                                        }
+                                    });
                         } else {
                             showProgress(false);
-                            if (((FirebaseAuthException) task.getException()).getErrorCode().equals("ERROR_USER_NOT_FOUND")) {
-                                mEmailView.setError("usuario no encontrado");
-                            } else if (((FirebaseAuthException) task.getException()).getErrorCode().equals("ERROR_WRONG_PASSWORD")) {
-                                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                            } else if (((FirebaseAuthException) task.getException()).getErrorCode().equals("ERROR_INVALID_EMAIL")) {
-                                mPasswordView.setError(getString(R.string.error_invalid_email));
-                            } else {
                                 Toast.makeText(LoginActivity.this, ((FirebaseAuthException) task.getException()).getErrorCode(), Toast.LENGTH_LONG).show();
-                            }
                             mPasswordView.requestFocus();
                         }
                     }
                 });
     }
 
-    private void close_login() {
+    private void closeLogin(final ICallback callback, final String uId) {
         String email = ((AutoCompleteTextView) findViewById(R.id.email)).getText().toString();
         String email_sign_up = ((EditText) findViewById(R.id.sign_up_mail)).getText().toString();
+        String password = mPasswordView.getText().toString();
 
         if (email.isEmpty() && !email_sign_up.isEmpty())
             email = email_sign_up;
@@ -502,24 +534,23 @@ public class LoginActivity extends FragmentActivity {
 
         FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                 .child(References.USERS)
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(uId)
                 .child(References.USERS_CHILD_DEVICEID)
                 .setValue(android_id)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("android_id", android_id);
-                        myIntent.putExtras(bundle);
-                        startActivity(myIntent);
-                        finish();
+                        SharedPreferences tPrefs = LoginActivity.this.getSharedPreferences(
+                                MainActivity.APP_SHARED_PREF_KEY + uId, Context.MODE_PRIVATE);
+                        tPrefs.edit().putString("android_id", android_id).apply();
+                        callback.callback();
+
                     }
                 });
 
 
     }
+
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
@@ -739,9 +770,9 @@ public class LoginActivity extends FragmentActivity {
                                                         .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful())
-                                                            close_login();
-                                                        else
+                                                        if (!task.isSuccessful())
+//                                                            close_login();
+//                                                        else
                                                             Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                                                     }
                                                 });
@@ -766,6 +797,101 @@ public class LoginActivity extends FragmentActivity {
                         // ...
                     }
                 });
+    }
+
+    FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            final FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null){
+
+                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                        .child(References.USERS)
+                        .child(user.getUid())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                User u = new User();
+                                Gson gson = new Gson();
+                                u.setuId(user.getUid());
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_ACTIVE))
+                                    u.setActive(dataSnapshot.child(References.USERS_CHILD_ACTIVE).getValue(boolean.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_NAME))
+                                    u.setName(dataSnapshot.child(References.USERS_CHILD_NAME).getValue(String.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_SECOND_NAME))
+                                    u.setSecondName(dataSnapshot.child(References.USERS_CHILD_SECOND_NAME).getValue(String.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_LASTNAME))
+                                    u.setName(dataSnapshot.child(References.USERS_CHILD_LASTNAME).getValue(String.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_LOCALE))
+                                    u.setLocale(dataSnapshot.child(References.USERS_CHILD_LOCALE).getValue(String.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_PHONE))
+                                    u.setPhone(dataSnapshot.child(References.USERS_CHILD_PHONE).getValue(String.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_EMAIL))
+                                    u.setEmail(dataSnapshot.child(References.USERS_CHILD_EMAIL).getValue(String.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_INVITED_FOR))
+                                    u.setInvitationUID(dataSnapshot.child(References.USERS_CHILD_INVITED_FOR).getValue(String.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_DEVICEID))
+                                    u.setDeviceId(dataSnapshot.child(References.USERS_CHILD_DEVICEID).getValue(String.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_ACTIVE))
+                                    u.setActive(dataSnapshot.child(References.USERS_CHILD_ACTIVE).getValue(boolean.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_COUNTER))
+                                    u.setCounter(dataSnapshot.child(References.USERS_CHILD_COUNTER).getValue(int.class));
+
+                                if (dataSnapshot.hasChild(References.USERS_CHILD_LAST_SENT))
+                                    u.setLastSent(dataSnapshot.child(References.USERS_CHILD_LAST_SENT).getValue(long.class));
+
+                                String us = gson.toJson(u);
+
+                                SharedPreferences prefs = getSharedPreferences(
+                                        MainActivity.APP_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+
+                                prefs.edit().putString("user", us).apply();
+
+                                MainActivity.user = u;
+
+                                closeLogin(new ICallback() {
+                                    @Override
+                                    public void callback() {
+                                        Intent myIntent = new Intent(LoginActivity.this, MainActivity.class);
+                                        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(myIntent);
+                                        finish();
+                                    }
+                                }, user.getUid());
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.e("ERRORR", "LoginActivity - 881\n" + databaseError.getMessage());
+                            }
+                        });
+            }
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FirebaseAuth.getInstance().removeAuthStateListener(mAuthListener);
     }
 }
 
