@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,6 +53,17 @@ public class TrainingFragment extends Fragment implements ICallback {
     public TrainingFragment() {
     }
 
+    Animation bounce;
+    @Override
+    public void onStart() {
+        super.onStart();
+        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        // Use bounce interpolator with amplitude 0.2 and frequency 20
+        MyBounceInterpolator interpolator = new MyBounceInterpolator();
+
+        bounce.setInterpolator(interpolator);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,6 +74,15 @@ public class TrainingFragment extends Fragment implements ICallback {
 
         TextView title = (TextView) view.findViewById(R.id.textView);
         title.setTypeface(Utils.getTypeface(getContext()));
+
+        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
+        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(bounce);
+                getActivity().onBackPressed();
+            }
+        });
 
         list = new ArrayList<>();
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_trainings);
@@ -75,6 +97,7 @@ public class TrainingFragment extends Fragment implements ICallback {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TrainingItem item = list.get(position);
+                view.startAnimation(bounce);
                 if (item.isComplete()) {
                     FragmentMan.changeFragment(getActivity(), ResumeFragment.class, listId.get(position));
                 } else {

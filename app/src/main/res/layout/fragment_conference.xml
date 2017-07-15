@@ -39,6 +39,7 @@
             android:id="@+id/list_view_fragment_congress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:divider="@android:color/transparent"
@@ -46,6 +47,26 @@
 
 
         </ListView>
+
+        <LinearLayout
+            android:id="@+id/layout_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_arrow_back"/>
+            <TextView
+                android:id="@+id/text_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="3dp"
+                android:textStyle="bold"
+                android:text="VOLVER"/>
+        </LinearLayout>
 
     </LinearLayout>
 

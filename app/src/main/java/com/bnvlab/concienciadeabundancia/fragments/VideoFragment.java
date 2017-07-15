@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,6 +43,16 @@ public class VideoFragment extends Fragment {
     Context context;
     static boolean active;
     View progress, layoutList;
+    Animation bounce;
+    @Override
+    public void onStart() {
+        super.onStart();
+        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        // Use bounce interpolator with amplitude 0.2 and frequency 20
+        MyBounceInterpolator interpolator = new MyBounceInterpolator();
+
+        bounce.setInterpolator(interpolator);
+    }
 
     @Nullable
     @Override
@@ -74,6 +86,15 @@ public class VideoFragment extends Fragment {
                 myIntent.putExtra("video", list.get(position).getUrl()); //Optional parameters
                 myIntent.putExtra("list", list);
                 getActivity().startActivity(myIntent);
+            }
+        });
+
+        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
+        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(bounce);
+                getActivity().onBackPressed();
             }
         });
 

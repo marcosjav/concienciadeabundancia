@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +45,16 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
     ArrayList<QuizItem> list;
 
     ResumeAdapter adapter;
+    Animation bounce;
+    @Override
+    public void onStart() {
+        super.onStart();
+        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        // Use bounce interpolator with amplitude 0.2 and frequency 20
+        MyBounceInterpolator interpolator = new MyBounceInterpolator();
+
+        bounce.setInterpolator(interpolator);
+    }
 
     public ResumeFragment() {
     }
@@ -79,6 +91,14 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
                 (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
         frag.initialize(Config.YOUTUBE_API_KEY, this);
 
+        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
+        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(bounce);
+                getActivity().onBackPressed();
+            }
+        });
         return view;
     }
 

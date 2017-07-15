@@ -9,6 +9,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,6 +22,7 @@ import android.widget.ViewSwitcher;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -54,6 +57,16 @@ public class SettingsFragment extends Fragment {
     ViewSwitcher viewSwitcherOK;
     LinearLayout layoutLoading;
     User user;
+    Animation bounce;
+    @Override
+    public void onStart() {
+        super.onStart();
+        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        // Use bounce interpolator with amplitude 0.2 and frequency 20
+        MyBounceInterpolator interpolator = new MyBounceInterpolator();
+
+        bounce.setInterpolator(interpolator);
+    }
 
     ArrayList<String> locationList = new ArrayList<String>() {{
 //        add("Resistencia");
@@ -81,6 +94,15 @@ public class SettingsFragment extends Fragment {
 
         spinnerLocation = (Spinner) view.findViewById(R.id.spinner_settings_location);
         buttonUpdate = (Button) view.findViewById(R.id.button_settings_ok);
+
+        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
+        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(bounce);
+                getActivity().onBackPressed();
+            }
+        });
 
         user = MainActivity.user;
         /*String url = "https://polar-tor-72537.herokuapp.com/get-locations";
@@ -143,7 +165,7 @@ public class SettingsFragment extends Fragment {
                                     @Override
                                     public void onItemSelected(int position, String itemAtPosition) {
                                         // Here you handle the on item selected event (this skips the hint selected event)
-                                        ((TextView) spinnerLocation.getSelectedView()).setTextColor(Color.BLACK);
+                                        ((TextView) spinnerLocation.getSelectedView()).setTextColor(Color.WHITE);
                                     }
                                 });
                         hintSpinner.init();

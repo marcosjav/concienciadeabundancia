@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:scaleType="fitXY"
-        android:src="@drawable/dialog_background" />
+        android:src="@drawable/fodo1" />
 
     <LinearLayout
         android:layout_width="300dp"
@@ -23,6 +23,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -38,7 +39,8 @@
             android:paddingEnd="10dp"
             android:paddingStart="10dp"
             android:text="ABONAR UN MES"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button_debit"

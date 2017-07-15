@@ -20,6 +20,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -67,7 +69,7 @@ import static com.bnvlab.concienciadeabundancia.R.id.notifications;
 public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     ImageButton buttonMaillink, buttonTwitterLink, buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden;
-    Button buttonQuiz, buttonFAQ, buttonAbout, buttonFundaments, buttonShare, buttonConference, buttonVideos, buttonSubscribe;
+    Button buttonTrainings, buttonFAQ, buttonAbout, buttonFundaments, buttonShare, buttonConference, buttonVideos, buttonSubscribe;
     View shareRow;
     private static final String fbUri0 = "https://www.facebook.com/";
     private static final String fbUri1 = "cdainternacional";
@@ -75,9 +77,20 @@ public class MainFragment extends Fragment {
     View notificationsIndicator;
     LinearLayout layoutTrainings;
     SharedPreferences prefs;
+    Animation bounce;
     final static String TAG = "ERRORR - MainFragment";
 
     public MainFragment() {
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        // Use bounce interpolator with amplitude 0.2 and frequency 20
+        MyBounceInterpolator interpolator = new MyBounceInterpolator();
+
+        bounce.setInterpolator(interpolator);
     }
 
     @Nullable
@@ -237,8 +250,8 @@ public class MainFragment extends Fragment {
         buttonShare = (Button) view.findViewById(R.id.button_share_main);
         buttonShare.setTypeface(Utils.getTypeface(getContext()));
 
-        buttonQuiz = (Button) view.findViewById(R.id.button_main_quiz);
-        buttonQuiz.setTypeface(Utils.getTypeface(getContext()));
+        buttonTrainings = (Button) view.findViewById(R.id.button_main_trainings);
+        buttonTrainings.setTypeface(Utils.getTypeface(getContext()));
 
         buttonFAQ = (Button) view.findViewById(R.id.button_main_faq);
         buttonFAQ.setTypeface(Utils.getTypeface(getContext()));
@@ -261,6 +274,7 @@ public class MainFragment extends Fragment {
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), SettingsFragment.class);
             }
         });
@@ -268,6 +282,7 @@ public class MainFragment extends Fragment {
         buttonConference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.findViewById(R.id.layout_conference).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), ConferenceFragment.class);
             }
         });
@@ -275,6 +290,7 @@ public class MainFragment extends Fragment {
         buttonFAQ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.findViewById(R.id.layout_faq).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), FaqFragment.class);
             }
         });
@@ -282,6 +298,7 @@ public class MainFragment extends Fragment {
         buttonVideos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.findViewById(R.id.layout_videos).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), VideoFragment.class);
             }
         });
@@ -289,6 +306,7 @@ public class MainFragment extends Fragment {
         buttonFundaments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.findViewById(R.id.layout_fundaments).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), FundamentsFragment.class);
             }
         });
@@ -296,6 +314,7 @@ public class MainFragment extends Fragment {
         buttonAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.findViewById(R.id.layout_about).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), AboutFragment.class);
             }
         });
@@ -303,6 +322,7 @@ public class MainFragment extends Fragment {
         buttonFacebookLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(bounce);
                 Uri uri = Uri.parse(fbUri0 + fbUri1); // missing 'http://' will cause crashed
                 try {
                     int versionCode = getContext().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
@@ -325,6 +345,7 @@ public class MainFragment extends Fragment {
         buttonTwitterLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(bounce);
                 Intent intent = null;
                 try {
                     // get the Twitter app if possible
@@ -342,6 +363,7 @@ public class MainFragment extends Fragment {
         buttonWebLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(bounce);
                 Uri uri = Uri.parse("http://www.concienciadeabundancia.com"); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
@@ -351,6 +373,7 @@ public class MainFragment extends Fragment {
         buttonInstaLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(bounce);
                 Uri uri = Uri.parse("http://instagram.com/_u/cdaintl");
                 Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
 
@@ -368,6 +391,7 @@ public class MainFragment extends Fragment {
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(bounce);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                 builder
@@ -402,6 +426,7 @@ public class MainFragment extends Fragment {
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.findViewById(R.id.layout_share).startAnimation(bounce);
                 shareDialog();
             }
         });
@@ -409,13 +434,15 @@ public class MainFragment extends Fragment {
         buttonMaillink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(bounce);
                 Notify.email(getContext());
             }
         });
 
-        buttonQuiz.setOnClickListener(new View.OnClickListener() {
+        buttonTrainings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                layoutTrainings.startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
             }
         });
@@ -430,6 +457,7 @@ public class MainFragment extends Fragment {
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                view.findViewById(R.id.layout_subscribe).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), PayFragment.class);
             }
         });
@@ -467,15 +495,15 @@ public class MainFragment extends Fragment {
                             prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, true).apply();
                         } else {
                             FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                    .child(References.USERS)
+                                    .child(References.SENT)
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .child(References.USERS_CHILD_ACTIVE)
+                                    .child("-KiaTj3gjkFLXOBDDBWa")
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.getValue() != null)
-                                                showShare(dataSnapshot.getValue(boolean.class));
-                                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, dataSnapshot.getValue(boolean.class)).apply();
+                                                showShare(true);
+                                                prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, true).apply();
                                         }
 
                                         @Override
@@ -483,6 +511,23 @@ public class MainFragment extends Fragment {
                                             Log.e("ERRORR", "MainFragment - OnCreate - Line 459\n    " + databaseError.getMessage());
                                         }
                                     });
+//                            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+//                                    .child(References.USERS)
+//                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                                    .child(References.USERS_CHILD_ACTIVE)
+//                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                        @Override
+//                                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                                            if (dataSnapshot.getValue() != null)
+//                                                showShare(dataSnapshot.getValue(boolean.class));
+//                                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, dataSnapshot.getValue(boolean.class)).apply();
+//                                        }
+//
+//                                        @Override
+//                                        public void onCancelled(DatabaseError databaseError) {
+//                                            Log.e("ERRORR", "MainFragment - OnCreate - Line 459\n    " + databaseError.getMessage());
+//                                        }
+//                                    });
                         }
 
                     }
@@ -681,5 +726,16 @@ public class MainFragment extends Fragment {
             }
         });
         builderSingle.show();
+    }
+}
+class MyBounceInterpolator implements android.view.animation.Interpolator {
+
+    MyBounceInterpolator() {
+    }
+
+    public float getInterpolation(float time) {
+//        return (float) (-1 * Math.pow(Math.E, -time/ mAmplitude) *
+//                Math.cos(mFrequency * time) + 1);
+        return (float) Math.sin(Math.PI*time);
     }
 }
