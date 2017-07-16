@@ -59,8 +59,9 @@
             </intent-filter>
         </service>
 
-        <!--<activity android:name=".SignInActivity"-->
-            <!--android:launchMode="singleTop"/>-->
+        <!-- <activity android:name=".SignInActivity" -->
+        <!-- android:launchMode="singleTop"/> -->
+        <activity android:name=".mercadopago.CardActivity" />
     </application>
 
 </manifest>

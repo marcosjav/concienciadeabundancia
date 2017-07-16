@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -32,7 +31,6 @@ import android.widget.Toast;
 import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
-import com.bnvlab.concienciadeabundancia.auxiliaries.CallAPI;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
@@ -58,9 +56,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
-
-import static com.bnvlab.concienciadeabundancia.R.id.notifications;
 
 /**
  * Created by Marcos on 21/03/2017.
@@ -68,7 +63,7 @@ import static com.bnvlab.concienciadeabundancia.R.id.notifications;
 
 public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
-    ImageButton buttonMaillink, buttonTwitterLink, buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden;
+    ImageButton buttonMaillink, buttonTwitterLink, buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden, notificationButton;
     Button buttonTrainings, buttonFAQ, buttonAbout, buttonFundaments, buttonShare, buttonConference, buttonVideos, buttonSubscribe;
     View shareRow;
     private static final String fbUri0 = "https://www.facebook.com/";
@@ -93,6 +88,11 @@ public class MainFragment extends Fragment {
         bounce.setInterpolator(interpolator);
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -104,138 +104,21 @@ public class MainFragment extends Fragment {
         checkUserType();
 
         TextView version = (TextView) view.findViewById(R.id.version);
+
         try {
             version.setText("v" + getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-        }
 
-        try {
-
-            notificationsList = new ArrayList<>();
-            try {
-
-                notificationsIndicator = view.findViewById(R.id.notifications_indicator);
-
-                HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
-                ArrayList<JSONObject> list = new ArrayList<>();
-                for (String n : notifications) {
-                    JSONObject object = new JSONObject(n);
-                    list.add(object);
-                    boolean read = object.getBoolean("read");
-
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                    String title = prefs.getString("title","");
-//                    String message = prefs.getString("message","");
-//                    if (!title.equals("") || !message.equals("")) {
-//                        builder.setTitle(title)
-//                                .setMessage(message)
-//                                .setPositiveButton("OK",null)
-//                                .setCancelable(true)
-//                                .create()
-//                                .show();
-//                    }
-
-                    //if (!read)
-                    //   notificationsIndicator.setVisibility(View.VISIBLE);
-                }
-                notificationsList = list;
-            } catch (Exception e) {
-                Log.d("ERRORR", "MainFragment - OnCreate - Line 138\n    " + e.getMessage());
+            if (prefs.getBoolean("newMessages",false)){
+                prefs.edit().putBoolean("newMessages", false).apply();
+                FragmentMan.changeFragment(getActivity(), MessageFragment.class);
             }
+
         } catch (Exception e) {
-
+            Log.d("ERRORR", "MainFragment - OnCreate - Line 122\n    " + e.getMessage());
         }
 
-        ///////////////////////////////////////////
-        String value = null;
-        if (getActivity().getIntent() != null && getActivity().getIntent().getExtras() != null) {
-            String v = getActivity().getIntent().getExtras().getString("android_id");
-            if (v != null)
-                value = v;
 
-//            if (getIntent().getBooleanExtra(References.SHARE_FROM_NOTIFICATION, false)) {
-//                setShareStartTime();
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                final Context context = this;
-//                builder.setTitle("FELICIDADES!")
-//                        .setMessage("Ya completamos todos los cambios, ahora puedes disfrutar de este magnífico Presente." +
-//                                " Este es el momento para comenzar a Dar, puedes compartir este presente a quien desees," +
-//                                " solo por 12hs.\nEmpieza ahora!!!")
-//                        .setPositiveButton("COMPARTIR", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                Utils.shareDialog(context);
-//                            }
-//                        });
-//                builder.create().show();
-//            } if (getIntent().getBooleanExtra(References.TRAININGS_FROM_NOTIFICATION, false)) {
-//                showTrainings = true;
-//            }
-            if (this.prefs != null) {
-                HashSet<String> notifications = (HashSet<String>) prefs.getStringSet("notifications", new HashSet<String>());
-                ArrayList<JSONObject> list = new ArrayList<>();
-                String title = "";
-                String message = "";
-                try {
-                    for (String n : notifications) {
-                        JSONObject object = new JSONObject(n);
-                        list.add(object);
-                        boolean read = object.getBoolean("read");
-                        title = prefs.getString("title", "");
-                        message = prefs.getString("message", "");
-                        switch (getActivity().getIntent().getIntExtra("launchedBy", 0)) {
-                            case Notify.ACTION_SHARE:
-                                Toast.makeText(getActivity(), "1", Toast.LENGTH_SHORT).show();
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                                if (!title.equals("") || !message.equals("")) {
-                                    builder.setTitle(title)
-                                            .setMessage(message)
-                                            .setPositiveButton("OK", null)
-                                            .setCancelable(true)
-                                            .create()
-                                            .show();
-                                }
-                                break;
-                            case Notify.ACTION_TRAININGS:
-                                AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-                                String title1 = prefs.getString("title", "");
-                                String message1 = prefs.getString("message", "");
-                                if (!title1.equals("") || !message1.equals("")) {
-                                    builder1.setTitle(title1)
-                                            .setMessage(message1)
-                                            .setPositiveButton("OK", null)
-                                            .setCancelable(true)
-                                            .create()
-                                            .show();
-                                }
-                                break;
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.e("ERRORR", "MainFragment - OnCreate - Line 211\n    " + e.getMessage());
-                }
-
-                getActivity().setIntent(null);
-            }
-        }
-        //////////////////////////////////////////
-
-        Button test = (Button) view.findViewById(R.id.test);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CallAPI call = new CallAPI(getContext());
-                call.execute("https://fcm.googleapis.com/fcm/send");
-            }
-        });
-        ImageButton notificationButton = (ImageButton) view.findViewById(notifications);
-        notificationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                notificationsDialog();
-            }
-        });
+        notificationButton = (ImageButton) view.findViewById(R.id.notifications);
         shareRow = view.findViewById(R.id.layout_share);
         buttonFacebookLink = (ImageButton) view.findViewById(R.id.button_facebook_link);
         buttonMaillink = (ImageButton) view.findViewById(R.id.button_email_link);
@@ -270,6 +153,14 @@ public class MainFragment extends Fragment {
 
         buttonSubscribe = (Button) view.findViewById(R.id.button_subscribe);
         buttonSubscribe.setTypeface(Utils.getTypeface(getContext()));
+
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(bounce);
+                FragmentMan.changeFragment(getActivity(), NotificationsFragment.class);
+            }
+        });
 
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -457,8 +348,9 @@ public class MainFragment extends Fragment {
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.findViewById(R.id.layout_subscribe).startAnimation(bounce);
-                FragmentMan.changeFragment(getActivity(), PayFragment.class);
+//                view.findViewById(R.id.layout_subscribe).startAnimation(bounce);
+//                FragmentMan.changeFragment(getActivity(), PayFragment.class);
+                FragmentMan.changeFragment(getActivity(), MessageFragment.class);
             }
         });
 
@@ -676,56 +568,6 @@ public class MainFragment extends Fragment {
         }
 
 
-    }
-
-    private void notificationsDialog() {
-        final Context context = getActivity();
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context);
-        builderSingle.setIcon(android.R.drawable.alert_light_frame);
-        builderSingle.setTitle("Select One Name:-");
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.select_dialog_singlechoice);
-
-        try {
-            HashSet<String> list = new HashSet<>();
-            for (JSONObject jsonObject : notificationsList) {
-                arrayAdapter.add(jsonObject.getString("message"));
-                jsonObject.put("read", true);
-                list.add(jsonObject.toString());
-            }
-            SharedPreferences prefs = context.getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY
-                    + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
-
-            prefs.edit().putStringSet("notifications", list).apply();
-            notificationsIndicator.setVisibility(View.GONE);
-        } catch (Exception e) {
-            Log.e("ERRORR", "MainFragment - NotificationDialog - Line 652\n    " + e.getMessage());
-        }
-
-        builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String strName = arrayAdapter.getItem(which);
-                AlertDialog.Builder builderInner = new AlertDialog.Builder(context);
-                builderInner.setMessage(strName);
-                builderInner.setTitle("Your Selected Item is");
-                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builderInner.show();
-            }
-        });
-        builderSingle.show();
     }
 }
 class MyBounceInterpolator implements android.view.animation.Interpolator {

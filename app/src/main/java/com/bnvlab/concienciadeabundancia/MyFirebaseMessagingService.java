@@ -48,10 +48,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         jsonObject.put("message", message);
                         jsonObject.put("title", title);
                         jsonObject.put("read", false);
+                        jsonObject.put("time", System.currentTimeMillis());
 
                         notifications.add(jsonObject.toString());
 
                         prefs.edit().putStringSet("notifications",notifications).apply();
+                        prefs.edit().putBoolean("newMessages",true).apply();
 
                     }catch (Exception e){
                         Log.d("MyFirebaseMessage", e.getMessage());

@@ -37,6 +37,7 @@ public class FaqFragment extends Fragment {
     LayoutInflater inflater;
     ViewSwitcher viewSwitcher;
     Animation bounce;
+
     @Override
     public void onStart() {
         super.onStart();

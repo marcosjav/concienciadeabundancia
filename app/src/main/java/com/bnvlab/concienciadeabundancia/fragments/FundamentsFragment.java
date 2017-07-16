@@ -63,7 +63,7 @@ public class FundamentsFragment extends Fragment {
             }
         });
 //
-//        textView.setText(Html.fromHtml("<font color='red'>I like bigknol</font><br />" +
+//        message.setText(Html.fromHtml("<font color='red'>I like bigknol</font><br />" +
 //                "<strong>Strong Data</strong><br />" +
 //                    "<tt>Moving</tt><br /> \n" +
 //                "<big>Hello Iam Big</big> \\n\n" +

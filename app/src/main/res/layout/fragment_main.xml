@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="top|start"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                     android:background="@null"
                     android:scaleType="fitXY"
                     android:src="@drawable/childrens"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
             </LinearLayout>
 
