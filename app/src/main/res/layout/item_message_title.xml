@@ -15,8 +15,15 @@
         android:layout_marginTop="3dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
-        android:text="+ Item FAQ Question?"
+        android:text="+ Item TITLE"
         android:textSize="18sp"
         android:background="@drawable/new_item"/>
 
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:text="01:23 01/02/1987"
+        android:visibility="gone"/>
 </LinearLayout>

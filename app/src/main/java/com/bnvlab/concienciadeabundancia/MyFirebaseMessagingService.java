@@ -24,42 +24,50 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        try {
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
 //            RemoteMessage.Notification notification = remoteMessage.getNotification();
-            Map<String,String> data = remoteMessage.getData();
-            String title = data.get("title");
-            String message = data.get("message");
-            String uid = data.get("uid");
-            int clickAction = Integer.parseInt(data.get("action"));
+                Map<String, String> data = remoteMessage.getData();
+                String title = data.get("title");
+                String message = data.get("message");
+                String uid = data.get("uid");
+                int clickAction = Integer.parseInt(data.get("action"));
 
-            if (uid != null) {
-                String currentUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                if (uid.equals("all") || uid.equals(currentUID)) {
+                if (uid != null) {
+                    String currentUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    if (uid.equals("all") || uid.equals(currentUID)) {
 
-                    Notify.message(getApplicationContext(), title, message, clickAction, clickAction);
+                        try {
+                            final SharedPreferences prefs = this.getSharedPreferences(
+                                    MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
-                    try {
-                        final SharedPreferences prefs = this.getSharedPreferences(
-                                MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
+                            if (prefs.getBoolean("newMessages", false)) {
+                                Notify.message(getApplicationContext(), "Mensajes nuevos!", "Haz click aquí para leerlos", clickAction, clickAction);
+                            } else {
+                                Notify.message(getApplicationContext(), title, message, clickAction, clickAction);
+                            }
 
-                        Set<String> notifications = prefs.getStringSet("notifications", new HashSet<String>());
+                            Set<String> notifications = prefs.getStringSet("notifications", new HashSet<String>());
 
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("message", message);
-                        jsonObject.put("title", title);
-                        jsonObject.put("read", false);
-                        jsonObject.put("time", System.currentTimeMillis());
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("message", message);
+                            jsonObject.put("title", title);
+                            jsonObject.put("read", false);
+                            jsonObject.put("time", System.currentTimeMillis());
 
-                        notifications.add(jsonObject.toString());
+                            notifications.add(jsonObject.toString());
 
-                        prefs.edit().putStringSet("notifications",notifications).apply();
-                        prefs.edit().putBoolean("newMessages",true).apply();
+                            prefs.edit().putStringSet("notifications", notifications).apply();
+                            prefs.edit().putBoolean("newMessages", true).apply();
 
-                    }catch (Exception e){
-                        Log.d("MyFirebaseMessage", e.getMessage());
+                        } catch (Exception e) {
+                            Log.d("MyFirebaseMessage", e.getMessage());
+                        }
                     }
                 }
             }
+        }catch (Exception e){
+
         }
     }
 

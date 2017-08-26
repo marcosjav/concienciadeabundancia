@@ -8,8 +8,8 @@ android {
         applicationId "com.bnvlab.concienciadeabundancia"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 36
-        versionName "5.2"
+        versionCode 37
+        versionName "5.3"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -36,8 +36,7 @@ dependencies {
     })
     compile files('libs/YouTubeAndroidPlayerApi.jar')
     //    compile 'com.google.firebase:firebase-core:9.6.1'
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:design:25+'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
     compile 'me.srodrigo:androidhintspinner:1.0.0'
     compile 'com.firebase:firebase-client-android:2.5.2'
@@ -55,10 +54,12 @@ dependencies {
     compile 'eu.the4thfloor.volley:com.android.volley:2015.05.28'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'io.supercharge:shimmerlayout:0.4.0'
-    testCompile 'junit:junit:4.12'
+    compile 'junit:junit:4.12'
     compile 'com.github.chenupt.android:springindicator:1.0.2@aar'
     compile 'com.github.chenupt.android:multiplemodel:1.1.0@aar'
-    compile 'com.google.guava:guava:18.0'
+    compile 'com.google.guava:guava:20.0'
+    compile 'com.airbnb.android:lottie:2.1.2'
+    compile 'com.android.support:appcompat-v7:25+'
 }
 
 

@@ -512,7 +512,11 @@ public class LoginActivity extends FragmentActivity {
                                     });
                         } else {
                             showProgress(false);
-                                Toast.makeText(LoginActivity.this, ((FirebaseAuthException) task.getException()).getErrorCode(), Toast.LENGTH_LONG).show();
+                            try {
+                                Toast.makeText(LoginActivity.this, (task.getException()).getMessage(), Toast.LENGTH_LONG).show();
+                            }catch (Exception e){
+
+                            }
                             mPasswordView.requestFocus();
                         }
                     }

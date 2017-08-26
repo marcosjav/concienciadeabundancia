@@ -69,7 +69,7 @@ public class MessageAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        View view = inflater.inflate(R.layout.item_faq_question,parent,false);
+        View view = inflater.inflate(R.layout.item_message_title,parent,false);
         TextView textView = (TextView) view.findViewById(R.id.text);
         textView.setText(list.get(groupPosition).getTitle());
         TextView time = (TextView) view.findViewById(R.id.time);

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -44,6 +45,23 @@ public class MainActivity extends FragmentActivity {
     boolean showTrainings = false;
     private FirebaseAuth mAuth;
     final static String TAG = "ERRORR - MainActivity";
+
+    FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                // User is signed in
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+            } else {
+                // User is signed out
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Toast.makeText(MainActivity.this, "Se cerró la sesión", Toast.LENGTH_SHORT).show();
+                showLogin();
+            }
+            // ...
+        }
+    };
 
 
     @Override
@@ -124,8 +142,9 @@ public class MainActivity extends FragmentActivity {
                         .select("div[itemprop=softwareVersion]")
                         .first()
                         .ownText();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                newVersion = "";
             }
 
             return newVersion;
@@ -297,12 +316,12 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-
+        FirebaseAuth.getInstance().addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        FirebaseAuth.getInstance().removeAuthStateListener(mAuthListener);
     }
 }

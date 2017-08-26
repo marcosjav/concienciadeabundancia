@@ -348,9 +348,8 @@ public class MainFragment extends Fragment {
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                view.findViewById(R.id.layout_subscribe).startAnimation(bounce);
-//                FragmentMan.changeFragment(getActivity(), PayFragment.class);
-                FragmentMan.changeFragment(getActivity(), MessageFragment.class);
+                view.findViewById(R.id.layout_subscribe).startAnimation(bounce);
+                FragmentMan.changeFragment(getActivity(), PayFragment.class);
             }
         });
 
