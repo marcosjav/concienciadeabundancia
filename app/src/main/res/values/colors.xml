@@ -9,4 +9,8 @@
     <color name="indicator_2">#64A4A4</color>
     <color name="indicator_3">#66D7B9</color>
     <color name="indicator_4">#FDBC7D</color>
+
+    <color name="button_start">#cda76a</color>
+    <color name="button_end">#f3daa3</color>
+    <color name="text">#987636</color>
 </resources>

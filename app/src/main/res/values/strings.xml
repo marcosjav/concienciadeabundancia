@@ -35,9 +35,9 @@
     <string name="error_invalid_password">La clave es muy corta</string>
     <string name="error_incorrect_password">La clave es incorrecta</string>
     <string name="error_field_required">Este campo es necesario</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="reset_pass">Recuperar Clave</string>
+    <string name="no_account">¿No tienes cuenta?</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -46,4 +46,22 @@
     <string name="app_half_name_1">CONCIENCIA DE</string>
     <string name="app_half_name_2">SER</string>
 
+
+    <!--PANTALLA PRINCIPAL-->
+    <string name="training_guides">Guías de Entrenamiento</string>
+    <string name="love_share">Comparte Amor</string>
+    <string name="pay">Abonar</string>
+    <string name="videos">Videos</string>
+    <string name="conferences">Conferencias</string>
+    <string name="cda">CDA</string>
+    <string name="fundamentals">Fundamentos</string>
+    <string name="questions">Preguntas</string>
+
+    <!--FRAGMENT COMPARTIR-->
+    <string name="share_title">Crea Amor y Comparte</string>
+    <string name="share">Compartir</string>
+
+    <!--FRAGMENT QUIZ RESUME-->
+    <string name="resume_title">Guías de Entrenamiento</string>
+    <string name="explanatory_videos">Videos Explicativos</string>
 </resources>
