@@ -1,24 +1,18 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -32,7 +26,6 @@ import com.bnvlab.concienciadeabundancia.VideoActivity;
 import com.bnvlab.concienciadeabundancia.adapters.QuizAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -63,7 +56,8 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
     View view;
     boolean disable;
 
-    TextView tvTitle, tvSubTitle, tvModule, tvDescription, tvFoot;
+//    TextView tvTitle, tvSubTitle, tvModule, tvDescription, tvFoot;
+    TextView tvTitle;
     ListView listView;
     Button buttonOk;
     Button buttonTestVideo;
@@ -84,27 +78,26 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
         actualWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
     }
 
-    Animation bounce;
+//    Animation bounce;
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        /*bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator();
 
-        bounce.setInterpolator(interpolator);
+        bounce.setInterpolator(interpolator);*/
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_quiz, container, false);
+        final View view = inflater.inflate(R.layout.new_fragment_quiz, container, false);
 
-        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
-        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
+//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
@@ -140,17 +133,17 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
         list = new ArrayList<>();
         adapter = new QuizAdapter(getContext(), R.layout.item_quiz_row, list);
 
-        layoutWait = view.findViewById(R.id.layout_wait);
-        myCoordinatorLayout = view.findViewById(R.id.myCoordinatorLayout);
+//        layoutWait = view.findViewById(R.id.layout_wait);
+//        myCoordinatorLayout = view.findViewById(R.id.myCoordinatorLayout);
 
-        tvTitle = (TextView) view.findViewById(R.id.text_view_quiz_title);
-        Utils.setTypeface(tvTitle, getContext());
+        tvTitle = (TextView) view.findViewById(R.id.textView);
+//        Utils.setTypeface(tvTitle, getContext());
 
-        tvSubTitle = (TextView) view.findViewById(R.id.text_view_quiz_subtitle);
-        tvModule = (TextView) view.findViewById(R.id.text_view_quiz_module);
-        tvDescription = (TextView) view.findViewById(R.id.text_view_quiz_description);
-        tvFoot = (TextView) view.findViewById(R.id.text_view_foot);
-        checkBoxNoTestear = (CheckBox) view.findViewById(R.id.checkbox);
+//        tvSubTitle = (TextView) view.findViewById(R.id.text_view_quiz_subtitle);
+//        tvModule = (TextView) view.findViewById(R.id.text_view_quiz_module);
+//        tvDescription = (TextView) view.findViewById(R.id.text_view_quiz_description);
+//        tvFoot = (TextView) view.findViewById(R.id.text_view_foot);
+//        checkBoxNoTestear = (CheckBox) view.findViewById(R.id.checkbox);
         scrollView = (ScrollView) view.findViewById(R.id.scrollView);
 
         buttonOk = (Button) view.findViewById(R.id.button_quiz_ok);
@@ -164,6 +157,19 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                 }
             }
         });
+
+        Button buttonNoTest = (Button) view.findViewById(R.id.button_quiz_no_test);
+        buttonNoTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (disable)
+                    Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
+                else {
+                    sendQuiz();
+                }
+            }
+        });
+
         buttonTestVideo = (Button) view.findViewById(R.id.video_test_button);
         buttonTestVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,27 +184,27 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
             }
         });
 
-        final Snackbar snackbar = Snackbar.make(view.findViewById(R.id.myCoordinatorLayout), "", Integer.MAX_VALUE);
-        snackbar.setAction("ENVIAR", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (disable)
-                    Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
-                else {
-                    sendQuiz();
-                }
-            }
-        });
+//        final Snackbar snackbar = Snackbar.make(view.findViewById(R.id.myCoordinatorLayout), "", Integer.MAX_VALUE);
+//        snackbar.setAction("ENVIAR", new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (disable)
+//                    Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
+//                else {
+//                    sendQuiz();
+//                }
+//            }
+//        });
 
-        checkBoxNoTestear.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
-                    snackbar.show();
-                else
-                    snackbar.dismiss();
-            }
-        });
+//        checkBoxNoTestear.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked)
+//                    snackbar.show();
+//                else
+//                    snackbar.dismiss();
+//            }
+//        });
 
         listView = (ListView) view.findViewById(R.id.list_view_quiz);
         listView.setAdapter(adapter);
@@ -247,20 +253,20 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             if (data.getKey().equals(References.QUIZ_CHILD_TITLE))
                                 tvTitle.setText(data.getValue(String.class));
-                            else if (data.getKey().equals(References.QUIZ_CHILD_SUBTITLE))
-                                tvSubTitle.setText(data.getValue(String.class));
-                            else if (data.getKey().equals(References.QUIZ_CHILD_MODULE))
-                                tvModule.setText(data.getValue(String.class));
-                            else if (data.getKey().equals(References.QUIZ_CHILD_DESCRIPTION))
-                                tvDescription.setText(data.getValue(String.class));
-                            else if (data.getKey().equals(References.FREE_CONTENT))
+                            else if (data.getKey().equals(References.QUIZ_CHILD_SUBTITLE)){
+//                                tvSubTitle.setText(data.getValue(String.class));
+                            }else if (data.getKey().equals(References.QUIZ_CHILD_MODULE)) {
+//                                tvModule.setText(data.getValue(String.class));
+                            }else if (data.getKey().equals(References.QUIZ_CHILD_DESCRIPTION)) {
+//                                tvDescription.setText(data.getValue(String.class));
+                            }else if (data.getKey().equals(References.FREE_CONTENT))
                                 free = data.getValue(boolean.class);
                             else if (data.getKey().equals(References.QUIZ_CHILD_INDEX))
                                 free = free;
                             else if (data.getKey().equals(References.QUIZ_CHILD_FOOT)) {
-                                String text = data.getValue(String.class);
-                                if (!text.equals(""))
-                                    tvFoot.setText(text);
+//                                String text = data.getValue(String.class);
+//                                if (!text.equals(""))
+//                                    tvFoot.setText(text);
                             } else if (data.getKey().equals(References.QUIZ_CHILD_VIDEO)) {
                                 video = data.getValue(String.class);
                             } else if (data.getKey().equals(References.QUIZ_CHILD_REQUIRE))
@@ -285,8 +291,8 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
     }
 
     private void showProgress(boolean show) {
-        layoutWait.setVisibility(show ? View.VISIBLE : View.GONE);
-        myCoordinatorLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+//        layoutWait.setVisibility(show ? View.VISIBLE : View.GONE);
+//        myCoordinatorLayout.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
@@ -321,8 +327,8 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
     private void sendQuiz() {
         if (userCounter < 1 && !require.equals("")) {
             Toast.makeText(getContext(), "No estás habilitado para enviar guías\nPor favor contáctate con nosotros", Toast.LENGTH_LONG).show();
-        } else if (lastSent == actualWeek && !require.equals("")) {
-            Toast.makeText(getContext(), "Esta guía todavía no está disponible\nRecuerda que se habilitará una guía semanalmente", Toast.LENGTH_LONG).show();
+//        } else if (lastSent == actualWeek && !require.equals("")) {
+//            Toast.makeText(getContext(), "Esta guía todavía no está disponible\nRecuerda que se habilitará una guía semanalmente", Toast.LENGTH_LONG).show();
         } else {
             if (require.equals(""))
                 requiredOK = true;
@@ -382,7 +388,10 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
-                                                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                                                    FragmentMan.changeFragment(getActivity(), CongratsFragment.class);
+
+                                                    /*AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                                                     builder.setTitle("FELICIDADES!")
                                                             .setMessage("En 24HS estarán realizados los cambios. " +
@@ -401,7 +410,7 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                                                             })
                                                             .setCancelable(false);
 
-                                                    builder.show();
+                                                    builder.show();*/
                                                 }
                                             }
                                         });

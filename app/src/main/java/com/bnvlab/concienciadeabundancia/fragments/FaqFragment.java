@@ -6,17 +6,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
+import android.widget.LinearLayout;
 
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.FaqAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.FAQItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,39 +31,39 @@ public class FaqFragment extends Fragment {
     ArrayList<FAQItem> list;
     ExpandableListAdapter mAdapter;
     LayoutInflater inflater;
-    ViewSwitcher viewSwitcher;
-    Animation bounce;
+    LinearLayout layoutProgress;
+//    Animation bounce;
 
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        /*bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator();
 
-        bounce.setInterpolator(interpolator);
+        bounce.setInterpolator(interpolator);*/
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_faq, container, false);
+        View view = inflater.inflate(R.layout.new_fragment_faq, container, false);
 
-        TextView title = (TextView) view.findViewById(R.id.textView);
-        title.setTypeface(Utils.getTypeface(getContext()));
+//        TextView title = (TextView) view.findViewById(R.id.textView);
+//        title.setTypeface(Utils.getTypeface(getContext()));
 
         this.inflater = inflater;
         epView = (ExpandableListView) view.findViewById(R.id.expandable_list_faq);
-        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
+        layoutProgress = (LinearLayout) view.findViewById(R.id.layout_progress);
         list = new ArrayList<>();
 
         getFAQ();
 
-        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
-        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+//        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
+        view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
+//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
@@ -103,6 +99,7 @@ public class FaqFragment extends Fragment {
     }
 
     private void getFAQ(){
+        showProgress(true);
         list = new ArrayList<>();
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
@@ -118,13 +115,18 @@ public class FaqFragment extends Fragment {
                         }
                         mAdapter = new FaqAdapter(getContext(), inflater, list);
                         epView.setAdapter(mAdapter);
-                        viewSwitcher.showNext();
+                        showProgress(false);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        viewSwitcher.showNext();
+                        showProgress(false);
                     }
                 });
+    }
+
+    private void showProgress(boolean show){
+        layoutProgress.setVisibility(show? View.VISIBLE : View.GONE);
+        epView.setVisibility(!show? View.VISIBLE : View.GONE);
     }
 }

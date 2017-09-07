@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.VideoItem;
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +24,7 @@ public class VideoItemAdapter extends BaseAdapter {
 
     static class ViewHolder {
         TextView textViewTitle;
+        ImageView imageViewTitle;
         ImageView imageViewThumbnail;
         TextView url;
     }
@@ -88,7 +88,7 @@ public class VideoItemAdapter extends BaseAdapter {
                 + ((convertView == null) ? "null" : "being recycled"));
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_video_row, parent, false);
+            convertView = inflater.inflate(R.layout.new_item_video_row, parent, false);
 
             convertViewCounter++;
             Log.v(TAG, convertViewCounter + " convertViews have been created");
@@ -100,6 +100,8 @@ public class VideoItemAdapter extends BaseAdapter {
             holder.textViewTitle.setText(data.get(position).getUrl());
             holder.imageViewThumbnail = (ImageView) convertView
                     .findViewById(R.id.image_view_video_item_thumbnail);
+            holder.imageViewTitle = (ImageView) convertView
+                    .findViewById(R.id.image_view_video_item_title);
             holder.url = (TextView) convertView.findViewById(R.id.text_view_video_item_url);
 
             convertView.setTag(holder);
@@ -108,7 +110,7 @@ public class VideoItemAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
 
         holder.textViewTitle.setText(data.get(position).getTitle());
-        holder.textViewTitle.setTypeface(Utils.getTypeface(context));
+//        holder.textViewTitle.setTypeface(Utils.getTypeface(context));
 //        holder.imageViewThumbnail.setImageBitmap(data.get(position).getThumbnail());
         String thumbnailURL = data.get(position).getThumbnail();
         if (!thumbnailURL.isEmpty() && !thumbnailURL.equals("")) {

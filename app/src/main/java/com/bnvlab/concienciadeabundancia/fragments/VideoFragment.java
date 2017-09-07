@@ -9,8 +9,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,7 +18,6 @@ import com.bnvlab.concienciadeabundancia.VideoActivity;
 import com.bnvlab.concienciadeabundancia.adapters.VideoItemAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.SimpleYouTubeHelper;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.VideoItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -42,33 +39,33 @@ public class VideoFragment extends Fragment {
     ListView listView;
     Context context;
     static boolean active;
-    View progress, layoutList;
-    Animation bounce;
+    View progress;//, layoutList;
+//    Animation bounce;
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+       /* bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator();
 
-        bounce.setInterpolator(interpolator);
+        bounce.setInterpolator(interpolator);*/
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video, container, false);
+        View view = inflater.inflate(R.layout.new_fragment_videos, container, false);
 
         context = getContext();
 
         TextView textView = (TextView) view.findViewById(R.id.textView);
-        textView.setTypeface(Utils.getTypeface(getContext()));
+//        textView.setTypeface(Utils.getTypeface(getContext()));
 
         TextView textViewTitle = (TextView) view.findViewById(R.id.textView_title);
-        textViewTitle.setTypeface(Utils.getTypeface(getContext()));
+//        textViewTitle.setTypeface(Utils.getTypeface(getContext()));
 
         progress = view.findViewById(R.id.layout_progress);
-        layoutList = view.findViewById(R.id.layout_list);
+//        layoutList = view.findViewById(R.id.layout_list);
 
         listView = (ListView) view.findViewById(R.id.list_view_fragment_videos);
         adapter = new VideoItemAdapter(context, list);
@@ -89,11 +86,11 @@ public class VideoFragment extends Fragment {
             }
         });
 
-        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
-        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+//        ((TextView)view.findViewById(R.id.new_icon_back)).setTypeface(Utils.getTypeface(getContext()));
+        view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
+//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
@@ -181,6 +178,6 @@ public class VideoFragment extends Fragment {
 
     private void showProgress(boolean show){
         progress.setVisibility(show?View.VISIBLE:View.GONE);
-        layoutList.setVisibility(show?View.GONE:View.VISIBLE);
+        listView.setVisibility(show?View.GONE:View.VISIBLE);
     }
 }

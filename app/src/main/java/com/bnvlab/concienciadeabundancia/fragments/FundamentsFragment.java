@@ -3,12 +3,9 @@ package com.bnvlab.concienciadeabundancia.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -29,23 +26,23 @@ public class FundamentsFragment extends Fragment {
 
     TextView textView;
     ViewSwitcher viewSwitcher ;
-    Animation bounce;
+//    Animation bounce;
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        /*bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator();
 
-        bounce.setInterpolator(interpolator);
+        bounce.setInterpolator(interpolator);*/
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fundaments, container, false);
+        View view = inflater.inflate(R.layout.new_fragment_fundaments, container, false);
 
-        TextView title = (TextView) view.findViewById(R.id.textView);
+       /* TextView title = (TextView) view.findViewById(R.id.textView);
         title.setTypeface(Utils.getTypeface(getContext()));
 
         textView = (TextView) view.findViewById(R.id.text_view_fundaments);
@@ -61,7 +58,7 @@ public class FundamentsFragment extends Fragment {
                 v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
-        });
+        });*/
 //
 //        message.setText(Html.fromHtml("<font color='red'>I like bigknol</font><br />" +
 //                "<strong>Strong Data</strong><br />" +
@@ -76,8 +73,14 @@ public class FundamentsFragment extends Fragment {
 //                "        <u>Underline</u> \\n\n" +
 //                "        <i>Hi Five </i> \\n\n" +
 //                "        <tt>Hi Six</tt>\\n"));
-        getFundaments();
-
+//        getFundaments();
+        view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                v.startAnimation(bounce);
+                getActivity().onBackPressed();
+            }
+        });
         return view;
     }
 

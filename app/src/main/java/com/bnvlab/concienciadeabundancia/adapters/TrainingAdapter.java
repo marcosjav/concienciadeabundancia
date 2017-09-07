@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.TrainingItem;
 
 import java.util.List;
@@ -38,20 +38,24 @@ public class TrainingAdapter extends ArrayAdapter<TrainingItem> {
 
         if (p != null) {
             TextView tt1 = (TextView) v.findViewById(R.id.text_view_training_row_title);
-            tt1.setTypeface(Utils.getTypeface(getContext()));
 
             TextView tt2 = (TextView) v.findViewById(R.id.text_view_training_row_state);
-            tt2.setTypeface(Utils.getTypeface(getContext()));
+
+            ImageView imageView = (ImageView) v.findViewById(R.id.image_view_training_row_state);
 
             if (tt1 != null) {
                 tt1.setText(p.getTitle());
             }
 
             if (tt2 != null) {
-                if (p.isFinished())
+                if (p.isFinished()) {
                     tt2.setText("Finalizado");
-                else
-                    tt2.setText(p.isComplete()? "Enviado" : "Pendiente");
+                    imageView.setImageResource(R.drawable.new_icon_finished);
+                }
+                else {
+                    tt2.setText(p.isComplete() ? "Enviado" : "Pendiente");
+                    imageView.setImageResource(p.isComplete() ? R.drawable.new_icon_sent : R.drawable.new_icon_available);
+                }
             }
 
         }

@@ -87,5 +87,10 @@ public class References {
             , ADMINISTRATORS = "administrators"
 
             , SHARE = "share"
-            , NOTIFICATIONS = "notifications";
+            , NOTIFICATIONS = "notifications"
+            , PAY_URL = "pay_url"
+            , PAY_URL_DEFAULTS = "defaults"
+            , PAY_URL_CASH = "cash"
+            , PAY_URL_CREDIT = "credit"
+            , PAY_URL_TRANSFER = "transfer";
 }

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Conciencia De Ser</string>
+    <string name="loading">cargando…</string>
 
     <!--LOGIN SCREENS-->
     <string name="login_button_login">Ingresar</string>
@@ -46,6 +47,8 @@
     <string name="app_half_name_1">CONCIENCIA DE</string>
     <string name="app_half_name_2">SER</string>
 
+    <string name="back">VOLVER</string>
+
 
     <!--PANTALLA PRINCIPAL-->
     <string name="training_guides">Guías de Entrenamiento</string>
@@ -64,4 +67,42 @@
     <!--FRAGMENT QUIZ RESUME-->
     <string name="resume_title">Guías de Entrenamiento</string>
     <string name="explanatory_videos">Videos Explicativos</string>
+
+    <!--FRAGMENT TRAININGS-->
+    <string name="trainings_videos">Videos Explicativos</string>
+    <string name="trainings_title">Guías de Entrenamiento</string>
+
+    <!--FRAGMENT CDA-->
+    <string name="cda_title">CDA</string>
+
+    <!--FRAGMENT FUNDAMENTS-->
+    <string name="fundaments_title">Fundamentos</string>
+
+    <!--FRAGMENT QUIZ-->
+    <string name="quiz_videos">Videos Test</string>
+    <string name="quiz_no_test">Realizar cambios sin testear</string>
+    <string name="quiz_send">Enviar</string>
+
+    <!--FRAGMENT PAY-->
+    <string name="pay_title">Abonar</string>
+    <string name="pay_bank">Transferencia bancaria</string>
+    <string name="pay_cash">Efectivo</string>
+    <string name="pay_credit">Tarjeta de Crédito</string>
+    <string name="pay_recomendations">Sistema de Recomendaciones</string>
+    <string name="pay_report">Informar un pago</string>
+
+    <!--FRAGMENT VIDEOS-->
+    <string name="videos_title">Videos</string>
+
+    <!--FRAGMENT FAQ-->
+    <string name="faq_title">¿Sabías Que…?</string>
+
+    <!--FRAGMENT CONFERENCES-->
+    <string name="conferences_title">Conferencias</string>
+
+    <!--FRAGMENT NOTIFICATIONS-->
+    <string name="notification_title">Mensajes</string>
+
+    <!--FRAGMENT CONGRATS-->
+    <string name="congrats_button">Acepto</string>
 </resources>

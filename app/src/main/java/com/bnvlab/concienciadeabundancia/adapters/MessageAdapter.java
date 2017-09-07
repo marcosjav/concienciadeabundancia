@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.R;
@@ -75,6 +76,12 @@ public class MessageAdapter extends BaseExpandableListAdapter {
         TextView time = (TextView) view.findViewById(R.id.time);
         String sTime = formatter.format(new Date(list.get(groupPosition).getTime()));
         time.setText(sTime);
+
+        ImageView img_selection=(ImageView) view.findViewById(R.id.expandable_icon);
+        int imageResourceId = isExpanded ? R.drawable.expandable_icon_up
+                : R.drawable.expandable_icon;
+        img_selection.setImageResource(imageResourceId);
+
 //        textView.setTypeface(Utils.getTypeface(context));
         return view;
     }

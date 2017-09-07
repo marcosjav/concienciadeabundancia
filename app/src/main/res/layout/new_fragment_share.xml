@@ -18,6 +18,12 @@
             android:orientation="horizontal"
             android:visibility="visible">
 
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:drawableStart="@drawable/left_arrow"
+                android:background="@android:color/transparent"/>
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -30,7 +36,7 @@
                     android:layout_margin="0dp"
                     android:background="@null"
                     android:scaleType="fitXY"
-                    android:src="@android:drawable/sym_action_chat" />
+                    android:src="@drawable/new_notifications_icon" />
 
                 <ImageView
                     android:id="@+id/notifications_indicator"
@@ -86,7 +92,7 @@
                 android:layout_margin="15dp"
                 android:background="@null"
                 android:scaleType="fitXY"
-                android:src="@drawable/new_icon_logout" />
+                android:src="@drawable/new_icon_back" />
 
         </LinearLayout>
 

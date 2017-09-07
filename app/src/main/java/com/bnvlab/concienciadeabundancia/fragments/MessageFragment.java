@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
@@ -38,16 +36,16 @@ public class MessageFragment extends Fragment {
     SharedPreferences prefs;
     private List<String> titles = new ArrayList<>();
     private List<String> msgs = new ArrayList<>();
-    Animation bounce;
+//    Animation bounce;
 
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce);
+        /*bounce = AnimationUtils.loadAnimation(getActivity(), R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator();
 
-        bounce.setInterpolator(interpolator);
+        bounce.setInterpolator(interpolator);*/
     }
 
     @Nullable

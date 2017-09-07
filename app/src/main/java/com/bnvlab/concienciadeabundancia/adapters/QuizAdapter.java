@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.R;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class QuizAdapter extends BaseAdapter {
 
             holder = new QuizHolder();
             holder.quizText = (TextView) view.findViewById(R.id.quiz_item_string);
-            holder.quizText.setTypeface(Utils.getTypeface(context));
+//            holder.quizText.setTypeface(Utils.getTypeface(context));
             holder.quizSwitch = (SwitchCompat) view.findViewById(R.id.quiz_item_switch);
 
             holder.quizSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

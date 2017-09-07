@@ -1,30 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:background="@drawable/new_item">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/text_view_training_row_title"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:text="TITLE"
-        style="@style/textViewStyle"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        android:textColor="@android:color/white"/>
+        android:orientation="horizontal"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="8dp">
 
-    <TextView
-        android:id="@+id/text_view_training_row_state"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="STATE"
-        android:layout_marginStart="10dp"
-        android:textColor="@android:color/white" />
+        <TextView
+            android:id="@+id/text_view_training_row_title"
+            style="@style/textViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="TITLE"
+            android:textSize="18sp"/>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/text_view_training_row_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:text="STATE"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/image_view_training_row_state"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/new_icon_available" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="@color/text" />
+
+</FrameLayout>

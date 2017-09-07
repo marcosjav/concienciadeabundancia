@@ -8,8 +8,8 @@ android {
         applicationId "com.bnvlab.concienciadeabundancia"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 37
-        versionName "5.3"
+        versionCode 38
+        versionName "6"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -36,7 +36,9 @@ dependencies {
     })
     compile files('libs/YouTubeAndroidPlayerApi.jar')
     //    compile 'com.google.firebase:firebase-core:9.6.1'
-    compile 'com.android.support:design:25+'
+    // MercadoPago SDK and dependencies
+    compile('com.mercadopago:sdk:2.3.6@aar') { transitive = true }
+    compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha7'
     compile 'me.srodrigo:androidhintspinner:1.0.0'
     compile 'com.firebase:firebase-client-android:2.5.2'
@@ -59,8 +61,12 @@ dependencies {
     compile 'com.github.chenupt.android:multiplemodel:1.1.0@aar'
     compile 'com.google.guava:guava:20.0'
     compile 'com.airbnb.android:lottie:2.1.2'
-    compile 'com.android.support:appcompat-v7:25+'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.paypal.sdk:paypal-android-sdk:2.15.3'
 }
+
+
+
 
 
 

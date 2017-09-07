@@ -9,8 +9,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -57,15 +55,15 @@ public class SettingsFragment extends Fragment {
     ViewSwitcher viewSwitcherOK;
     LinearLayout layoutLoading;
     User user;
-    Animation bounce;
+//    Animation bounce;
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+        /*bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator();
 
-        bounce.setInterpolator(interpolator);
+        bounce.setInterpolator(interpolator);*/
     }
 
     ArrayList<String> locationList = new ArrayList<String>() {{
@@ -99,7 +97,7 @@ public class SettingsFragment extends Fragment {
         view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
+//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
@@ -129,7 +127,7 @@ public class SettingsFragment extends Fragment {
 
                         updateSpinner();
 
-                        layoutLoading.showNext();
+                        layoutProgress.showNext();
                         isReady = true;
                     }
                 }, new Response.ErrorListener() {
@@ -140,7 +138,7 @@ public class SettingsFragment extends Fragment {
                 }
         );*/
 
-//        layoutLoading.showNext();
+//        layoutProgress.showNext();
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.LOCATIONS)

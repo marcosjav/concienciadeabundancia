@@ -16,16 +16,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
@@ -63,16 +58,17 @@ import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
-    ImageButton buttonMaillink, buttonTwitterLink, buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden, notificationButton;
-    Button buttonTrainings, buttonFAQ, buttonAbout, buttonFundaments, buttonShare, buttonConference, buttonVideos, buttonSubscribe;
-    View shareRow;
+    ImageButton buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden, notificationButton, buttonSubscribe;
+    ImageButton buttonFAQ, buttonAbout, buttonFundaments, buttonConference, buttonVideos;
+    Button buttonTrainings, buttonShare;
+//    View shareRow;
     private static final String fbUri0 = "https://www.facebook.com/";
-    private static final String fbUri1 = "cdainternacional";
+    private static final String fbUri1 = "cda-internacional-256242691550706";
     ArrayList<JSONObject> notificationsList;
     View notificationsIndicator;
-    LinearLayout layoutTrainings;
+//    LinearLayout layoutTrainings;
     SharedPreferences prefs;
-    Animation bounce;
+//    Animation bounce;
     final static String TAG = "ERRORR - MainFragment";
 
     public MainFragment() {
@@ -81,11 +77,11 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
-        // Use bounce interpolator with amplitude 0.2 and frequency 20
-        MyBounceInterpolator interpolator = new MyBounceInterpolator();
-
-        bounce.setInterpolator(interpolator);
+//        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+//        // Use bounce interpolator with amplitude 0.2 and frequency 20
+//        MyBounceInterpolator interpolator = new MyBounceInterpolator();
+//
+//        bounce.setInterpolator(interpolator);
     }
 
     @Override
@@ -96,68 +92,34 @@ public class MainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_main, container, false);
+        final View view = inflater.inflate(R.layout.new_fragment_main, container, false);
 
         prefs = getActivity().getSharedPreferences(
                 MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
         checkUserType();
 
-        TextView version = (TextView) view.findViewById(R.id.version);
-
-        try {
-            version.setText("v" + getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
-
-            if (prefs.getBoolean("newMessages",false)){
-                prefs.edit().putBoolean("newMessages", false).apply();
-                FragmentMan.changeFragment(getActivity(), MessageFragment.class);
-            }
-
-        } catch (Exception e) {
-            Log.d("ERRORR", "MainFragment - OnCreate - Line 122\n    " + e.getMessage());
-        }
-
-
         notificationButton = (ImageButton) view.findViewById(R.id.notifications);
-        shareRow = view.findViewById(R.id.layout_share);
-        buttonFacebookLink = (ImageButton) view.findViewById(R.id.button_facebook_link);
-        buttonMaillink = (ImageButton) view.findViewById(R.id.button_email_link);
-        buttonTwitterLink = (ImageButton) view.findViewById(R.id.button_tweeter_link);
-        buttonWebLink = (ImageButton) view.findViewById(R.id.button_web_link);
-        buttonInstaLink = (ImageButton) view.findViewById(R.id.button_insta_link);
+//        shareRow = view.findViewById(R.id.layout_share);
+        buttonFacebookLink = (ImageButton) view.findViewById(R.id.button_main_facebook);
+        buttonWebLink = (ImageButton) view.findViewById(R.id.button_main_web);
+        buttonInstaLink = (ImageButton) view.findViewById(R.id.button_main_instagram);
         buttonLogout = (ImageButton) view.findViewById(R.id.button_logout_main);
         buttonSettings = (ImageButton) view.findViewById(R.id.button_settings);
         buttonAddChilden = (ImageButton) view.findViewById(R.id.add_children);
-        layoutTrainings = (LinearLayout) view.findViewById(R.id.layout_button_trainings);
 
-        buttonShare = (Button) view.findViewById(R.id.button_share_main);
-        buttonShare.setTypeface(Utils.getTypeface(getContext()));
-
+        buttonShare = (Button) view.findViewById(R.id.button_main_share);
         buttonTrainings = (Button) view.findViewById(R.id.button_main_trainings);
-        buttonTrainings.setTypeface(Utils.getTypeface(getContext()));
-
-        buttonFAQ = (Button) view.findViewById(R.id.button_main_faq);
-        buttonFAQ.setTypeface(Utils.getTypeface(getContext()));
-
-        buttonFundaments = (Button) view.findViewById(R.id.button_main_fundaments);
-        buttonFundaments.setTypeface(Utils.getTypeface(getContext()));
-
-        buttonAbout = (Button) view.findViewById(R.id.button_main_about_us);
-        buttonAbout.setTypeface(Utils.getTypeface(getContext()));
-
-        buttonConference = (Button) view.findViewById(R.id.button_main_conference);
-        buttonConference.setTypeface(Utils.getTypeface(getContext()));
-
-        buttonVideos = (Button) view.findViewById(R.id.button_main_videos);
-        buttonVideos.setTypeface(Utils.getTypeface(getContext()));
-
-        buttonSubscribe = (Button) view.findViewById(R.id.button_subscribe);
-        buttonSubscribe.setTypeface(Utils.getTypeface(getContext()));
+        buttonFAQ = (ImageButton) view.findViewById(R.id.button_main_faq);
+        buttonFundaments = (ImageButton) view.findViewById(R.id.button_main_fundaments);
+        buttonAbout = (ImageButton) view.findViewById(R.id.button_main_about_us);
+        buttonConference = (ImageButton) view.findViewById(R.id.button_main_conference);
+        buttonVideos = (ImageButton) view.findViewById(R.id.button_main_videos);
+        buttonSubscribe = (ImageButton) view.findViewById(R.id.button_main_subscribe);
 
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), NotificationsFragment.class);
             }
         });
@@ -165,7 +127,6 @@ public class MainFragment extends Fragment {
         buttonSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), SettingsFragment.class);
             }
         });
@@ -173,7 +134,6 @@ public class MainFragment extends Fragment {
         buttonConference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.findViewById(R.id.layout_conference).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), ConferenceFragment.class);
             }
         });
@@ -181,7 +141,6 @@ public class MainFragment extends Fragment {
         buttonFAQ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.findViewById(R.id.layout_faq).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), FaqFragment.class);
             }
         });
@@ -189,7 +148,6 @@ public class MainFragment extends Fragment {
         buttonVideos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.findViewById(R.id.layout_videos).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), VideoFragment.class);
             }
         });
@@ -197,7 +155,6 @@ public class MainFragment extends Fragment {
         buttonFundaments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.findViewById(R.id.layout_fundaments).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), FundamentsFragment.class);
             }
         });
@@ -205,15 +162,13 @@ public class MainFragment extends Fragment {
         buttonAbout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.findViewById(R.id.layout_about).startAnimation(bounce);
-                FragmentMan.changeFragment(getActivity(), AboutFragment.class);
+                FragmentMan.changeFragment(getActivity(), CDAFragment.class);
             }
         });
 
         buttonFacebookLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
                 Uri uri = Uri.parse(fbUri0 + fbUri1); // missing 'http://' will cause crashed
                 try {
                     int versionCode = getContext().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
@@ -233,29 +188,10 @@ public class MainFragment extends Fragment {
             }
         });
 
-        buttonTwitterLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.startAnimation(bounce);
-                Intent intent = null;
-                try {
-                    // get the Twitter app if possible
-                    getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?user_id=CDAIntl"));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                } catch (Exception e) {
-                    // no Twitter app, revert to browser
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/cdaintl"));
-                }
-                getActivity().startActivity(intent);
-            }
-        });
-
         buttonWebLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
-                Uri uri = Uri.parse("http://www.concienciadeabundancia.com"); // missing 'http://' will cause crashed
+                Uri uri = Uri.parse("http://www.cdainter.com"); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -264,8 +200,7 @@ public class MainFragment extends Fragment {
         buttonInstaLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
-                Uri uri = Uri.parse("http://instagram.com/_u/cdaintl");
+                Uri uri = Uri.parse("http://instagram.com/_u/cdainternacional");
                 Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
 
                 likeIng.setPackage("com.instagram.android");
@@ -274,7 +209,7 @@ public class MainFragment extends Fragment {
                     startActivity(likeIng);
                 } catch (ActivityNotFoundException e) {
                     startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://instagram.com/cdaintl")));
+                            Uri.parse("http://instagram.com/cdainternacional")));
                 }
             }
         });
@@ -282,7 +217,6 @@ public class MainFragment extends Fragment {
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                 builder
@@ -317,23 +251,13 @@ public class MainFragment extends Fragment {
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.findViewById(R.id.layout_share).startAnimation(bounce);
                 shareDialog();
-            }
-        });
-
-        buttonMaillink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.startAnimation(bounce);
-                Notify.email(getContext());
             }
         });
 
         buttonTrainings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                layoutTrainings.startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
             }
         });
@@ -348,7 +272,6 @@ public class MainFragment extends Fragment {
         buttonSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                view.findViewById(R.id.layout_subscribe).startAnimation(bounce);
                 FragmentMan.changeFragment(getActivity(), PayFragment.class);
             }
         });
@@ -461,7 +384,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        dialogFirstTime();
+//        dialogFirstTime();
     }
 
     private void dialogFirstTime() {
@@ -512,10 +435,10 @@ public class MainFragment extends Fragment {
     }
 
     private void showShare(boolean show) {
-        shareRow.setVisibility(show ? View.VISIBLE : View.GONE);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layoutTrainings.getLayoutParams();
-        params.gravity = show ? Gravity.START : Gravity.END;
-        layoutTrainings.setLayoutParams(params);
+//        shareRow.setVisibility(show ? View.VISIBLE : View.GONE);
+//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) layoutTrainings.getLayoutParams();
+//        params.gravity = show ? Gravity.START : Gravity.END;
+//        layoutTrainings.setLayoutParams(params);
     }
 
     class AsyncT extends AsyncTask<Void, Void, Void> {
@@ -569,7 +492,7 @@ public class MainFragment extends Fragment {
 
     }
 }
-class MyBounceInterpolator implements android.view.animation.Interpolator {
+/*class MyBounceInterpolator implements android.view.animation.Interpolator {
 
     MyBounceInterpolator() {
     }
@@ -579,4 +502,4 @@ class MyBounceInterpolator implements android.view.animation.Interpolator {
 //                Math.cos(mFrequency * time) + 1);
         return (float) Math.sin(Math.PI*time);
     }
-}
+}*/

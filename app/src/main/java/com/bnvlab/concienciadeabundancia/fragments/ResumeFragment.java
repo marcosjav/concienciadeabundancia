@@ -6,12 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.ResumeAdapter;
@@ -38,22 +37,23 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
 //public class ResumeFragment extends Fragment {
     TextView tvTitle;
     ListView listView;
-    ViewSwitcher viewSwitcher;
-    TextView textViewResume;
-
+//    ViewSwitcher viewSwitcher;
+//    TextView textViewResume;
+    ScrollView scrollView;
+    LinearLayout layoutProgress;
     String quizId;
     ArrayList<QuizItem> list;
 
     ResumeAdapter adapter;
-    Animation bounce;
+//    Animation bounce;
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+/*        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
         MyBounceInterpolator interpolator = new MyBounceInterpolator();
 
-        bounce.setInterpolator(interpolator);
+        bounce.setInterpolator(interpolator);*/
     }
 
     public ResumeFragment() {
@@ -62,20 +62,21 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_quiz_resume, container, false);
+        View view = inflater.inflate(R.layout.new_fragment_resume, container, false);
 
         list = new ArrayList<>();
         adapter = new ResumeAdapter(getContext(), R.layout.item_resume_row, list);
 
-        TextView title = (TextView) view.findViewById(R.id.textView);
-        title.setTypeface(Utils.getTypeface(getContext()));
+//        TextView title = (TextView) view.findViewById(R.id.textView);
+//        title.setTypeface(Utils.getTypeface(getContext()));
 
-        tvTitle = (TextView) view.findViewById(R.id.text_view_quiz_resume_layout_title);
-        tvTitle.setTypeface(Utils.getTypeface(getContext()));
+        tvTitle = (TextView) view.findViewById(R.id.textView);
+        layoutProgress = (LinearLayout) view.findViewById(R.id.layout_progress);
+//        tvTitle.setTypeface(Utils.getTypeface(getContext()));
 
-        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_quiz_resume_layout);
+//        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_quiz_resume_layout);
         listView = (ListView) view.findViewById(R.id.list_view_quiz_resume);
-
+        scrollView = (ScrollView) view.findViewById(R.id.layout);
         listView.setAdapter(adapter);
 
         Bundle bundle = this.getArguments();
@@ -84,18 +85,18 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
             getQuiz();
         }
 
-        textViewResume = (TextView) view.findViewById(R.id.text_view_resume);
-        textViewResume.setTypeface(Utils.getTypeface(getContext()));
+//        textViewResume = (TextView) view.findViewById(R.id.text_view_resume);
+//        textViewResume.setTypeface(Utils.getTypeface(getContext()));
 
         YouTubePlayerSupportFragment frag =
                 (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
         frag.initialize(Config.YOUTUBE_API_KEY, this);
 
-        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
-        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+//        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
+        view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
+//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
@@ -112,6 +113,7 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         tvTitle.setText(dataSnapshot.getValue(String.class));
+                        showProgress(false);
                     }
 
                     @Override
@@ -132,52 +134,52 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
                             if (!data.getKey().equals(References.SENT_CHILD_CHECKED))
                                 list.add(data.getValue(QuizItem.class));
                             else {
-                                if (data.getValue(boolean.class)){
-                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                            .child(References.TEXTS)
-                                            .child(References.TEXTS_RESUME_FINISH)
-                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    if (dataSnapshot.getValue() != null)
-                                                        textViewResume.setText(dataSnapshot.getValue(String.class));
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                }
-                                            });
-                                }else{
-                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                            .child(References.TEXTS)
-                                            .child(References.TEXTS_RESUME_WAITING)
-                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    if (dataSnapshot.getValue() != null)
-                                                        textViewResume.setText(dataSnapshot.getValue(String.class));
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                }
-                                            });
-                                }
+//                                if (data.getValue(boolean.class)){
+//                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+//                                            .child(References.TEXTS)
+//                                            .child(References.TEXTS_RESUME_FINISH)
+//                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                @Override
+//                                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                                    if (dataSnapshot.getValue() != null)
+//                                                        textViewResume.setText(dataSnapshot.getValue(String.class));
+//                                                }
+//
+//                                                @Override
+//                                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                                }
+//                                            });
+//                                }else{
+//                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+//                                            .child(References.TEXTS)
+//                                            .child(References.TEXTS_RESUME_WAITING)
+//                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                @Override
+//                                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                                    if (dataSnapshot.getValue() != null)
+//                                                        textViewResume.setText(dataSnapshot.getValue(String.class));
+//                                                }
+//
+//                                                @Override
+//                                                public void onCancelled(DatabaseError databaseError) {
+//
+//                                                }
+//                                            });
+//                                }
                             }
 
                         }
 
                         adapter.notifyDataSetChanged();
                         Utils.setListViewHeightBasedOnChildren(listView);
-                        viewSwitcher.showNext();
+//                        viewSwitcher.showNext();
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
-                        viewSwitcher.showNext();
+//                        viewSwitcher.showNext();
                     }
                 });
     }
@@ -197,5 +199,10 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
             String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
             Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void showProgress(boolean show){
+        scrollView.setVisibility(show? View.GONE : View.VISIBLE);
+        layoutProgress.setVisibility(show? View.VISIBLE : View.GONE);
     }
 }

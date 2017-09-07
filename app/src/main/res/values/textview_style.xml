@@ -2,6 +2,6 @@
 <resources>
     <style name="textViewStyle" parent="@android:style/Widget.DeviceDefault.TextView">
         <!--<item name="android:textAppearance">@app</item>-->
-        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 </resources>

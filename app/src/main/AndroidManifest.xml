@@ -15,7 +15,8 @@
         android:icon="@mipmap/ico_app"
         android:roundIcon="@mipmap/ico_app"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Design.NoActionBar">
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -61,6 +62,8 @@
 
         <!-- <activity android:name=".SignInActivity" -->
         <!-- android:launchMode="singleTop"/> -->
+        <!-- <activity android:name=".mercadopago.CardActivity" /> -->
+        <activity android:name=".PayActivity" />
         <activity android:name=".mercadopago.CardActivity" />
     </application>
 

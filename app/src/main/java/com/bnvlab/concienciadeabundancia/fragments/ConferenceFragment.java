@@ -13,18 +13,12 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.ConferenceAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.ConferenceItem;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,17 +35,19 @@ public class ConferenceFragment extends Fragment {
     private static final int REQUEST_WRITE_PERMISSION = 20;
     ArrayList<ConferenceItem> list;
     ConferenceAdapter adapter;
-    ProgressBar progressBar;
+    View progressBar;
     View view;
-    Animation bounce;
+    ListView listView;
+    View iUnavaliable;
+//    Animation bounce;
     @Override
     public void onStart() {
         super.onStart();
-        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
+/*        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
-        MyBounceInterpolator interpolator = new MyBounceInterpolator();
+//        MyBounceInterpolator interpolator = new MyBounceInterpolator();
 
-        bounce.setInterpolator(interpolator);
+        bounce.setInterpolator(interpolator);*/
     }
 
     public ConferenceFragment() {
@@ -60,23 +56,24 @@ public class ConferenceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_conference, container, false);
+        View view = inflater.inflate(R.layout.new_fragment_conference, container, false);
 
         list = new ArrayList<>();
         adapter = new ConferenceAdapter(getContext(), R.layout.item_congress_row, list);
 
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar_conference_fragment);
+        progressBar = view.findViewById(R.id.layout_progress);
+        iUnavaliable = view.findViewById(R.id.image_unavaliable);
 
-        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
-        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+//        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
+        view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.startAnimation(bounce);
+//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
 
-        ListView listView = (ListView) view.findViewById(R.id.list_view_fragment_congress);
+        listView = (ListView) view.findViewById(R.id.list_view_fragment_congress);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -135,7 +132,7 @@ public class ConferenceFragment extends Fragment {
     }
 
     private void getConfereces() {
-        progressBar.setVisibility(View.VISIBLE);
+        showProrgess(true);
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.CONFERENCES)
@@ -170,10 +167,12 @@ public class ConferenceFragment extends Fragment {
                             list.add(item);
                             adapter.notifyDataSetChanged();
                         }
-                        if (isEmpty)
-                            Toast.makeText(getContext(), "No hay próximos encuestros todavía", Toast.LENGTH_LONG).show();
-
-                        progressBar.setVisibility(View.GONE);
+                        if (isEmpty) {
+                            progressBar.setVisibility(View.GONE);
+                            listView.setVisibility(View.GONE);
+                            iUnavaliable.setVisibility(View.VISIBLE);
+                        }else
+                            showProrgess(false);
                     }
 
                     @Override
@@ -183,6 +182,11 @@ public class ConferenceFragment extends Fragment {
                 });
     }
 
+    private void showProrgess(boolean show){
+        progressBar.setVisibility(show? View.VISIBLE : View.GONE);
+        listView.setVisibility(show? View.GONE : View.VISIBLE);
+        iUnavaliable.setVisibility(View.GONE);
+    }
 
     @Override
     public void onDestroyView() {
