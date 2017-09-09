@@ -57,7 +57,7 @@
     <string name="videos">Videos</string>
     <string name="conferences">Conferencias</string>
     <string name="cda">CDA</string>
-    <string name="fundamentals">Fundamentos</string>
+    <string name="fundamentals">Evolución</string>
     <string name="questions">Preguntas</string>
 
     <!--FRAGMENT COMPARTIR-->
@@ -76,7 +76,7 @@
     <string name="cda_title">CDA</string>
 
     <!--FRAGMENT FUNDAMENTS-->
-    <string name="fundaments_title">Fundamentos</string>
+    <string name="fundaments_title">Evolución</string>
 
     <!--FRAGMENT QUIZ-->
     <string name="quiz_videos">Videos Test</string>

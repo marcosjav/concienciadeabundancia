@@ -13,9 +13,9 @@
         android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ico_app"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ico_app"
         android:supportsRtl="true"
-        android:largeHeap="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
@@ -65,6 +65,7 @@
         <!-- <activity android:name=".mercadopago.CardActivity" /> -->
         <activity android:name=".PayActivity" />
         <activity android:name=".mercadopago.CardActivity" />
+        <activity android:name=".MainEvolution"></activity>
     </application>
 
 </manifest>

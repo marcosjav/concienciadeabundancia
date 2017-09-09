@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.paypal.android.sdk.payments.PayPalConfiguration;
@@ -46,20 +45,14 @@ public class PayActivity extends AppCompatActivity {
         Intent intent = new Intent(this, PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
         startService(intent);
-        findViewById(R.id.button_pay).setOnClickListener(new View.OnClickListener() {
+        thingToBuy = new PayPalPayment(new BigDecimal("120"), "USD",
+                "Entrenamiento Conciencia de Ser", PayPalPayment.PAYMENT_INTENT_SALE);
+        Intent intent2 = new Intent(PayActivity.this,
+                PaymentActivity.class);
 
-            @Override
-            public void onClick(View v) {
-                thingToBuy = new PayPalPayment(new BigDecimal("120"), "USD",
-                        "Entrenamiento Conciencia de Ser", PayPalPayment.PAYMENT_INTENT_SALE);
-                Intent intent = new Intent(PayActivity.this,
-                        PaymentActivity.class);
+        intent2.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
 
-                intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
-
-                startActivityForResult(intent, REQUEST_CODE_PAYMENT);
-            }
-        });
+        startActivityForResult(intent2, REQUEST_CODE_PAYMENT);
     }
 
 
@@ -73,8 +66,8 @@ public class PayActivity extends AppCompatActivity {
                 try {
 
                     // informacion extra del pedido
-                    Log.d("PAYMENTT",confirm.toJSONObject().toString(4));
-                    Log.d("PAYMENTT",confirm.getPayment().toJSONObject()
+                    Log.d("PAYMENTT", confirm.toJSONObject().toString(4));
+                    Log.d("PAYMENTT", confirm.getPayment().toJSONObject()
                             .toString(4));
 
                     Toast.makeText(getApplicationContext(), "Orden procesada",

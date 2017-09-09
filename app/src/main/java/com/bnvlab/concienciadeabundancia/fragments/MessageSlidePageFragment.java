@@ -1,8 +1,5 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,10 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.bnvlab.concienciadeabundancia.R;
-import com.bnvlab.concienciadeabundancia.auxiliaries.ImageHelper;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 
 /**
  * Created by Marcos on 15/07/2017.
@@ -51,9 +44,8 @@ public class MessageSlidePageFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(
-                R.layout.fragment_message_slide_page, container, false);
-
+        ViewGroup view = null;//(ViewGroup) inflater.inflate(R.layout.fragment_message_slide_page, container, false);
+/*
         tvMessage = (TextView) view.findViewById(R.id.message);
         tvTitle = (TextView) view.findViewById(R.id.title);
         View layout = view.findViewById(R.id.content);
@@ -73,7 +65,7 @@ public class MessageSlidePageFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
-
+*/
         return view;
     }
 

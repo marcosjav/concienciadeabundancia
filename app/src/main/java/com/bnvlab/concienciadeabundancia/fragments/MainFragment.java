@@ -156,6 +156,8 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentMan.changeFragment(getActivity(), FundamentsFragment.class);
+                //Intent intent = new Intent(getActivity(), MainEvolution.class);
+//                startActivity(intent);
             }
         });
 

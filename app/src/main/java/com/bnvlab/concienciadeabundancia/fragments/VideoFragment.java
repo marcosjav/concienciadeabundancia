@@ -61,7 +61,7 @@ public class VideoFragment extends Fragment {
         TextView textView = (TextView) view.findViewById(R.id.textView);
 //        textView.setTypeface(Utils.getTypeface(getContext()));
 
-        TextView textViewTitle = (TextView) view.findViewById(R.id.textView_title);
+//        TextView textViewTitle = (TextView) view.findViewById(R.id.textView_title);
 //        textViewTitle.setTypeface(Utils.getTypeface(getContext()));
 
         progress = view.findViewById(R.id.layout_progress);

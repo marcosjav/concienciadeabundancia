@@ -10,7 +10,6 @@
         <item name="android:textSize">16dip</item>
         <item name="android:textStyle">bold</item>
         <!--<item name="android:background">@drawable/button_background</item>-->
-        <item name="android:background">@drawable/button_red_background</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
         <item name="android:padding">5dp</item>

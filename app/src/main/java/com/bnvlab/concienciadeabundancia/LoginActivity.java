@@ -201,8 +201,8 @@ public class LoginActivity extends FragmentActivity {
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        mEmailView.setText("3794141560");
-        mPasswordView.setText("asdasd");
+//        mEmailView.setText("3794141560");
+//        mPasswordView.setText("asdasd");
 
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {

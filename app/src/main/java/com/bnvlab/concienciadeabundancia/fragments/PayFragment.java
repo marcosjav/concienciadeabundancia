@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.bnvlab.concienciadeabundancia.PayActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,7 +54,7 @@ public class PayFragment extends Fragment {
         progressBar = view.findViewById(R.id.layout_progress);
         payLayout = view.findViewById(R.id.layout_pay);
         iUnavaliable = view.findViewById(R.id.image_unavaliable);
-        showProgress(true);
+        //showProgress(true);
 
         buttonTransfer = (Button) view.findViewById(R.id.button_pay_bank);
         buttonCredit = (Button) view.findViewById(R.id.button_pay_credit);
@@ -89,7 +88,7 @@ public class PayFragment extends Fragment {
             @Override
             public void onClick(View v) {
 //                v.startAnimation(bounce);
-                Uri uri = Uri.parse("https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-c3c511ef-9a0c-4c52-82fc-126e888adfbd"); // missing 'http://' will cause crashed
+                Uri uri = Uri.parse("https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-c3c511ef-9a0c-4c52-82fc-126e888adfbd");//"https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-c3c511ef-9a0c-4c52-82fc-126e888adfbd"); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -100,12 +99,12 @@ public class PayFragment extends Fragment {
             @Override
             public void onClick(View v) {
 //                v.startAnimation(bounce);
-                Intent intent = new Intent(getActivity(), PayActivity.class);
-                startActivity(intent);
-
-                /*Uri uri = Uri.parse("https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-2df0c656-1c75-45ac-a500-74bc8708ceda"); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                /*Intent intent = new Intent(getActivity(), PayActivity.class);
                 startActivity(intent);*/
+
+                Uri uri = Uri.parse("https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-2df0c656-1c75-45ac-a500-74bc8708ceda"); // missing 'http://' will cause crashed
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
             }
         });
 //        buttonCredit.setTypeface(Utils.getTypeface(getContext()));
@@ -114,7 +113,8 @@ public class PayFragment extends Fragment {
             @Override
             public void onClick(View v) {
 //                v.startAnimation(bounce);
-                Uri uri = Uri.parse("http://mpago.la/vyfh"); // missing 'http://' will cause crashed
+                //Uri uri = Uri.parse(cashUrl);//
+                Uri uri = Uri.parse( "http://mpago.la/vyfh"); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -138,7 +138,7 @@ public class PayFragment extends Fragment {
                 showReport();
             }
         });
-        getPayUrl();
+        //getPayUrl();
 
         return view;
     }
