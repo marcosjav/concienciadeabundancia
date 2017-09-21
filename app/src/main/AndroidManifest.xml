@@ -12,11 +12,12 @@
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ico_app"
+        android:icon="@mipmap/ic_launcher"
         android:largeHeap="true"
-        android:roundIcon="@mipmap/ico_app"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:label="@string/app_name">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -43,8 +44,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="concienciadeabundancia.com"
-                    android:pathPrefix="/code"
+                    android:host="cdainter.com"
+                    android:pathPrefix="/signup.php"
                     android:scheme="http" />
             </intent-filter>
         </activity>
@@ -65,7 +66,6 @@
         <!-- <activity android:name=".mercadopago.CardActivity" /> -->
         <activity android:name=".PayActivity" />
         <activity android:name=".mercadopago.CardActivity" />
-        <activity android:name=".MainEvolution"></activity>
     </application>
 
 </manifest>

@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
+import com.bnvlab.concienciadeabundancia.LoginActivity;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
@@ -72,6 +73,17 @@ public class MainFragment extends Fragment {
     final static String TAG = "ERRORR - MainFragment";
 
     public MainFragment() {
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+            Intent myIntent = new Intent(getActivity(), LoginActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            this.startActivity(myIntent);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -327,23 +339,6 @@ public class MainFragment extends Fragment {
                                             Log.e("ERRORR", "MainFragment - OnCreate - Line 459\n    " + databaseError.getMessage());
                                         }
                                     });
-//                            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-//                                    .child(References.USERS)
-//                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-//                                    .child(References.USERS_CHILD_ACTIVE)
-//                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-//                                        @Override
-//                                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                                            if (dataSnapshot.getValue() != null)
-//                                                showShare(dataSnapshot.getValue(boolean.class));
-//                                            prefs.edit().putBoolean(References.SHARED_PREFERENCES_CAN_SHARE, dataSnapshot.getValue(boolean.class)).apply();
-//                                        }
-//
-//                                        @Override
-//                                        public void onCancelled(DatabaseError databaseError) {
-//                                            Log.e("ERRORR", "MainFragment - OnCreate - Line 459\n    " + databaseError.getMessage());
-//                                        }
-//                                    });
                         }
 
                     }
@@ -371,7 +366,7 @@ public class MainFragment extends Fragment {
                         if (task.isSuccessful()) {
                             String message = "Hola, te invito a vivir una experiencia que va a potenciar tu vida.\n En 30 minutos lograrás potenciar tu confianza, valoración, seguridad, alegría y reducirás tu estrés diario, de forma inmediata y permanente.\n\nPrimero instalá la app:\n\n" +
                                     "https://play.google.com/store/apps/details?id=com.bnvlab.concienciadeabundancia\n\nDespués abrí este link y cuando te pregunte con qué aplicación, elegí la que instalaste en el paso anterior\n\n" +
-                                    "http://concienciadeabundancia.com/code=" + invitationCode;
+                                    "http://cdainter.com/?code=" + invitationCode;
 
                             Notify.share(message, getContext());
                         } else {

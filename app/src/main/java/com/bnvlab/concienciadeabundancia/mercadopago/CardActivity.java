@@ -1,21 +1,10 @@
 package com.bnvlab.concienciadeabundancia.mercadopago;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-
-import com.bnvlab.concienciadeabundancia.R;
-import com.mercadopago.core.MercadoPago;
-import com.mercadopago.exceptions.MPException;
-import com.mercadopago.model.Issuer;
-import com.mercadopago.model.PaymentMethod;
-import com.mercadopago.model.Token;
-import com.mercadopago.util.JsonUtil;
 
 public class CardActivity extends AppCompatActivity {
 
-    @Override
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card2);
@@ -47,5 +36,5 @@ public class CardActivity extends AppCompatActivity {
                 }
             }
         }
-    }
+    }*/
 }

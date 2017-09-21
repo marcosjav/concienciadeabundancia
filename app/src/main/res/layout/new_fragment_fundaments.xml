@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/new_background"
-    android:clickable="true" >
+    android:clickable="true">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -64,10 +65,10 @@
 
     </FrameLayout>
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/unavaliable"
-        android:layout_gravity="start|center_vertical"/>
+        app:quickScaleEnabled="true"/>
 
 </LinearLayout>

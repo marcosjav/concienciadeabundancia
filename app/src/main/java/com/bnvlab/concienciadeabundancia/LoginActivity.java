@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static com.bnvlab.concienciadeabundancia.R.id.sign_up_scrollview;
 import static com.bnvlab.concienciadeabundancia.fragments.SettingsFragment.isValidEmail;
 
 /**
@@ -53,7 +57,9 @@ public class LoginActivity extends FragmentActivity {
     private EditText mPasswordView;
     public static final String APP_SHARED_PREF_KEY = MainActivity.class.getSimpleName(), FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
     SharedPreferences prefs;
-    private String android_id;
+    private String android_id, invitationCode, invitationSenderUID;
+    private boolean signup, locList;
+    ArrayList<String> locationList = new ArrayList<String>();
 
     /**
      * Array of recent used phone numbers and adapter for autocomplete
@@ -203,13 +209,50 @@ public class LoginActivity extends FragmentActivity {
 
 //        mEmailView.setText("3794141560");
 //        mPasswordView.setText("asdasd");
+        final Button locations = (Button) findViewById(R.id.button_location);
+        loadLocations();
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, locationList);
+        ListView list = (ListView) findViewById(R.id.listview_location);
+        list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                locations.setText(locationList.get(position));
+                showLocationList(false);
+            }
+        });
+
+
+        locations.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locations.setText(getString(R.string.signup_locations_text));
+                locations.setTextColor(Color.WHITE);
+                showLocationList(true);
+            }
+        });
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 attemptLogin();
                 return false;
+            }
+        });
+
+//        BUTTONS ACTION
+        findViewById(R.id.button_signup).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSignUp(true);
+            }
+        });
+
+        findViewById(R.id.sign_up_register).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signUp();
             }
         });
 
@@ -221,7 +264,7 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-//        loadLocations();
+
 
         TextView buttonPasswordRecovery = (TextView) findViewById(R.id.button_password_recovery);
         buttonPasswordRecovery.setOnClickListener(new View.OnClickListener() {
@@ -279,6 +322,69 @@ public class LoginActivity extends FragmentActivity {
                 dialog.show();
             }
         });
+
+        /*
+        * CUANDO SE RECIBE UNA INVITACIÓN
+        */
+        try {
+            Uri data = getIntent().getData();
+            String uri = getIntent().getExtras().getString("uri");
+            if (data != null || uri != null) {
+                if (data != null)
+                    invitationCode = data.toString();
+                else if (uri != null)
+                    invitationCode = uri;
+
+                Log.d(References.ERROR_LOG, invitationCode);
+
+                invitationCode = invitationCode
+                        .split("=")[1]; // .replaceAll("http://concienciadeabundancia.com/code=", "");
+
+                Log.d(References.ERROR_LOG, invitationCode);
+
+                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                        .child(References.INVITATION_CODES)
+                        .child(invitationCode)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                if (dataSnapshot.getValue() != null)
+                                    invitationSenderUID = dataSnapshot.getValue(String.class);
+                                else
+                                    invitationSenderUID = "";
+
+                                showSignUp(true);
+
+                            /*FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                    .child(References.USERS)
+                                    .child(invitationSenderUID)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            String fullName = dataSnapshot.child(References.USERS_CHILD_LASTNAME).getValue(String.class) + ", " + dataSnapshot.child(References.USERS_CHILD_NAME).getValue(String.class);
+                                            ((TextView) findViewById(R.id.sign_up_invitation_code)).setText(fullName);
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });*/
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+            }
+        }catch (Exception e){
+            Log.d(References.ERROR_LOG, e.getMessage());
+        }
     }
 
     /**
@@ -477,10 +583,7 @@ public class LoginActivity extends FragmentActivity {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         }
     }
-    private void showProgress(boolean isShowed){
-        findViewById(R.id.progressBar).setVisibility(isShowed?View.VISIBLE : View.GONE);
-        findViewById(R.id.login_form).setVisibility(isShowed?View.GONE : View.VISIBLE);
-    }
+
 
     private void sendRecoveryPass(String email, final DialogInterface dialog) {
         FirebaseAuth.getInstance()
@@ -489,11 +592,192 @@ public class LoginActivity extends FragmentActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Se envió el correo!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Se te envió un correo!", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
                         } else
                             Toast.makeText(LoginActivity.this, "Hubo un inconveniente\n" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (locList) {
+            showLocationList(false);
+        }else if (signup){
+            showSignUp(false);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void signUp() {
+
+        EditText edName = ((EditText) findViewById(R.id.sign_up_names)),
+                edLastName = ((EditText) findViewById(R.id.sign_up_lastname)),
+                edPhone = ((EditText) findViewById(R.id.sign_up_phone)),
+                edEmail = ((EditText) findViewById(R.id.sign_up_mail)),
+                edPassword = ((EditText) findViewById(R.id.sign_up_password)),
+                edRePassword = ((EditText) findViewById(R.id.sign_up_repassword));
+
+        Button buttonLocation = (Button) findViewById(R.id.button_location);
+
+        String name = edName.getText().toString(),
+                lastName = edLastName.getText().toString(),
+                phone = edPhone.getText().toString(),
+                email = edEmail.getText().toString().toLowerCase(),
+                password = edPassword.getText().toString(),
+                repassword = edRePassword.getText().toString(),
+                location = buttonLocation.getText().toString();
+
+
+        if (name.length() > 2) {
+            if (lastName.length() > 2) {
+                if (!location.equals(getString(R.string.signup_button_locations))) {
+                    if (phone.length() > 5) {
+                        if (isValidEmail(email)) {
+                            if (password.length() > 5) {
+                                if (password.equals(repassword)) {
+                                    registerUser(name, location, lastName, phone, email, password);
+                                } else {
+                                    edRePassword.setError("Las claves no coinciden");
+                                }
+                            } else {
+                                edPassword.setError("Clave muy corta");
+                            }
+                        } else {
+                            edEmail.setError("Correo incorrecto");
+                        }
+                    } else {
+                        edPhone.setError("Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15");
+                    }
+                } else {
+                    TextView errorText = (TextView) findViewById(R.id.sign_up_textview_location);
+                    errorText.setError("");
+                    errorText.setTextColor(Color.RED);//just to highlight that this is an error
+                    errorText.setText(getString(R.string.signup_no_location_selected));//changes the selected item text to this
+                    errorText.requestFocus();
+                }
+            } else {
+                edLastName.setError("Apellido muy corto");
+            }
+        } else {
+            edName.setError("Nombre muy corto");
+        }
+    }
+
+    private void registerUser(String name, String locale, String lastName, String phone, String email, String password) {
+        showProgressSignUp(true);
+//        String name = editTextName.getText().toString(), lastName = editTextLastName.getText().toString(), locale = spinnerLocation.getSelectedItem().toString(), phone = editTextPhone.getText().toString();
+
+        final User user = new User(name, lastName, locale, phone, email, invitationSenderUID);
+
+        MainActivity.newUser = true;
+        MainActivity.user = user;
+
+        //REGISTRO DE UN NUEVO USUARIO
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "falló la autenticación" + task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            FirebaseDatabase
+                                    .getInstance()
+                                    .getReference(References.REFERENCE)
+                                    .child(References.USERS)
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .setValue(user)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                if (invitationCode != null && !invitationCode.isEmpty()) {
+                                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                                            .child(References.INVITATION_CODES)
+                                                            .child(invitationCode)
+                                                            .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                //   close_login();
+                                                            } else
+                                                                Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
+
+                                                }
+                                            }else {
+                                                    Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                        }
+                                    });
+
+                            SecureRandom secureRandom = new SecureRandom();
+
+                            FirebaseDatabase.getInstance()
+                                    .getReference(References.REFERENCE)
+                                    .child("verification_codes")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child("code")
+                                    .setValue(new BigInteger(40, secureRandom).toString(32));
+                        }
+
+                        showProgressSignUp(false);
+                        // ...
+                    }
+                });
+    }
+
+    private void loadLocations() {
+
+        FirebaseDatabase.getInstance()
+                .getReference(References.REFERENCE)
+                .child(References.LOCATIONS)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        dataSnapshot.getChildrenCount();
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            // TODO: handle the post
+                            String location = (String) postSnapshot.getValue();
+                            locationList.add(location);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+//                        Toast.makeText(LoginActivity.this, "onCancelled", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void showProgress(boolean isShowed){
+        findViewById(R.id.progressBar).setVisibility(isShowed?View.VISIBLE : View.GONE);
+        findViewById(R.id.login_form).setVisibility(isShowed?View.GONE : View.VISIBLE);
+    }
+
+    private void showProgressSignUp(boolean show){
+        findViewById(R.id.sign_up_progressbar).setVisibility(show? View.VISIBLE : View.GONE);
+        findViewById(sign_up_scrollview).setVisibility(!show? View.VISIBLE : View.GONE);
+    }
+
+    private void showSignUp(boolean show){
+        findViewById(R.id.layout_signin).setVisibility(!show?View.VISIBLE:View.GONE);
+        findViewById(R.id.layout_signup).setVisibility(show?View.VISIBLE:View.GONE);
+        findViewById(R.id.sign_up_scrollview).setVisibility(show?View.VISIBLE:View.GONE);
+        signup = show;
+    }
+
+    private void showLocationList(boolean show){
+        findViewById(R.id.listview_location).setVisibility(show?View.VISIBLE : View.GONE);
+        findViewById(R.id.sign_up_scrollview).setVisibility(!show?View.VISIBLE:View.GONE);
+        locList = show;
     }
 }

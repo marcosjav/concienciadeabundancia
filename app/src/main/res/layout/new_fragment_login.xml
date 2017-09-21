@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <ScrollView
+        android:id="@+id/layout_signin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -14,7 +16,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingEnd="25dp"
-            android:paddingStart="25dp">
+            android:paddingStart="25dp"
+            android:visibility="visible">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -61,17 +64,24 @@
                     android:layout_height="wrap_content"
                     android:text="@string/prompt_password" />
 
-                <EditText
-                    android:id="@+id/password"
-                    style="@style/editTextStyle"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_shape_enabled"
-                    android:imeOptions="actionNext"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:nextFocusForward="@+id/password"
-                    android:textColor="@color/text" />
+                    android:layout_height="40dp"
+                    app:passwordToggleEnabled="true">
+
+                    <EditText
+                        android:id="@+id/password"
+                        style="@style/editTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_shape_enabled"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:nextFocusForward="@+id/password"
+                        android:textColor="@color/text" />
+
+                </android.support.design.widget.TextInputLayout>
 
                 <Button
                     android:id="@+id/email_sign_in_button"
@@ -103,6 +113,7 @@
                     android:text="@string/no_account" />
 
                 <Button
+                    android:id="@+id/button_signup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_background"
@@ -110,4 +121,260 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <!--SIGNUP AREA-->
+    <LinearLayout
+        android:id="@+id/layout_signup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_shape_enabled">
+
+            <!-- BOTÓN DE NOTIFICACIONES Y DE AGREGAR UN MENOR-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|start"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/new_icon_back"
+                        style="@style/imageButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_margin="0dp"
+                        android:background="@null"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/new_icon_back" />
+
+                </RelativeLayout>
+
+                <ImageButton
+                    android:id="@+id/add_children"
+                    style="@style/imageButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/childrens"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="15dp"
+                android:src="@drawable/main_title"
+                android:text="@string/signup_title"
+                android:textColor="@color/text"
+                android:textSize="22sp" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/sign_up_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/layout_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <ProgressBar
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/button_start"
+                    android:indeterminateTintMode="src_in" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/loading"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <ListView
+            android:id="@+id/listview_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:visibility="gone"/>
+
+        <ScrollView
+            android:id="@+id/sign_up_scrollview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical">
+
+                    <!--NAMES-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nombres completos" />
+
+                    <EditText
+                        android:id="@+id/sign_up_names"
+                        style="@style/editTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/sign_up_lastname" />
+
+                    <!--LAST NAME-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Apellido" />
+
+                    <EditText
+                        android:id="@+id/sign_up_lastname"
+                        style="@style/editTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/sign_up_mail" />
+
+                    <!--EMAIL-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Correo" />
+
+                    <EditText
+                        android:id="@+id/sign_up_mail"
+                        style="@style/editTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/sign_up_phone" />
+
+                    <!--PHONE-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Teléfono" />
+
+                    <EditText
+                        android:id="@+id/sign_up_phone"
+                        style="@style/editTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="phone"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/button_location" />
+
+                    <!--LOCATION-->
+                    <TextView
+                        android:id="@+id/sign_up_textview_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Ubicación" />
+
+                    <Button
+                        android:id="@+id/button_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@drawable/button_background"
+                        android:nextFocusDown="@+id/sign_up_password"
+                        android:text="Elegir" />
+
+                    <!--PASS-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Clave" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        app:passwordToggleEnabled="true">
+
+                        <EditText
+                            android:id="@+id/sign_up_password"
+                            style="@style/editTextStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:imeOptions="actionNext"
+                            android:inputType="textPassword"
+                            android:maxLines="1"
+                            android:nextFocusDown="@+id/sign_up_repassword" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <!--REPASS-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Repetir Clave" />
+
+                    <EditText
+                        android:id="@+id/sign_up_repassword"
+                        style="@style/editTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/sign_up_register" />
+
+                    <Button
+                        android:id="@+id/sign_up_register"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/button_background"
+                        android:text="Registrarse" />
+                </LinearLayout>
+            </FrameLayout>
+        </ScrollView>
+    </LinearLayout>
+
+
 </LinearLayout>

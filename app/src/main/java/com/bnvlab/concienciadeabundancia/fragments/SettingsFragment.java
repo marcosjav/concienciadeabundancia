@@ -9,10 +9,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -20,7 +22,6 @@ import android.widget.ViewSwitcher;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
-import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,9 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import me.srodrigo.androidhintspinner.HintAdapter;
-import me.srodrigo.androidhintspinner.HintSpinner;
-
 /**
  * Created by Marcos on 21/03/2017.
  */
@@ -43,17 +41,21 @@ import me.srodrigo.androidhintspinner.HintSpinner;
 public class SettingsFragment extends Fragment {
     static String TAG = "fragment_settings";
     Button buttonUpdate;
-    Spinner spinnerLocation;
+//    Spinner spinnerLocation;
+    Button buttonLocation;
     EditText editTextName,
-            editTextSecondName,
+            /*editTextSecondName,*/
             editTextLastName,
             editTextPhone,
             editTextMail,
             editTextPassword,
             editTextRePassword;
-    boolean isReady = false, locationsReady = false, userReady = false, nameModify, lastNameModify, phoneModify, mailModify, passModify;
+    boolean isReady = false, locationsReady = false, userReady = false, locList;
     ViewSwitcher viewSwitcherOK;
     LinearLayout layoutLoading;
+    TextView textViewLocation;
+    ListView listViewLocation;
+    View layoutSettings, progressBar;
     User user;
 //    Animation bounce;
     @Override
@@ -81,7 +83,7 @@ public class SettingsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         editTextName = (EditText) view.findViewById(R.id.edittext_settings_name);
-        editTextSecondName = (EditText) view.findViewById(R.id.edittext_settings_second_name);
+//        editTextSecondName = (EditText) view.findViewById(R.id.edittext_settings_second_name);
         editTextLastName = (EditText) view.findViewById(R.id.edittext_settings_lastname);
         editTextPhone = (EditText) view.findViewById(R.id.edittext_settings_phone);
         editTextMail = (EditText) view.findViewById(R.id.edittext_settings_mail);
@@ -89,16 +91,41 @@ public class SettingsFragment extends Fragment {
         editTextRePassword = (EditText) view.findViewById(R.id.edittext_settings_repassword);
         viewSwitcherOK = (ViewSwitcher) view.findViewById(R.id.view_switcher_settings_ok);
         layoutLoading = (LinearLayout) view.findViewById(R.id.layout_loading);
+        textViewLocation = (TextView) view.findViewById(R.id.textView_location);
+        buttonLocation = (Button) view.findViewById(R.id.button_location);
+        listViewLocation = (ListView) view.findViewById(R.id.listview_location);
+        progressBar = view.findViewById(R.id.settings_progressbar);
+        layoutSettings = view.findViewById(R.id.layout_settings);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, locationList);
+        listViewLocation.setAdapter(adapter);
 
-        spinnerLocation = (Spinner) view.findViewById(R.id.spinner_settings_location);
+//        spinnerLocation = (Spinner) view.findViewById(R.id.spinner_settings_location);
         buttonUpdate = (Button) view.findViewById(R.id.button_settings_ok);
 
-        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
-        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                v.startAnimation(bounce);
                 getActivity().onBackPressed();
+            }
+        });
+
+
+
+        buttonLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                textViewLocation.setText(getString(R.string.signup_locations_text));
+                textViewLocation.setTextColor(Color.WHITE);
+                showLocationList(true);
+            }
+        });
+
+        listViewLocation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                buttonLocation.setText(locationList.get(position));
+                showLocationList(false);
             }
         });
 
@@ -125,7 +152,7 @@ public class SettingsFragment extends Fragment {
 
                         locationsReady = true;
 
-                        updateSpinner();
+                        updateLocationButton();
 
                         layoutProgress.showNext();
                         isReady = true;
@@ -153,24 +180,9 @@ public class SettingsFragment extends Fragment {
                         }
                         Collections.sort(locationList);
 
-                        //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER  https://github.com/srodrigo/Android-Hint-Spinner
-                        HintSpinner<String> hintSpinner = new HintSpinner<>(
-                                spinnerLocation,
-                                // Default layout - You don't need to pass in any layout id, just your hint text and
-                                // your list data
-                                new HintAdapter(getContext(), R.string.login_edittext_hint_location, locationList),
-                                new HintSpinner.Callback<String>() {
-                                    @Override
-                                    public void onItemSelected(int position, String itemAtPosition) {
-                                        // Here you handle the on item selected event (this skips the hint selected event)
-                                        ((TextView) spinnerLocation.getSelectedView()).setTextColor(Color.WHITE);
-                                    }
-                                });
-                        hintSpinner.init();
-
                         locationsReady = true;
                         isReady = true;
-                        updateSpinner();
+                        updateLocationButton();
                     }
 
                     @Override
@@ -205,14 +217,15 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            String second = user.getSecondName() == null ? "" : user.getSecondName();
                             user = data.getValue(User.class);
                             userReady = true;
-                            editTextName.setText(user.getName());
-                            editTextSecondName.setText(user.getSecondName() == null ? "" : user.getSecondName());
+                            editTextName.setText(user.getName() + second);
+//                            editTextSecondName.setText(user.getSecondName() == null ? "" : user.getSecondName());
                             editTextLastName.setText(user.getLastName());
                             editTextPhone.setText(user.getPhone());
                             editTextMail.setText(user.getEmail());
-                            updateSpinner();
+                            updateLocationButton();
                             layoutLoading.setVisibility(View.GONE);
                         }
                     }
@@ -225,9 +238,11 @@ public class SettingsFragment extends Fragment {
         //        FILLING USER DATA IN EDITTEXTS
     }
 
-    private void updateSpinner() {
+    private void updateLocationButton() {
         if (userReady && locationsReady) {
-            spinnerLocation.setSelection(locationList.indexOf(user.getLocale()));
+//            spinnerLocation.setSelection(locationList.indexOf(user.getLocale()));
+            buttonLocation.setText(user.getLocale());
+            showProgress(false);
         }
     }
 
@@ -249,7 +264,7 @@ public class SettingsFragment extends Fragment {
 
         if (name.length() > 2) {
             if (lastName.length() > 2) {
-                if (spinnerLocation.getSelectedItemPosition() < spinnerLocation.getCount()) {
+                if (!buttonLocation.getText().toString().equals(getString(R.string.signup_button_locations))) {
                     if (phone.length() == 10) {
                         if (isValidEmail(email)) {
                             if (password.length() > 5 || password.equals("")) {
@@ -273,11 +288,10 @@ public class SettingsFragment extends Fragment {
                         editTextPhone.setError("Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15");
                     }
                 } else {
-                    TextView errorText = (TextView) spinnerLocation.getSelectedView();
-                    errorText.setError("");
-                    errorText.setTextColor(Color.RED);//just to highlight that this is an error
-                    errorText.setText("Debe elegir una localidad");//changes the selected item text to this
-                    errorText.requestFocus();
+                    textViewLocation.setError("");
+                    textViewLocation.setTextColor(Color.RED);//just to highlight that this is an error
+                    textViewLocation.setText("Debe elegir una localidad");//changes the selected item text to this
+                    textViewLocation.requestFocus();
                 }
             } else {
 //                Toast.makeText(getContext(), "Apellido corto", Toast.LENGTH_SHORT).show();
@@ -291,7 +305,8 @@ public class SettingsFragment extends Fragment {
 
     private void saveData() {
         boolean isModified = false;
-        String nName = editTextName.getText().toString(), nLastName = editTextLastName.getText().toString(), nPhone = editTextPhone.getText().toString(), nEmail = editTextMail.getText().toString(), nLocation = locationList.get(spinnerLocation.getSelectedItemPosition()), nPassword = editTextPassword.getText().toString(), registredPhone = user.getPhone();
+        showProgress(true);
+        String nName = editTextName.getText().toString(), nLastName = editTextLastName.getText().toString(), nPhone = editTextPhone.getText().toString(), nEmail = editTextMail.getText().toString(), nLocation = buttonLocation.getText().toString(), nPassword = editTextPassword.getText().toString(), registredPhone = user.getPhone();
 
         String salida = "";
 
@@ -359,9 +374,12 @@ public class SettingsFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 viewSwitcherOK.showPrevious();
                                 Toast.makeText(getContext(), "LISTO!", Toast.LENGTH_SHORT).show();
+                                getActivity().onBackPressed();
 
                             } else
                                 Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                            showProgress(false);
                         }
                     });
         }
@@ -374,5 +392,14 @@ public class SettingsFragment extends Fragment {
         super.onResume();
     }
 
+    private void showLocationList(boolean show){
+        listViewLocation.setVisibility(show?View.VISIBLE : View.GONE);
+        layoutSettings.setVisibility(!show?View.VISIBLE:View.GONE);
+        locList = show;
+    }
 
+    private void showProgress(boolean show){
+        progressBar.setVisibility(show?View.VISIBLE : View.GONE);
+        layoutSettings.setVisibility(!show?View.VISIBLE:View.GONE);
+    }
 }

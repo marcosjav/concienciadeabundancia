@@ -1,5 +1,6 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,8 @@ import android.widget.ViewSwitcher;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -42,38 +45,15 @@ public class FundamentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_fragment_fundaments, container, false);
 
-       /* TextView title = (TextView) view.findViewById(R.id.textView);
-        title.setTypeface(Utils.getTypeface(getContext()));
+        final float scale = 0.8f;
 
-        textView = (TextView) view.findViewById(R.id.text_view_fundaments);
+        final SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)view.findViewById(R.id.imageView);
+        imageView.setImage(ImageSource.resource(R.drawable.evolution));
+        imageView.setScaleAndCenter(scale,new PointF(0,0));
+        imageView.setMinScale(scale);
+        imageView.setMaxScale(scale);
+        imageView.setDoubleTapZoomScale(scale);
 
-        textView.setMovementMethod(LinkMovementMethod.getInstance());  // THIS ALLOW US TO OPEN HTML LINKS IN TEXT
-
-        viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
-
-        ((TextView)view.findViewById(R.id.text_back)).setTypeface(Utils.getTypeface(getContext()));
-        view.findViewById(R.id.layout_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.startAnimation(bounce);
-                getActivity().onBackPressed();
-            }
-        });*/
-//
-//        message.setText(Html.fromHtml("<font color='red'>I like bigknol</font><br />" +
-//                "<strong>Strong Data</strong><br />" +
-//                    "<tt>Moving</tt><br /> \n" +
-//                "<big>Hello Iam Big</big> \\n\n" +
-//                "        <small>Iam Small</small>  \\n\n" +
-//                "        <b>Iam bold</b> \\n\n" +
-//                "        <strike>Vanish 100$</strike>\\n\n" +
-//                "        <a href=\"http://bigknol.com\">Goto Bigknol</a>\n" +
-//                "        X<sub>2</sub>Y \\n\n" +
-//                "        X<sup>30</sup>Z \\n\n" +
-//                "        <u>Underline</u> \\n\n" +
-//                "        <i>Hi Five </i> \\n\n" +
-//                "        <tt>Hi Six</tt>\\n"));
-//        getFundaments();
         view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,4 +82,5 @@ public class FundamentsFragment extends Fragment {
                     }
                 });
     }
+
 }

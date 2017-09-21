@@ -7,6 +7,7 @@ package com.bnvlab.concienciadeabundancia.auxiliaries;
 public class References {
     public static final String
               REFERENCE = "CDA"
+            , ERROR_LOG = "ERROR-LOG"
 
             , CONFERENCES = "conferences"
             , CONFERENCES_CHILD_DATE = "date"

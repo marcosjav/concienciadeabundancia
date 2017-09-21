@@ -105,4 +105,10 @@
 
     <!--FRAGMENT CONGRATS-->
     <string name="congrats_button">Acepto</string>
+
+    <!--FRAGMENT SIGN UP-->
+    <string name="signup_title">Registrarse</string>
+    <string name="signup_button_locations">Elegir</string>
+    <string name="signup_locations_text">Ubicación</string>
+    <string name="signup_no_location_selected">Debe seleccionar su ubicación</string>
 </resources>

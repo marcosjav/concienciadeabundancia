@@ -71,6 +71,22 @@ public class MainActivity extends FragmentActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        try {
+            Uri data = getIntent().getData();
+            if (data != null) {
+                String invitationCode = data.toString();
+
+                if (invitationCode != null && invitationCode.contains("http://cdainter.com/?code=")){
+                    Intent intent = new Intent();
+                    intent.putExtra("uri", "http://cdainter.com/?code=");
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        }catch (Exception e){
+            Log.d(References.ERROR_LOG, e.getMessage());
+        }
+
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             prefs = getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(),

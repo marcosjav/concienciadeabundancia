@@ -1,25 +1,9 @@
 package com.bnvlab.concienciadeabundancia;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.paypal.android.sdk.payments.PayPalConfiguration;
-import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalService;
-import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
-
-import org.json.JSONException;
-
-import java.math.BigDecimal;
 
 public class PayActivity extends AppCompatActivity {
-    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_SANDBOX;
+    /*private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_SANDBOX;
 
     private static final String CONFIG_CLIENT_ID = "AZbyr2Zwl5lOev_NO5Pb_wFwgF9--Q8jMwCWGT7VcmqcQfhN1308oZFgwjD9dYk28xxgKxKSTYkRVZEv";
     private static final int REQUEST_CODE_PAYMENT = 1;
@@ -85,5 +69,5 @@ public class PayActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
+    }*/
 }

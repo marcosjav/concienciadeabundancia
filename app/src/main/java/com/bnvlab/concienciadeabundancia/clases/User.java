@@ -27,6 +27,19 @@ public class User {
         this.signInWithEmail = true;
         this.active = false;
     }
+    public User(String name, String lastName, String locale, String phone, String email, String invitationUID) {
+
+        this.invitationUID = invitationUID;
+        this.name = name;
+        this.secondName = secondName;
+        this.lastName = lastName;
+        this.locale = locale;
+        this.phone = phone;
+        this.email = email;
+        this.verified = false;
+        this.signInWithEmail = true;
+        this.active = false;
+    }
     public User(String name, String lastName, String locale, String phone, String email) {
 
         this.name = name;
