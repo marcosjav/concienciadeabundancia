@@ -12,6 +12,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.ResumeAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
@@ -187,7 +188,7 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
         if (!wasRestored) {
-            youTubePlayer.cueVideo("WSVH_nF18Ls");
+            youTubePlayer.cueVideo(MainActivity.videosURL.getResume());
         }
     }
 

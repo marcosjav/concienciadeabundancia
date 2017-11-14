@@ -1,13 +1,16 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,40 +19,54 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.bnvlab.concienciadeabundancia.FragmentMan;
+import com.bnvlab.concienciadeabundancia.MainActivity;
+import com.bnvlab.concienciadeabundancia.PayActivity;
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.clases.VideosURL;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Marcos on 07/06/2017.
  */
 
-public class PayFragment extends Fragment {
+public class PayFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
     //Animation bounce;
-    String creditUrl, cashUrl, transferUrl;
+    String creditUrl, cashUrl, transferUrl, location, locationKey;
     View progressBar, payLayout, iUnavaliable;
     Button buttonTransfer, buttonCredit, buttonCash, buttonReport;
+//    private static String PUBLIC_KEY = "APP_USR-dd544c46-10ce-4901-9804-1ae3f99aac2b";
+    SharedPreferences prefs;
 
     @Override
     public void onStart() {
         super.onStart();
-        /*bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
-        // Use bounce interpolator with amplitude 0.2 and frequency 20
-        MyBounceInterpolator interpolator = new MyBounceInterpolator();
-
-        bounce.setInterpolator(interpolator);*/
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_fragment_pay,container,false);
+
+        prefs = getActivity().getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                MODE_PRIVATE);
+
+        location = prefs.getString(References.SHARED_PREFERENCES_USER_LOCATION,"");
+        locationKey = prefs.getString(References.SHARED_PREFERENCES_USER_LOCATION_KEY,"");
 
         progressBar = view.findViewById(R.id.layout_progress);
         payLayout = view.findViewById(R.id.layout_pay);
@@ -63,74 +80,63 @@ public class PayFragment extends Fragment {
 
         Button buttonRecomendations = (Button) view.findViewById(R.id.button_pay_recomendations);
         ImageButton back = (ImageButton) view.findViewById(R.id.new_icon_back);
-//        Button report = (Button) view.findViewById(R.id.button_report);
-//        ((TextView)view.findViewById(R.id.text)).setTypeface(Utils.getTypeface(getContext()));
-
-//        report.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                v.startAnimation(bounce);
-//                showReport();
-//            }
-//        });
-//        report.setTypeface(Utils.getTypeface(getContext()));
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
-//        back.setTypeface(Utils.getTypeface(getContext()));
+
+        if(locationKey.equals(References.LOCATION_KEY) ||
+                location.toLowerCase().equals(References.LOCATION_ARGENTINA.toLowerCase())) {
+            buttonCredit.setText(getString(R.string.pay_credit_cash));
+        }
 
         buttonTransfer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.startAnimation(bounce);
-                Uri uri = Uri.parse("https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-c3c511ef-9a0c-4c52-82fc-126e888adfbd");//"https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-c3c511ef-9a0c-4c52-82fc-126e888adfbd"); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                FragmentMan.changeFragment(getActivity(), TransferFragment.class);
             }
         });
-//        buttonTransfer.setTypeface(Utils.getTypeface(getContext()));
 
         buttonCredit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.startAnimation(bounce);
-                /*Intent intent = new Intent(getActivity(), PayActivity.class);
-                startActivity(intent);*/
-
-                Uri uri = Uri.parse("https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-2df0c656-1c75-45ac-a500-74bc8708ceda"); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                Uri uri = Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=S2UBEFZFGUJJ6&email=" + FirebaseAuth.getInstance().getCurrentUser().getEmail()); // TEST
+                if(locationKey.equals(References.LOCATION_KEY) ||
+                        location.toLowerCase().equals(References.LOCATION_ARGENTINA.toLowerCase())) {
+//                    try {
+//                        Intent intent = new Intent(getActivity(), PayActivity.class);
+//                        startActivity(intent);
+//                    } catch (Exception e) {
+                        uri = Uri.parse("https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-2df0c656-1c75-45ac-a500-74bc8708ceda"); // missing 'http://' will cause crashed
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+//                    }
+                }else{
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
             }
         });
-//        buttonCredit.setTypeface(Utils.getTypeface(getContext()));
 
         buttonCash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.startAnimation(bounce);
-                //Uri uri = Uri.parse(cashUrl);//
-                Uri uri = Uri.parse( "http://mpago.la/vyfh"); // missing 'http://' will cause crashed
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                Intent intent = new Intent(getActivity(), PayActivity.class);
                 startActivity(intent);
             }
         });
-//        buttonCash.setTypeface(Utils.getTypeface(getContext()));
 
         buttonRecomendations.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.startAnimation(bounce);
                 Uri uri = Uri.parse("https://www.mercadopago.com/mla/checkout/start?pref_id=257115493-62f04065-afa3-44a8-a355-f6dbd0804437"); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
         });
-//        buttonRecomendations.setTypeface(Utils.getTypeface(getContext()));
 
         buttonReport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +144,10 @@ public class PayFragment extends Fragment {
                 showReport();
             }
         });
-        //getPayUrl();
+
+        YouTubePlayerSupportFragment frag =
+                (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
+        frag.initialize(Config.YOUTUBE_API_KEY, this);
 
         return view;
     }
@@ -257,5 +266,34 @@ public class PayFragment extends Fragment {
         progressBar.setVisibility(show? View.VISIBLE : View.GONE);
         payLayout.setVisibility(show? View.GONE : View.VISIBLE);
         iUnavaliable.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+        if (!b) {
+            String video = "";
+            try {
+                video = MainActivity.videosURL.getPay();
+            }catch (Exception e) {
+                SharedPreferences prefs = getActivity().getSharedPreferences(
+                        MainActivity.APP_SHARED_PREF_KEY + MainActivity.user.getuId(), Context.MODE_PRIVATE);
+                Gson gson = new Gson();
+                String vjson = prefs.getString(References.SHARED_PREFERENCES_APP_VIDEOS_URL, "");
+                VideosURL v = gson.fromJson(vjson, VideosURL.class);
+                video = v.getPay();
+            }
+
+            youTubePlayer.cueVideo(video);
+            youTubePlayer.setShowFullscreenButton(false);
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
+        if (youTubeInitializationResult.isUserRecoverableError()) {
+            youTubeInitializationResult.getErrorDialog(getActivity(), 1).show();
+        }
+        Log.d(References.ERROR_LOG, "ElectionsFragment - YOUTUBE ERROR:\n" + errorMessage);
     }
 }

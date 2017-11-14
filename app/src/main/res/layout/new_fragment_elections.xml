@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/new_background"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_shape_dark_red_enabled">
+
+        <!-- BOTÓN DE NOTIFICACIONES Y DE AGREGAR UN MENOR-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/new_icon_back"
+                    style="@style/imageButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="0dp"
+                    android:background="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/new_icon_back" />
+
+            </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/add_children"
+                style="@style/imageButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="40dp"
+                android:background="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/childrens"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/main_title"
+            android:text="@string/elections_title"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20px"
+            android:orientation="vertical">
+
+            <fragment
+                android:id="@+id/youtube_fragment"
+                android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise00" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_01"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_02"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise01" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_02"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_03"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise02" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_03"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_04"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise03" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_04"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_05"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise04" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_05"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_06"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise05" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_06"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_07"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise06" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_07"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_08"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise07" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_08"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_09"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise08" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_09"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_10"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise09" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_10"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_11"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise10" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_11"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_12"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise11" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_12"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_13"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise12" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_13"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_14"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise13" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_14"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_15"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise14" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_15"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_16"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise15" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_16"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_17"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise16" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_17"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_18"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise17" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_18"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_19"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise18" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_19"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_20"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise19" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_20"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_21"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise20" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_21"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_22"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise21" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_22"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_23"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise22" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_23"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_24"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise23" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_24"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_25"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise24" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_25"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/edit_text_election_26"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/elections_choise25" />
+
+                <EditText
+                    android:id="@+id/edit_text_election_26"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:hint="(escribe aquí tu elección)"
+                    android:layout_weight="1"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:nextFocusDown="@+id/button_send_elections"
+                    />
+            </LinearLayout>
+
+
+
+            <Button
+                android:id="@+id/button_send_elections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:background="@drawable/button_background"
+                android:text="@string/quiz_send"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:text="@string/elections_subtitle"/>
+
+</LinearLayout>

@@ -14,6 +14,7 @@
     <string name="login_edittext_hint_password">Clave:</string>
     <string name="login_edittext_hint_repassword">Repetir clave:</string>
     <string name="login_edittext_hint_location">Localidad:</string>
+    <string name="login_invalid_email">Ingresa un email válido</string>
 
     <string name="fragment_settings">CONFIGURACIÓN</string>
     <string name="settings_button_ok">GUARDAR</string>
@@ -50,8 +51,8 @@
     <string name="back">VOLVER</string>
 
 
-    <!--PANTALLA PRINCIPAL-->
-    <string name="training_guides">Guías de Entrenamiento</string>
+    <!--FRAGMENT MAIN-->
+    <string name="training_guides">Entrenamientos</string>
     <string name="love_share">Comparte Amor</string>
     <string name="pay">Abonar</string>
     <string name="videos">Videos</string>
@@ -59,6 +60,8 @@
     <string name="cda">CDA</string>
     <string name="fundamentals">Evolución</string>
     <string name="questions">Preguntas</string>
+    <string name="ask">Envianos tu Pregunta</string>
+    <string name="elections">Elecciones Diarias</string>
 
     <!--FRAGMENT COMPARTIR-->
     <string name="share_title">Crea Amor y Comparte</string>
@@ -79,15 +82,18 @@
     <string name="fundaments_title">Evolución</string>
 
     <!--FRAGMENT QUIZ-->
-    <string name="quiz_videos">Videos Test</string>
-    <string name="quiz_no_test">Realizar cambios sin testear</string>
+    <string name="quiz_videos">Video Test Muscular</string>
+    <string name="quiz_no_test">Enviar guía sin testear</string>
     <string name="quiz_send">Enviar</string>
+    <string name="quiz_no">NO</string>
+    <string name="quiz_si">SÍ</string>
 
     <!--FRAGMENT PAY-->
     <string name="pay_title">Abonar</string>
     <string name="pay_bank">Transferencia bancaria</string>
     <string name="pay_cash">Efectivo</string>
-    <string name="pay_credit">Tarjeta de Crédito</string>
+    <string name="pay_credit">Crédito / Débito</string>
+    <string name="pay_credit_cash">Crédito / Débito / Efectivo</string>
     <string name="pay_recomendations">Sistema de Recomendaciones</string>
     <string name="pay_report">Informar un pago</string>
 
@@ -106,9 +112,106 @@
     <!--FRAGMENT CONGRATS-->
     <string name="congrats_button">Acepto</string>
 
+    <!--FRAGMENT UPDATE-->
+    <string name="update_button">Actualizar</string>
+    <string name="update_details">Hay una nueva versión disponible. \n Descargala para poder continuar</string>
+    <string name="update_title">Actualización disponible</string>
+
+    <!--FRAGMENT LOGOUT-->
+    <string name="logout_title">Salir</string>
+    <string name="logout_details">Desea salir de la sesión?</string>
+    <string name="logout_ok">Sí</string>
+    <string name="logout_no">No</string>
+
+    <!--FRAGMENT TRANSFER-->
+    <string name="transfer_title">Datos de la cuenta</string>
+    <string name="transfer_details">Banco Galicia
+                                    \nDU: 32375071
+                                    \nCTA: 4056689-6 071-6
+                                    \nCBU: 0070071930004056689661
+                                    \nALIAS: PILETA.JALEA.LANA
+                                    \nCUIL: 27323750713</string>
+    <string name="transfer_reminder">No olvides enviarnos el Nro. de transacción</string>
+    <string name="transfer_ok">Volver</string>
+
+    <!--FRAGMENT RATE-->
+    <string name="rate_button">Ir a PlayStore</string>
+    <string name="rate_details">Gracias por usar la aplicación!\n Si te ha gustado por favor valorala.\n Tu devolución es importante para nosotros.</string>
+    <string name="rate_dont_ask">No volver a preguntar</string>
+    <string name="rate_title">Valorar Aplicación</string>
+
     <!--FRAGMENT SIGN UP-->
     <string name="signup_title">Registrarse</string>
     <string name="signup_button_locations">Elegir</string>
     <string name="signup_locations_text">Ubicación</string>
     <string name="signup_no_location_selected">Debe seleccionar su ubicación</string>
+        <!--TITLES-->
+        <string name="signup_first_name">Primer Nombre</string>
+        <string name="signup_second_name">Segundo Nombre</string>
+        <string name="signup_last_name">Apellidos</string>
+        <string name="signup_email">Correo</string>
+        <string name="signup_phone">Teléfono</string>
+        <string name="signup_location">Ubicación</string>
+        <string name="signup_choose_location">Elegir</string>
+        <string name="signup_pass">Clave</string>
+        <string name="signup_repass">Repetir Clave</string>
+        <string name="signup_signup_button">Registrarse</string>
+
+    <!--FRAGMENT SETTINGS-->
+    <string name="settings_title">Registrarse</string>
+    <string name="settings_button_locations">Elegir</string>
+    <string name="settings_button_personal_info">Datos Personales</string>
+    <string name="settings_button_change_pass">Cambiar Clave</string>
+    <string name="settings_locations_text">Ubicación</string>
+    <string name="settings_no_location_selected">Debe seleccionar su ubicación</string>
+    <string name="settings_automatic_send">ENVIAR GUÍAS AUTOMÁTICAMENTE</string>
+    <!--TITLES-->
+    <string name="settings_first_name">Primer Nombre</string>
+    <string name="settings_second_name">Segundo Nombre</string>
+    <string name="settings_last_name">Apellidos</string>
+    <string name="settings_email">Correo</string>
+    <string name="settings_phone">Teléfono</string>
+    <string name="settings_location">Ubicación</string>
+    <string name="settings_choose_location">Elegir</string>
+    <string name="settings_pass">Clave</string>
+    <string name="settings_repass">Repetir Clave</string>
+    <string name="settings_save_button">Guardar</string>
+    <string name="asset_statements" translatable="false">[{\n  \"relation\": [\"delegate_permission/common.handle_all_urls\"],\n  \"target\": {\n    \"namespace\": \"web\",\n    \"site\": \"https://polar-tor-72537.herokuapp.com\",\n  }\n}]</string>
+
+    <!--FRAGMENT ELECTIONS-->
+    <string name="elections_title">Elecciones Diarias</string>
+    <string name="elections_subtitle">Entrenamiento de Foco Diario</string>
+    <string name="elections_choise00">Elijo Amar</string>
+    <string name="elections_choise01">Elijo Aceptar</string>
+    <string name="elections_choise02">Elijo Admirar</string>
+    <string name="elections_choise03">Elijo Agradecer</string>
+    <string name="elections_choise04">Elijo Crear</string>
+    <string name="elections_choise05">Elijo Creer</string>
+    <string name="elections_choise06">Elijo Disfrutar</string>
+    <string name="elections_choise07">Elijo Elegir</string>
+    <string name="elections_choise08">Elijo Experimentar</string>
+    <string name="elections_choise09">Elijo Generar</string>
+    <string name="elections_choise10">Elijo Honrar</string>
+    <string name="elections_choise11">Elijo Manifestar</string>
+    <string name="elections_choise12">Elijo Merecer</string>
+    <string name="elections_choise13">Elijo Perdonar</string>
+    <string name="elections_choise14">Elijo Permitirme</string>
+    <string name="elections_choise15">Elijo Reconocer</string>
+    <string name="elections_choise16">Elijo Respetar</string>
+    <string name="elections_choise17">Elijo Sanar</string>
+    <string name="elections_choise18">Elijo Ser Digno</string>
+    <string name="elections_choise19">Elijo Ser Feliz</string>
+    <string name="elections_choise20">Elijo Valorar</string>
+    <string name="elections_choise21">Elijo Dejar de Competir</string>
+    <string name="elections_choise22">Elijo Dejar de Creer y Sentir</string>
+    <string name="elections_choise23">Elijo Dejar de Ignorar</string>
+    <string name="elections_choise24">Elijo Dejar de Negarme</string>
+    <string name="elections_choise25">Elijo Dejar de ser Indiference</string>
+
+    <!-- FRAGMENT CHAT -->
+    <string name="chat_title">DEJANOS TUS CONSULTAS</string>
+    <string name="chat_error_sent">No se pudo enviar el mensaje, intente nuevamente más tarde</string>
+
+    <!-- FRAGMENT WELCOME -->
+    <string name="welcome_button">VER ENTRENAMIENTOS</string>
 </resources>

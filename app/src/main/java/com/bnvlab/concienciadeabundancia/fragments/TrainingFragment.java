@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.TrainingAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.ICallback;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.clases.SentUser;
 import com.bnvlab.concienciadeabundancia.clases.TrainingItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +28,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -74,7 +79,6 @@ public class TrainingFragment extends Fragment implements ICallback {
         view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
@@ -99,37 +103,16 @@ public class TrainingFragment extends Fragment implements ICallback {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TrainingItem item = list.get(position);
-//                view.startAnimation(bounce);
                 if (item.isComplete()) {
                     FragmentMan.changeFragment(getActivity(), ResumeFragment.class, listId.get(position));
                 } else {
-//                    boolean complete = true;
-//                    int i = -1;
-//                    TrainingItem required = new TrainingItem("");
-//                    if (!item.getRequire().equals("")) {
-//                        i = listId.indexOf(item.getRequire());
-//                        if (i != -1) {
-//                            required = list.get(i);
-//                            complete = required.isComplete();
-//                        }
-//                    }
-//
-//                    if (!complete) {
-//                        Toast.makeText(getContext(), "Necesita hacer la guía:\n" + required.getTitle(), Toast.LENGTH_SHORT).show();
-//                        listView.getChildAt(i).setBackgroundColor(0);
-//                    } else if (item.isFree() || active_user) {
-//                        FragmentMan.changeFragment(getActivity(), QuizFragment.class, listId.get(position));
-//                    } else
                         FragmentMan.changeFragment(getActivity(), QuizFragment.class, listId.get(position), "video:" + list.get(position).getVideo());
-//                        Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
 
                 }
             }
         });
 
         listView.setAdapter(adapter);
-
-        getTrainings();
 
         return view;
     }
@@ -176,7 +159,7 @@ public class TrainingFragment extends Fragment implements ICallback {
                             }
                         }
                         Collections.sort(list, new TrainingsSort());
-                        getTrainingsStatus();
+                        getTrainingsStatus2();
                     }
 
                     @Override
@@ -184,6 +167,27 @@ public class TrainingFragment extends Fragment implements ICallback {
                         showProgress(false);
                     }
                 });
+    }
+
+    private void getTrainingsStatus2(){
+        try {
+            Type listType = new TypeToken<ArrayList<SentUser>>(){}.getType();
+            ArrayList<SentUser> sent = new Gson().fromJson(prefs.getString(References.SHARED_PREFERENCES_USER_SENT_JSON, ""), listType);
+            for (SentUser su : sent) {
+                int index = listId.indexOf(su.getKey());
+                if (index != -1) {
+                    list.get(index).setComplete(true);
+                    list.get(index).setFinished(su.isChecked());
+                }
+            }
+            adapter.notifyDataSetChanged();
+            showProgress(false);
+        }catch (Exception e){
+            Log.d(References.ERROR_LOG, e.getMessage());
+        }
+        if (prefs.getBoolean(References.SHARED_PREFERENCES_FIRST_TIME, true) && !list.get(0).isFinished()) {
+            FragmentMan.changeFragment(getActivity(), QuizFragment.class, listId.get(0), "video:" + list.get(0).getVideo());
+        }
     }
 
     private void getTrainingsStatus() {
@@ -263,5 +267,11 @@ public class TrainingFragment extends Fragment implements ICallback {
         public boolean equals(Object obj) {
             return false;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getTrainings();
     }
 }

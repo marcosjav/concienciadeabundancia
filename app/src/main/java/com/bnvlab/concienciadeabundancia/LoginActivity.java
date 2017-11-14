@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
@@ -167,10 +168,10 @@ public class LoginActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_fragment_login);
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             try {
                 showProgress(true);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("ERRORR", e.getMessage());
                 e.printStackTrace();
             }
@@ -265,61 +266,64 @@ public class LoginActivity extends FragmentActivity {
         });
 
 
-
         TextView buttonPasswordRecovery = (TextView) findViewById(R.id.button_password_recovery);
         buttonPasswordRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                final String email = mEmailView.getText().toString();
+                if (!isValidEmail(email)){
+                    mEmailView.setError(getResources().getString(R.string.login_invalid_email));
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
 
-                builder
-                        .setPositiveButton("ENVIAR", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, int id) {
-                                // User clicked OK button
-                                final String email = mEmailView.getText().toString();
-                                if (isValidEmail(email))
-                                    sendRecoveryPass(email, dialog);
-                                else if (isPhoneValid(email)) {
-                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                            .child(References.USERS)
-                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    boolean isFinished = false;
-                                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                                        User user = data.getValue(User.class);
-                                                        if (user.getPhone().equals(email)) {
-                                                            sendRecoveryPass(user.getEmail(), dialog);
-                                                            isFinished = true;
+                    builder
+                            .setPositiveButton("ENVIAR", new DialogInterface.OnClickListener() {
+                                public void onClick(final DialogInterface dialog, int id) {
+                                    // User clicked OK button
+                                    if (isValidEmail(email))
+                                        sendRecoveryPass(email, dialog);
+                                    else if (isPhoneValid(email)) {
+                                        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                                                .child(References.USERS)
+                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                        boolean isFinished = false;
+                                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                            User user = data.getValue(User.class);
+                                                            if (user.getPhone().equals(email)) {
+                                                                sendRecoveryPass(user.getEmail(), dialog);
+                                                                isFinished = true;
+                                                            }
+                                                        }
+                                                        if (!isFinished) {
+                                                            Toast.makeText(LoginActivity.this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
+                                                            showProgress(false);
                                                         }
                                                     }
-                                                    if (!isFinished) {
-                                                        Toast.makeText(LoginActivity.this, "Usuario no encontrado", Toast.LENGTH_SHORT).show();
-                                                        showProgress(false);
+
+                                                    @Override
+                                                    public void onCancelled(DatabaseError databaseError) {
+                                                        Toast.makeText(LoginActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
                                                     }
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-                                                    Toast.makeText(LoginActivity.this, databaseError.getMessage(), Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                } else
+                                                });
+                                    } else
 //                                    Toast.makeText(LoginActivity.this, "No es un mail válido", Toast.LENGTH_SHORT).show();
-                                    mEmailView.setError("No es un email o teléfono válido");
-                            }
-                        }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                        .setMessage("Te podemos mandar un correo con un link donde podés restablecer tu clave.")
-                        .setTitle("RECUPERAR CLAVE");
+                                        mEmailView.setError("No es un email o teléfono válido");
+                                }
+                            }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                            .setMessage("Te podemos mandar un correo con un link donde podés restablecer tu clave.")
+                            .setTitle("RECUPERAR CLAVE");
 
-                AlertDialog dialog = builder.create();
+                    AlertDialog dialog = builder.create();
 
-                dialog.show();
+                    dialog.show();
+                }
             }
         });
 
@@ -342,7 +346,13 @@ public class LoginActivity extends FragmentActivity {
 
                 Log.d(References.ERROR_LOG, invitationCode);
 
-                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+                if (invitationCode != null)
+                    invitationSenderUID = invitationCode;
+
+                showSignUp(true);
+
+                //###################       como ya no importa compartir una sola vez ni después de una guía, simplemente envío el uId en vez de generar un código
+                /*FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                         .child(References.INVITATION_CODES)
                         .child(invitationCode)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -371,20 +381,21 @@ public class LoginActivity extends FragmentActivity {
                                         public void onCancelled(DatabaseError databaseError) {
 
                                         }
-                                    });*/
+                                    });*//*
                             }
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
 
                             }
-                        });
+                        });*/
 
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d(References.ERROR_LOG, e.getMessage());
         }
+
     }
 
     /**
@@ -406,7 +417,7 @@ public class LoginActivity extends FragmentActivity {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        final String email = mEmailView.getText().toString().toLowerCase();
+        final String email = mEmailView.getText().toString().toLowerCase().replace(" ", "");
         final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -568,7 +579,7 @@ public class LoginActivity extends FragmentActivity {
         }
         ;
 
-        if (phone.length() == 10 && isLongNumber)
+        if (phone.length() > 5 && isLongNumber)
             return true;
 
         return false;
@@ -613,7 +624,8 @@ public class LoginActivity extends FragmentActivity {
 
     private void signUp() {
 
-        EditText edName = ((EditText) findViewById(R.id.sign_up_names)),
+        EditText edName = ((EditText) findViewById(R.id.sign_up_first_name)),
+                edSecondName = ((EditText) findViewById(R.id.sign_up_second_name)),
                 edLastName = ((EditText) findViewById(R.id.sign_up_lastname)),
                 edPhone = ((EditText) findViewById(R.id.sign_up_phone)),
                 edEmail = ((EditText) findViewById(R.id.sign_up_mail)),
@@ -622,7 +634,8 @@ public class LoginActivity extends FragmentActivity {
 
         Button buttonLocation = (Button) findViewById(R.id.button_location);
 
-        String name = edName.getText().toString(),
+        String  name = edName.getText().toString(),
+                secondName = edSecondName.getText().toString(),
                 lastName = edLastName.getText().toString(),
                 phone = edPhone.getText().toString(),
                 email = edEmail.getText().toString().toLowerCase(),
@@ -638,7 +651,7 @@ public class LoginActivity extends FragmentActivity {
                         if (isValidEmail(email)) {
                             if (password.length() > 5) {
                                 if (password.equals(repassword)) {
-                                    registerUser(name, location, lastName, phone, email, password);
+                                    registerUser(name, secondName, location, lastName, phone, email, password);
                                 } else {
                                     edRePassword.setError("Las claves no coinciden");
                                 }
@@ -666,11 +679,13 @@ public class LoginActivity extends FragmentActivity {
         }
     }
 
-    private void registerUser(String name, String locale, String lastName, String phone, String email, String password) {
+    private void registerUser(String name, String secondName, String locale, String lastName, String phone, String email, String password) {
         showProgressSignUp(true);
 //        String name = editTextName.getText().toString(), lastName = editTextLastName.getText().toString(), locale = spinnerLocation.getSelectedItem().toString(), phone = editTextPhone.getText().toString();
+        if (secondName == null)
+            secondName = "";
 
-        final User user = new User(name, lastName, locale, phone, email, invitationSenderUID);
+        final User user = new User(name, secondName, lastName, locale, phone, email, invitationSenderUID);
 
         MainActivity.newUser = true;
         MainActivity.user = user;
@@ -698,6 +713,11 @@ public class LoginActivity extends FragmentActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
+                                                FirebaseDatabase.getInstance().getReference(References.REFERENCE) // SAVE THE SIGNUP DATETIME
+                                                        .child(References.SIGNUP_DATE)
+                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                        .setValue(ServerValue.TIMESTAMP);
+
                                                 if (invitationCode != null && !invitationCode.isEmpty()) {
                                                     FirebaseDatabase.getInstance().getReference(References.REFERENCE)
                                                             .child(References.INVITATION_CODES)

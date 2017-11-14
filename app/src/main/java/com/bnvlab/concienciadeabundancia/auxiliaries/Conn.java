@@ -6,7 +6,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.bnvlab.concienciadeabundancia.clases.MySingleton;
+import com.bnvlab.concienciadeabundancia.clases.MySingleton1;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,13 +28,13 @@ public class Conn {
     public static void getJSONArray(Context context, UrlType url, Response.Listener<JSONArray> onResponse, Response.ErrorListener onError) {
         JsonArrayRequest jsObjRequest = new JsonArrayRequest
                 (Request.Method.GET, BASE_URL + url.toString(), null, onResponse, onError);
-        MySingleton.getInstance(context).addToRequestQueue(jsObjRequest);
+        MySingleton1.getInstance(context).addToRequestQueue(jsObjRequest);
     }
 
     public static void getJSONObject(Context context, String url, Response.Listener<JSONObject> onResponse, Response.ErrorListener onError) {
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, onResponse, onError);
-        MySingleton.getInstance(context).addToRequestQueue(jsObjRequest);
+        MySingleton1.getInstance(context).addToRequestQueue(jsObjRequest);
     }
 
     public static ArrayList<String> jsonToArray(JSONArray jsonArray) {

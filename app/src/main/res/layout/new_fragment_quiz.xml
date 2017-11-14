@@ -73,66 +73,98 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-        <fragment
-            android:id="@+id/youtube_fragment"
-            android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/white" />
-
-        <Button
-            android:id="@+id/video_test_button"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:background="@null"
-            android:drawableStart="@drawable/new_icon_videos"
-            android:padding="10dp"
-            android:text="@string/quiz_videos" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:background="@android:color/white" />
-
-            <Button
-                android:id="@+id/button_quiz_no_test"
+            <fragment
+                android:id="@+id/youtube_fragment"
+                android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="30dp"
-                android:background="@drawable/button_background"
-                android:text="@string/quiz_no_test"
-                android:textSize="14sp" />
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp" />
 
-        <ListView
-            android:id="@+id/list_view_quiz"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/white" />
 
-        <Button
-            android:id="@+id/button_quiz_ok"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="30dp"
-            android:background="@drawable/button_background"
-            android:text="@string/quiz_send"
-            android:textSize="22sp" />
+            <Button
+                android:id="@+id/video_test_button"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:background="@null"
+                android:drawableStart="@drawable/new_icon_videos"
+                android:padding="10dp"
+                android:text="@string/quiz_videos" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:background="@android:color/white" />
+
+            <LinearLayout
+                android:id="@+id/layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/button_quiz_no_test"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
+                    android:background="@drawable/button_background"
+                    android:text="@string/quiz_no_test"
+                    android:textSize="14sp" />
+
+                <!--<ListView-->
+                    <!--android:id="@+id/list_view_quiz"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content" />-->
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none"/>
+
+                <Button
+                    android:id="@+id/button_quiz_ok"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
+                    android:background="@drawable/button_background"
+                    android:text="@string/quiz_send"
+                    android:textSize="22sp" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/settings_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"><!--##############################   PROGRESS    ###-->
+
+                <com.github.ybq.android.spinkit.SpinKitView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/spin_kit"
+                    style="@style/SpinKitView.ChasingDots"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:layout_gravity="center"
+                    app:SpinKit_Color="@color/text" />
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

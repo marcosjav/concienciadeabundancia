@@ -6,10 +6,10 @@ package com.bnvlab.concienciadeabundancia.clases;
 
 public class User {
     public static String CHILD = "users";
-    String uId, name, secondName, lastName, locale, phone, email, lastNumber, invitationUID, deviceId;
-    boolean verified, signInWithEmail, active;
-    int counter = 0;
-    long lastSent = 0;
+    private String uId, name, secondName, lastName, locale, phone, email, lastNumber, invitationUID, deviceId;
+    private boolean verified, signInWithEmail, active;
+    private int counter = 0;
+    private long lastSent = 0;
 
     public User() {
     }
@@ -171,4 +171,5 @@ public class User {
     public void setLastSent(long lastSent) {
         this.lastSent = lastSent;
     }
+
 }

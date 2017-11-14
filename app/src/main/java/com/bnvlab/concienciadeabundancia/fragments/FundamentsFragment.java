@@ -45,7 +45,7 @@ public class FundamentsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_fragment_fundaments, container, false);
 
-        final float scale = 0.8f;
+        final float scale = 1f;//0.8f;
 
         final SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)view.findViewById(R.id.imageView);
         imageView.setImage(ImageSource.resource(R.drawable.evolution));

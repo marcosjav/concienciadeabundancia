@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
@@ -40,22 +39,28 @@ import java.util.Collections;
 
 public class SettingsFragment extends Fragment {
     static String TAG = "fragment_settings";
-    Button buttonUpdate;
-//    Spinner spinnerLocation;
-    Button buttonLocation;
+    Button buttonUpdate,
+            buttonLocation,
+//            buttonPassOk,
+            buttonPersonalInfo,
+            buttonChangePass;
+
     EditText editTextName,
-            /*editTextSecondName,*/
+            editTextSecondName,
             editTextLastName,
             editTextPhone,
             editTextMail,
             editTextPassword,
             editTextRePassword;
     boolean isReady = false, locationsReady = false, userReady = false, locList;
-    ViewSwitcher viewSwitcherOK;
+//    ViewSwitcher viewSwitcherOK;
     LinearLayout layoutLoading;
     TextView textViewLocation;
     ListView listViewLocation;
-    View layoutSettings, progressBar;
+    View layoutSettings,
+            layoutProgressBar,
+//            layoutPass,
+            layoutSettingsMenu;
     User user;
 //    Animation bounce;
     @Override
@@ -83,23 +88,29 @@ public class SettingsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         editTextName = (EditText) view.findViewById(R.id.edittext_settings_name);
-//        editTextSecondName = (EditText) view.findViewById(R.id.edittext_settings_second_name);
+        editTextSecondName = (EditText) view.findViewById(R.id.edittext_settings_second_name);
         editTextLastName = (EditText) view.findViewById(R.id.edittext_settings_lastname);
         editTextPhone = (EditText) view.findViewById(R.id.edittext_settings_phone);
         editTextMail = (EditText) view.findViewById(R.id.edittext_settings_mail);
         editTextPassword = (EditText) view.findViewById(R.id.edittext_settings_password);
         editTextRePassword = (EditText) view.findViewById(R.id.edittext_settings_repassword);
-        viewSwitcherOK = (ViewSwitcher) view.findViewById(R.id.view_switcher_settings_ok);
-        layoutLoading = (LinearLayout) view.findViewById(R.id.layout_loading);
+//        viewSwitcherOK = (ViewSwitcher) view.findViewById(R.id.view_switcher_settings_ok);
+//        layoutLoading = (LinearLayout) view.findViewById(R.id.settings_progressbar);
         textViewLocation = (TextView) view.findViewById(R.id.textView_location);
         buttonLocation = (Button) view.findViewById(R.id.button_location);
         listViewLocation = (ListView) view.findViewById(R.id.listview_location);
-        progressBar = view.findViewById(R.id.settings_progressbar);
+
         layoutSettings = view.findViewById(R.id.layout_settings);
+//        layoutPass     = view.findViewById(R.id.layout_change_pass);
+        layoutSettingsMenu = view.findViewById(R.id.layout_settings_menu);
+        layoutProgressBar = view.findViewById(R.id.settings_progressbar);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, locationList);
         listViewLocation.setAdapter(adapter);
 
-//        spinnerLocation = (Spinner) view.findViewById(R.id.spinner_settings_location);
+//        buttonPassOk = (Button) view.findViewById(R.id.button_pass_ok);
+        buttonPersonalInfo = (Button) view.findViewById(R.id.button_personal_info);
+        buttonChangePass = (Button) view.findViewById(R.id.button_change_pass);
         buttonUpdate = (Button) view.findViewById(R.id.button_settings_ok);
 
         view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
@@ -110,7 +121,26 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+//        buttonPassOk.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                changePass();
+//            }
+//        });
 
+//        buttonChangePass.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showPassword(true);
+//            }
+//        });
+//
+//        buttonPersonalInfo.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showPersonalInfo(true);
+//            }
+//        });
 
         buttonLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,42 +160,7 @@ public class SettingsFragment extends Fragment {
         });
 
         user = MainActivity.user;
-        /*String url = "https://polar-tor-72537.herokuapp.com/get-locations";
-        Conn.getJSONArray(getActivity(), Conn.UrlType.LOCATIONS, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        locationList = Conn.jsonToArray(response);
-                        //THE 'me.srodrigo:androidhintspinner:1.0.0' LIBRARY ALLOWS US TO PUT A HINT TEXT IN THE SPINNER  https://github.com/srodrigo/Android-Hint-Spinner
-                        HintSpinner<String> hintSpinner = new HintSpinner<>(
-                                spinnerLocation,
-                                // Default layout - You don't need to pass in any layout id, just your hint text and
-                                // your list data
-                                new HintAdapter(getContext(), R.string.login_edittext_hint_location, locationList),
-                                new HintSpinner.Callback<String>() {
-                                    @Override
-                                    public void onItemSelected(int position, String itemAtPosition) {
-                                        // Here you handle the on item selected event (this skips the hint selected event)
-                                        ((TextView) spinnerLocation.getSelectedView()).setTextColor(Color.BLACK);
-                                    }
-                                });
-                        hintSpinner.init();
 
-                        locationsReady = true;
-
-                        updateLocationButton();
-
-                        layoutProgress.showNext();
-                        isReady = true;
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-        );*/
-
-//        layoutProgress.showNext();
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.LOCATIONS)
@@ -203,9 +198,12 @@ public class SettingsFragment extends Fragment {
         });
 
         updateDataFields();
+        showProgress(true);
 
         return view;
     }
+
+
 
     private void updateDataFields() {
         FirebaseDatabase.getInstance()
@@ -217,16 +215,16 @@ public class SettingsFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            String second = user.getSecondName() == null ? "" : user.getSecondName();
+//                            String second = user.getSecondName() == null ? "" : user.getSecondName();
                             user = data.getValue(User.class);
                             userReady = true;
-                            editTextName.setText(user.getName() + second);
-//                            editTextSecondName.setText(user.getSecondName() == null ? "" : user.getSecondName());
+                            editTextName.setText(user.getName());
+                            editTextSecondName.setText(user.getSecondName() == null ? "" : user.getSecondName());
                             editTextLastName.setText(user.getLastName());
                             editTextPhone.setText(user.getPhone());
                             editTextMail.setText(user.getEmail());
                             updateLocationButton();
-                            layoutLoading.setVisibility(View.GONE);
+//                            layoutLoading.setVisibility(View.GONE);
                         }
                     }
 
@@ -255,12 +253,15 @@ public class SettingsFragment extends Fragment {
     }
 
     private void modify() {
-        String name = editTextName.getText().toString(),
+        String  name = editTextName.getText().toString(),
+                secondName = editTextSecondName.getText().toString(),
                 lastName = editTextLastName.getText().toString(),
                 phone = editTextPhone.getText().toString(),
                 email = editTextMail.getText().toString(),
                 password = editTextPassword.getText().toString(),
                 repassword = editTextRePassword.getText().toString();
+
+        showProgress(true);
 
         if (name.length() > 2) {
             if (lastName.length() > 2) {
@@ -269,98 +270,126 @@ public class SettingsFragment extends Fragment {
                         if (isValidEmail(email)) {
                             if (password.length() > 5 || password.equals("")) {
                                 if (password.equals(repassword)) {
-                                    viewSwitcherOK.showNext();
+//                                    viewSwitcherOK.showNext();
                                     saveData();
                                 } else {
 //                                Toast.makeText(getContext(), "Las claves no coinciden", Toast.LENGTH_SHORT).show();
                                     editTextRePassword.setError("Las claves no coinciden");
+                                    showProgress(false);
                                 }
                             } else {
 //                            Toast.makeText(getContext(), "Clave muy corta", Toast.LENGTH_SHORT).show();
                                 editTextPassword.setError("Clave muy corta");
+                                showProgress(false);
                             }
                         } else {
 //                        Toast.makeText(getContext(), "Correo incorrecto", Toast.LENGTH_SHORT).show();
                             editTextMail.setError("Correo incorrecto");
+                            showProgress(false);
                         }
                     } else {
 //                    Toast.makeText(getContext(), "Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15", Toast.LENGTH_SHORT).show();
                         editTextPhone.setError("Teléfono incorrecto.\nIngresalo sin el 0 (cero)\ny sin el 15");
+                        showProgress(false);
                     }
                 } else {
                     textViewLocation.setError("");
                     textViewLocation.setTextColor(Color.RED);//just to highlight that this is an error
                     textViewLocation.setText("Debe elegir una localidad");//changes the selected item text to this
                     textViewLocation.requestFocus();
+                    showProgress(false);
                 }
             } else {
 //                Toast.makeText(getContext(), "Apellido corto", Toast.LENGTH_SHORT).show();
                 editTextLastName.setError("Apellido corto");
+                showProgress(false);
             }
         } else {
 //            Toast.makeText(getContext(), "Nombre corto", Toast.LENGTH_SHORT).show();
             editTextName.setError("Nombre corto");
+            showProgress(false);
         }
     }
 
+    boolean finish1, finish2;
     private void saveData() {
-        boolean isModified = false;
-        showProgress(true);
-        String nName = editTextName.getText().toString(), nLastName = editTextLastName.getText().toString(), nPhone = editTextPhone.getText().toString(), nEmail = editTextMail.getText().toString(), nLocation = buttonLocation.getText().toString(), nPassword = editTextPassword.getText().toString(), registredPhone = user.getPhone();
+        boolean isModified = false, emailUpdate = false;
+        final String nName = editTextName.getText().toString(), nSecondName = editTextSecondName.getText().toString(), nLastName = editTextLastName.getText().toString(), nPhone = editTextPhone.getText().toString(), nEmail = editTextMail.getText().toString(), nLocation = buttonLocation.getText().toString(), nPassword = editTextPassword.getText().toString(), registredPhone = user.getPhone();
+
+
+        finish1 = false;
+        finish2 = false;
 
         String salida = "";
 
         if (!nPassword.equals("")) {
-//            salida += "no password";
             FirebaseAuth.getInstance().getCurrentUser().updatePassword(nPassword);
         }
-//        }else {
-//            salida += "new pass: " + nPassword;
-//        }
 
         if (!nName.equals(user.getName())) {
             user.setName(nName);
             isModified = true;
         }
-//            salida += "\nMismo nombre";
-//        else
-//            salida += "\nNuevo nombre: " + nName;
+
+        if (!nSecondName.equals(user.getSecondName())) {
+            user.setSecondName(nSecondName);
+            isModified = true;
+        }
 
         if (!nLastName.equals(user.getLastName())) {
             user.setLastName(nLastName);
             isModified = true;
         }
-//            salida += "\nMismo apellido";
-//        else
-//            salida += "\nNuevo apellido: " + nLastName;
 
         if (!nPhone.equals(user.getPhone())) {
             user.setLastNumber(user.getPhone());
-            registredPhone = user.getPhone();
             user.setPhone(nPhone);
             isModified = true;
-//            FirebaseAuth.getInstance().getCurrentUser().updateEmail(nPhone + "@cda.com");
         }
-//            salida += "\nMismo telefono";
-//        else
-//            salida += "\nNuevo telefoni: " + nPhone;
 
         if (!nEmail.equals(user.getEmail())) {
-            user.setEmail(nEmail);
+            emailUpdate = true;
             isModified = true;
         }
-//            salida += "\nMismo correo";
-//        else
-//            salida += "\nNuevo correo: " + nEmail;
 
         if (!nLocation.equals(user.getLocale())) {
             user.setLocale(nLocation);
             isModified = true;
         }
-//            salida += "\nMisma localidad";
-//        else
-//            salida += "\nNueva localidad: " + nLocation;
 
+
+        if  (emailUpdate){
+            FirebaseAuth.getInstance().getCurrentUser()
+                    .updateEmail(nEmail)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                FirebaseDatabase.getInstance()
+                                        .getReference(References.REFERENCE)
+                                        .child(References.USERS)
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(References.USERS_CHILD_EMAIL)
+                                        .setValue(nEmail)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                                    showProgress(false);
+                                                }
+                                                finish1 = true;
+                                                finish(finish1, finish2);
+                                            }
+                                        });
+                            }else{
+                                Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        } else {
+            finish1 = true;
+        }
 
         if (isModified) {
             FirebaseDatabase.getInstance()
@@ -371,25 +400,37 @@ public class SettingsFragment extends Fragment {
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                viewSwitcherOK.showPrevious();
-                                Toast.makeText(getContext(), "LISTO!", Toast.LENGTH_SHORT).show();
-                                getActivity().onBackPressed();
-
-                            } else
+                            if (!task.isSuccessful()) {
                                 Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_LONG).show();
-
-                            showProgress(false);
+                                showProgress(false);
+                            }
+                            finish2 = true;
+                            finish(finish1, finish2);
                         }
                     });
+        } else {
+            finish2 = true;
         }
 
+    }
+
+    private void changePass() {
     }
 
     @Override
     public void onResume() {
         updateDataFields();
         super.onResume();
+    }
+
+    private void finish(boolean uno, boolean dos){
+        if (uno && dos) {
+//            viewSwitcherOK.showPrevious();
+            Toast.makeText(getContext(), "LISTO!", Toast.LENGTH_SHORT).show();
+//            getActivity().onBackPressed();
+
+            showProgress(false);
+        }
     }
 
     private void showLocationList(boolean show){
@@ -399,7 +440,34 @@ public class SettingsFragment extends Fragment {
     }
 
     private void showProgress(boolean show){
-        progressBar.setVisibility(show?View.VISIBLE : View.GONE);
-        layoutSettings.setVisibility(!show?View.VISIBLE:View.GONE);
+        int visible = show?View.VISIBLE : View.GONE,
+                gone = !show?View.VISIBLE:View.GONE;
+
+        layoutSettings.setVisibility(gone);
+        layoutProgressBar.setVisibility(visible);
+//        layoutPass.setVisibility(View.GONE);
+//        layoutSettingsMenu.setVisibility(gone);
     }
+
+   /* private void showPassword(boolean show){
+        int visible = show?View.VISIBLE : View.GONE,
+            gone = !show?View.VISIBLE:View.GONE;
+
+        layoutSettings.setVisibility(gone);
+        layoutProgressBar.setVisibility(gone);
+//        layoutPass.setVisibility(visible);
+        layoutSettingsMenu.setVisibility(gone);
+    }
+
+    private void showPersonalInfo(boolean show){
+        int visible = show?View.VISIBLE : View.GONE,
+            gone = !show?View.VISIBLE:View.GONE;
+
+        layoutSettings.setVisibility(visible);
+        layoutProgressBar.setVisibility(gone);
+        layoutPass.setVisibility(gone);
+        layoutSettingsMenu.setVisibility(gone);
+    }*/
+
+
 }

@@ -103,7 +103,8 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/button_background"
                     android:text="@string/pay_bank"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="visible" />
 
                 <Button
                     android:id="@+id/button_pay_cash"
@@ -113,8 +114,9 @@
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/button_background"
-                    android:text="@string/pay_cash"
-                    android:textSize="14sp" />
+                    android:text="MP TEST"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/button_pay_credit"
@@ -137,7 +139,7 @@
                     android:background="@drawable/button_background"
                     android:text="@string/pay_report"
                     android:textSize="14sp"
-                    android:visibility="visible"/>
+                    android:visibility="visible" />
 
                 <Button
                     android:id="@+id/button_pay_recomendations"
@@ -162,17 +164,15 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <ProgressBar
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/button_start"
-                android:indeterminateTintMode="src_in" />
-
-            <TextView
+            <com.github.ybq.android.spinkit.SpinKitView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/spin_kit"
+                style="@style/SpinKitView.ChasingDots"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/loading" />
+                android:padding="20dp"
+                android:layout_gravity="center"
+                app:SpinKit_Color="@color/text" />
 
         </LinearLayout>
 
@@ -180,8 +180,8 @@
             android:id="@+id/image_unavaliable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/unavaliable"
             android:layout_gravity="start|center_vertical"
-            android:visibility="gone"/>
+            android:src="@drawable/unavaliable"
+            android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

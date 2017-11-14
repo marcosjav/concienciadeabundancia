@@ -1,6 +1,7 @@
 package com.bnvlab.concienciadeabundancia.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +9,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.clases.TrainingItem;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
 public class TrainingAdapter extends ArrayAdapter<TrainingItem> {
+    static SharedPreferences prefs;
 
     public TrainingAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
+        prefs = context.getSharedPreferences(
+                MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
     }
 
     public TrainingAdapter(Context context, int resource, List<TrainingItem> items) {
@@ -27,6 +33,10 @@ public class TrainingAdapter extends ArrayAdapter<TrainingItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View v = convertView;
+
+        if (prefs == null)
+            prefs =  getContext().getSharedPreferences(
+                    MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
         if (v == null) {
             LayoutInflater vi;
@@ -53,8 +63,14 @@ public class TrainingAdapter extends ArrayAdapter<TrainingItem> {
                     imageView.setImageResource(R.drawable.new_icon_finished);
                 }
                 else {
+                    boolean active = MainActivity.user.isActive();
                     tt2.setText(p.isComplete() ? "Enviado" : "Pendiente");
-                    imageView.setImageResource(p.isComplete() ? R.drawable.new_icon_sent : R.drawable.new_icon_available);
+                    if (active || p.isFree()) {
+                        imageView.setImageResource(p.isComplete() ? R.drawable.new_icon_sent : R.drawable.new_icon_available);
+                    }else{
+                        imageView.setImageResource(R.drawable.new_icon_padlock);
+                    }
+
                 }
             }
 

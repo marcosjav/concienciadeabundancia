@@ -7,8 +7,24 @@ package com.bnvlab.concienciadeabundancia.auxiliaries;
 public class References {
     public static final String
               REFERENCE = "CDA"
-            , ERROR_LOG = "ERROR-LOG"
+            , ERROR_LOG = "ASDFGHJKL"
+            , LAST_CONNECTION = "last_connection"
+            , SIGNUP_DATE = "signup_date"
 
+            , APP_REFERENCE = "APP"
+            , APP_VIDEOS = "videos"
+            , APP_VALUES = "values"
+            , APP_VIDEOS_WELCOME = "welcome"
+            , APP_VIDEOS_SHARE = "share"
+            , APP_VIDEOS_PAY = "pay"
+            , APP_VIDEOS_TEST = "test"
+            , APP_VIDEOS_HOWTO = "howto"
+            , APP_VIDEOS_ABOUT = "about"
+            , APP_VIDEOS_QUERIES = "queries"
+            , APP_VIDEOS_ELECTIONS = "elections"
+            , APP_VIDEOS_REGISTER = "register"
+            , CHAT_CHILD = "chats"
+            , CHAT_TIME_CHILD = "time"
             , CONFERENCES = "conferences"
             , CONFERENCES_CHILD_DATE = "date"
             , CONFERENCES_CHILD_DURATION = "duration"
@@ -18,8 +34,11 @@ public class References {
             , CONFERENCES_CHILD_PLACE = "place"
             , CONFERENCES_CHILD_TITLE = "title"
             , CONFERENCES_CHILD_LOGO = "logo"
+            , DEVICE_ID = "android_id"
 
             , LOCATIONS = "locations"
+            , LOCATION_ARGENTINA = "Argentina"
+            , LOCATION_KEY = "-KifHXzUTWTx1fwtSi1t"
 
             , QUIZ ="quiz"
             , QUIZ_CHILD_DESCRIPTION = "description"
@@ -31,12 +50,17 @@ public class References {
             , QUIZ_CHILD_INDEX = "index"
             , QUIZ_CHILD_HIDDEN = "hidden"
             , QUIZ_CHILD_REQUIRE = "require"
+            , QUIZ_FIRST_TRAINING_ID = "-KiaTj3gjkFLXOBDDBWa"
             , PAY = "pay_report"
+
+            , RATE_APP = "rate_app"
 
             , SENT = "sent"
             , SENT_CHILD_ANSWER = "answer"
             , SENT_CHILD_QUIZ = "quiz"
             , SENT_CHILD_CHECKED = "checked"
+
+            , TIME_CHILD = "time"
 
             , USERS = "users"
             , USERS_CHILD_EMAIL = "email"
@@ -63,11 +87,24 @@ public class References {
 
             , FREE_CONTENT = "freeContent"
 
+            , SHARED_PREFERENCES_APP_VIDEOS_URL = "videos.json"
+            , SHARED_PREFERENCES_APP_VALUES = "values.json"
+
             , SHARED_PREFERENCES_FIRST_TIME = "shared_prefs_first_time"
             , SHARED_PREFERENCES_NOTIFICATION_CONFERENCE = "conference_notification"
             , SHARED_PREFERENCES_NOTIFICATION_TRAINING = "training_notification"
             , SHARED_PREFERENCES_NOTIFICATION_RESULT = "training_result"
             , SHARED_PREFERENCES_CAN_SHARE = "can_share"
+            , SHARED_PREFERENCES_DONT_ASK_RATE = "ask_for_rate"
+            , SHARED_PREFERENCES_USER_JSON = "user.json"
+            , SHARED_PREFERENCES_USER_SENT_JSON = "sent.json"
+            , SHARED_PREFERENCES_USER_ACTIVE = "active_user"
+            , SHARED_PREFERENCES_USER_FULLNAME = "fullname"
+            , SHARED_PREFERENCES_USER_FIRSTNAME = "firstname"
+            , SHARED_PREFERENCES_USER_LASTNAME = "lastname"
+            , SHARED_PREFERENCES_USER_PHONE = "phone"
+            , SHARED_PREFERENCES_USER_LOCATION_KEY = "location_key"
+            , SHARED_PREFERENCES_USER_LOCATION = "location"
 
             , SHARE_FROM_NOTIFICATION = "share_from_notification"
             , TRAININGS_FROM_NOTIFICATION = "trainings_from_notifications"

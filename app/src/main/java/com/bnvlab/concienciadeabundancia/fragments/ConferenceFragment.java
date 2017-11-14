@@ -1,15 +1,13 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,45 +79,13 @@ public class ConferenceFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
                 final ConferenceItem item = list.get(position);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                builder.setNeutralButton("Ver enlace", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK button
-
-//                        String uri = String.format(Locale.ENGLISH, "geo:0,0?q="
-//                                + item.getGps()
-//                                + "("
-//                                + item.getPlace()
-//                                + ")");
-//                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-//                        getContext().startActivity(intent);
-                        Uri uri = Uri.parse("https://www.facebook.com/cdainternacional"); // missing 'http://' will cause crashed
-                        try {
-                            int versionCode = getContext().getPackageManager().getPackageInfo("com.facebook.katana", 0).versionCode;
-                            boolean activated = getContext().getPackageManager().getApplicationInfo("com.facebook.katana", 0).enabled;
-                            if (activated) {
-                                if ((versionCode >= 3002850)) {
-                                    uri = Uri.parse("fb://facewebmodal/f?href=" + "https://www.facebook.com/cdainternacional");
-                                } else {
-                                    uri = Uri.parse("fb://page/" + "cdainternacional");
-                                }
-                            }
-                        } catch (PackageManager.NameNotFoundException ignored) {
-                        }
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                    }
-                });
-
-                builder.setTitle(item.getPlace())
-                        .setMessage(item.getInfo())
-                        .setIcon(R.mipmap.ic_cda_icon);
-
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
-
+                try {
+                    Uri uri = Uri.parse(item.getInfo());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }catch (Exception e){
+                    Log.e("ERRORRR" , e.getMessage());
+                }
             }
         });
 

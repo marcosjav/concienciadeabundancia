@@ -1,5 +1,6 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,12 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -23,24 +25,29 @@ import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.VideoActivity;
-import com.bnvlab.concienciadeabundancia.adapters.QuizAdapter;
+import com.bnvlab.concienciadeabundancia.adapters.QuizItemAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
+import com.bnvlab.concienciadeabundancia.auxiliaries.ITimeCallback;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Utils;
 import com.bnvlab.concienciadeabundancia.clases.QuizItem;
+import com.bnvlab.concienciadeabundancia.clases.SentUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 /**
@@ -50,72 +57,74 @@ import java.util.HashMap;
  */
 
 public class QuizFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
-//public class QuizFragment extends Fragment {
+    //public class QuizFragment extends Fragment {
     ArrayList<QuizItem> list;
-    QuizAdapter adapter;
+//    QuizAdapter adapter;
     View view;
     boolean disable;
 
-//    TextView tvTitle, tvSubTitle, tvModule, tvDescription, tvFoot;
+    //    TextView tvTitle, tvSubTitle, tvModule, tvDescription, tvFoot;
     TextView tvTitle;
-    ListView listView;
+//    ListView listView;
     Button buttonOk;
     Button buttonTestVideo;
-    CheckBox checkBoxNoTestear;
+//    CheckBox checkBoxNoTestear;
     ScrollView scrollView;
     View layoutWait, myCoordinatorLayout;
 
-    String video = "WSVH_nF18Ls";
+    // PARTE DEL RECYPLERVIEW
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    String video = "";
     String quizId;
     SharedPreferences prefs;
 
-    int userCounter = 0;
-    long actualWeek = 1, lastSent = 0;
+    long lastSent = 0;
     String require = "";
     boolean requiredOK = false;
+    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(References.REFERENCE);
 
     public QuizFragment() {
-        actualWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+//        actualWeek = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
     }
 
-//    Animation bounce;
-    @Override
-    public void onStart() {
-        super.onStart();
-        /*bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
-        // Use bounce interpolator with amplitude 0.2 and frequency 20
-        MyBounceInterpolator interpolator = new MyBounceInterpolator();
-
-        bounce.setInterpolator(interpolator);*/
-    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.new_fragment_quiz, container, false);
 
+        layoutWait = view.findViewById(R.id.settings_progressbar);
+        myCoordinatorLayout = view.findViewById(R.id.layout);
+
         view.findViewById(R.id.new_icon_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                v.startAnimation(bounce);
                 getActivity().onBackPressed();
             }
         });
 
+        prefs = getActivity().getSharedPreferences(
+                MainActivity.APP_SHARED_PREF_KEY + MainActivity.user.getuId(), Context.MODE_PRIVATE);
+
+        if (prefs.getBoolean(References.SHARED_PREFERENCES_FIRST_TIME, true))
+            prefs.edit().putBoolean(References.SHARED_PREFERENCES_FIRST_TIME, false).apply();
+
         try {
-            userCounter = MainActivity.user.getCounter();
             lastSent = MainActivity.user.getLastSent();
         } catch (Exception e) {
-            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+            databaseReference
                     .child(References.USERS)
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(MainActivity.user.getuId())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.child(References.USERS_CHILD_COUNTER).exists())
-                                userCounter = dataSnapshot.child(References.USERS_CHILD_COUNTER).getValue(int.class);
+                                MainActivity.user.setCounter(dataSnapshot.child(References.USERS_CHILD_COUNTER).getValue(int.class));
                             else
-                                userCounter = 1;
+                                MainActivity.user.setCounter(0);
 
                             if (dataSnapshot.child(References.USERS_CHILD_LAST_SENT).exists())
                                 lastSent = dataSnapshot.child(References.USERS_CHILD_LAST_SENT).getValue(long.class);
@@ -125,25 +134,27 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            userCounter = 1;
+                            MainActivity.user.setCounter(0);
                         }
                     });
         }
 
         list = new ArrayList<>();
-        adapter = new QuizAdapter(getContext(), R.layout.item_quiz_row, list);
 
-//        layoutWait = view.findViewById(R.id.layout_wait);
-//        myCoordinatorLayout = view.findViewById(R.id.myCoordinatorLayout);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.setHasFixedSize(false);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new QuizItemAdapter(list);
+        mRecyclerView.setAdapter(mAdapter);
+
+//        adapter = new QuizAdapter(getContext(), R.layout.item_quiz_row, list);
+//        listView = (ListView) view.findViewById(R.id.list_view_quiz);
+//        listView.setAdapter(adapter);
 
         tvTitle = (TextView) view.findViewById(R.id.textView);
-//        Utils.setTypeface(tvTitle, getContext());
 
-//        tvSubTitle = (TextView) view.findViewById(R.id.text_view_quiz_subtitle);
-//        tvModule = (TextView) view.findViewById(R.id.text_view_quiz_module);
-//        tvDescription = (TextView) view.findViewById(R.id.text_view_quiz_description);
-//        tvFoot = (TextView) view.findViewById(R.id.text_view_foot);
-//        checkBoxNoTestear = (CheckBox) view.findViewById(R.id.checkbox);
         scrollView = (ScrollView) view.findViewById(R.id.scrollView);
 
         buttonOk = (Button) view.findViewById(R.id.button_quiz_ok);
@@ -153,7 +164,7 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                 if (disable)
                     Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
                 else {
-                    sendQuiz();
+                    checkSend();
                 }
             }
         });
@@ -165,7 +176,7 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                 if (disable)
                     Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
                 else {
-                    sendQuiz();
+                    checkSend();
                 }
             }
         });
@@ -176,44 +187,21 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
             public void onClick(View v) {
                 Intent myIntent = new Intent(getContext(), VideoActivity.class);
 
-                if (video == null || video.equals(""))
-                    video = "https://youtu.be/WSVH_nF18Ls";
+//                if (video == null || video.equals(""))
+//                    video = "https://youtu.be/IzP2QOnm7r4";
 
-                myIntent.putExtra("video", video);
+                myIntent.putExtra("video", MainActivity.videosURL.getTest());
                 getActivity().startActivity(myIntent);
             }
         });
 
-//        final Snackbar snackbar = Snackbar.make(view.findViewById(R.id.myCoordinatorLayout), "", Integer.MAX_VALUE);
-//        snackbar.setAction("ENVIAR", new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (disable)
-//                    Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
-//                else {
-//                    sendQuiz();
-//                }
-//            }
-//        });
-
-//        checkBoxNoTestear.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked)
-//                    snackbar.show();
-//                else
-//                    snackbar.dismiss();
-//            }
-//        });
-
-        listView = (ListView) view.findViewById(R.id.list_view_quiz);
-        listView.setAdapter(adapter);
 
         YouTubePlayerSupportFragment frag =
                 (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
 
         Bundle bundle = this.getArguments();
 
+        video = MainActivity.videosURL.getTest();
         if (bundle != null) {
             quizId = bundle.getString("tag");
             String secondTag = bundle.getString("secondTag");
@@ -226,7 +214,7 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                             player.cueVideo(video);
                     }
                     frag.initialize(Config.YOUTUBE_API_KEY, this);
-                    Log.d("ERRORR", "VIDEO: " + video + "   " + s.length);
+                    Log.d(References.ERROR_LOG, "VIDEO: " + video + "   " + s.length);
                 } else
                     frag.initialize(Config.YOUTUBE_API_KEY, this);
 
@@ -240,7 +228,7 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
     }
 
     private void getQuiz() {
-        adapter.disable = disable;
+//        adapter.disable = disable;
         FirebaseDatabase.getInstance()
                 .getReference(References.REFERENCE)
                 .child(References.QUIZ)
@@ -253,13 +241,13 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             if (data.getKey().equals(References.QUIZ_CHILD_TITLE))
                                 tvTitle.setText(data.getValue(String.class));
-                            else if (data.getKey().equals(References.QUIZ_CHILD_SUBTITLE)){
+                            else if (data.getKey().equals(References.QUIZ_CHILD_SUBTITLE)) {
 //                                tvSubTitle.setText(data.getValue(String.class));
-                            }else if (data.getKey().equals(References.QUIZ_CHILD_MODULE)) {
+                            } else if (data.getKey().equals(References.QUIZ_CHILD_MODULE)) {
 //                                tvModule.setText(data.getValue(String.class));
-                            }else if (data.getKey().equals(References.QUIZ_CHILD_DESCRIPTION)) {
+                            } else if (data.getKey().equals(References.QUIZ_CHILD_DESCRIPTION)) {
 //                                tvDescription.setText(data.getValue(String.class));
-                            }else if (data.getKey().equals(References.FREE_CONTENT))
+                            } else if (data.getKey().equals(References.FREE_CONTENT))
                                 free = data.getValue(boolean.class);
                             else if (data.getKey().equals(References.QUIZ_CHILD_INDEX))
                                 free = free;
@@ -274,12 +262,12 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                             else if (!data.getKey().equals(References.QUIZ_CHILD_HIDDEN)) {
                                 QuizItem quizItem = new QuizItem(data.getValue(String.class));
                                 list.add(quizItem);
-                                adapter.notifyDataSetChanged();
 //                                Toast.makeText(getContext(), quizItem.getQuiz(), Toast.LENGTH_SHORT).show();
                             }
 
                         }
-                        setListViewHeightBasedOnChildren(listView);
+                        mAdapter.notifyDataSetChanged();
+//                        setListViewHeightBasedOnChildren(listView);
                         showProgress(false);
                     }
 
@@ -291,8 +279,8 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
     }
 
     private void showProgress(boolean show) {
-//        layoutWait.setVisibility(show ? View.VISIBLE : View.GONE);
-//        myCoordinatorLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+        layoutWait.setVisibility(show ? View.VISIBLE : View.GONE);
+        myCoordinatorLayout.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
     public static void setListViewHeightBasedOnChildren(ListView listView) {
@@ -324,122 +312,188 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
 
     }
 
+    private void checkSend() {
+        Log.d(References.ERROR_LOG, "Counter: " + MainActivity.user.getCounter() + " Reference:" + MainActivity.appValues.getCounter());
+//        if (MainActivity.user.getCounter() < MainActivity.appValues.getCounter())
+//            sendQuiz();
+//        else {
+            Utils.getServerTime(new ITimeCallback() {
+                @Override
+                public void callback(long value) {
+                    Log.d(References.ERROR_LOG, "Callback time: " + value);
+                    Date date = new Date(value);
+                    Calendar calendar = new GregorianCalendar();
+                    calendar.setTime(date);
+                    long actualWeek = calendar.get(Calendar.YEAR)*100 + calendar.get(Calendar.WEEK_OF_YEAR);
+                    sendQuiz(actualWeek);
+                }
+            });
+//        }
+    }
+
+    private void sendQuiz(long time) {
+        long spanTime = time - MainActivity.user.getLastSent();
+
+        Log.d(References.ERROR_LOG, "ServerTime: " + time + " last:" + MainActivity.user.getLastSent() + " span: " + spanTime);
+
+        if (spanTime > 0)
+            resetCounter();
+
+        if (MainActivity.user.getCounter() < MainActivity.appValues.getCounter())
+            sendQuiz();
+        else
+            Toast.makeText(getActivity(), "No se puede enviar más de " + MainActivity.appValues.getCounter() + " guías por semana", Toast.LENGTH_LONG).show();
+    }
+
     private void sendQuiz() {
-        if (userCounter < 1 && !require.equals("")) {
-            Toast.makeText(getContext(), "No estás habilitado para enviar guías\nPor favor contáctate con nosotros", Toast.LENGTH_LONG).show();
-//        } else if (lastSent == actualWeek && !require.equals("")) {
-//            Toast.makeText(getContext(), "Esta guía todavía no está disponible\nRecuerda que se habilitará una guía semanalmente", Toast.LENGTH_LONG).show();
-        } else {
-            if (require.equals(""))
-                requiredOK = true;
+        if (require.equals(""))
+            requiredOK = true;
 
-            FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                    .child(References.SENT)
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (!requiredOK)
-                                requiredOK = dataSnapshot.hasChild(require);
+        databaseReference
+                .child(References.SENT)
+                .child(MainActivity.user.getuId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (!requiredOK)
+                            requiredOK = dataSnapshot.hasChild(require);
 
-                            if (!requiredOK) {
-                                FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-                                        .child(References.QUIZ)
-                                        .child(require)
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                if (dataSnapshot.child(References.QUIZ_CHILD_MODULE).exists()
-                                                        && dataSnapshot.child(References.QUIZ_CHILD_TITLE).exists()) {
-                                                    Toast.makeText(getActivity(), "Para enviar esta guía necesitas:\n"
-                                                            + dataSnapshot.child(References.QUIZ_CHILD_MODULE).getValue(String.class) + "\n"
-                                                            + dataSnapshot.child(References.QUIZ_CHILD_TITLE).getValue(String.class), Toast.LENGTH_LONG).show();
-                                                    getActivity().onBackPressed();
-                                                    showProgress(false);
-                                                } else {
-                                                    Toast.makeText(getActivity(), "Ocurrió un error. Inténtelo en otro momento", Toast.LENGTH_SHORT).show();
-                                                    Log.d("ERRORR", "QuizFragment - sendQuiz - Line 324\n    require: " + require + "\n    module: " + dataSnapshot.child(References.QUIZ_CHILD_MODULE).exists()
-                                                            + "\n    title: " + dataSnapshot.child(References.QUIZ_CHILD_TITLE).exists());
-                                                    getActivity().onBackPressed();
-                                                    showProgress(false);
-                                                }
+                        if (!requiredOK) {  //################## OBTENGO LOS DATOS DE LA GUÍA QUE FALTA ENVIAR
+                            databaseReference
+                                    .child(References.QUIZ)
+                                    .child(require)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.child(References.QUIZ_CHILD_MODULE).exists()
+                                                    && dataSnapshot.child(References.QUIZ_CHILD_TITLE).exists()) {
+                                                Toast.makeText(getActivity(), "Para enviar esta guía necesitas:\n"
+                                                        + dataSnapshot.child(References.QUIZ_CHILD_MODULE).getValue(String.class) + "\n"
+                                                        + dataSnapshot.child(References.QUIZ_CHILD_TITLE).getValue(String.class), Toast.LENGTH_LONG).show();
+                                                getActivity().onBackPressed();
+                                                Log.d(References.ERROR_LOG, "QuizFragment - No tiene guía requerida");
+                                                showProgress(false);
+                                            } else {
+                                                Toast.makeText(getActivity(), "Ocurrió un error. Inténtelo en otro momento", Toast.LENGTH_SHORT).show();
+                                                Log.d(References.ERROR_LOG, "QuizFragment - sendQuiz - Line 362\n    require: " + require + "\n    module: " + dataSnapshot.child(References.QUIZ_CHILD_MODULE).exists()
+                                                        + "\n    title: " + dataSnapshot.child(References.QUIZ_CHILD_TITLE).exists());
+                                                getActivity().onBackPressed();
+                                                showProgress(false);
                                             }
+                                        }
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
 
-                                            }
-                                        });
-                            } else {
-                                showProgress(true);
-                                HashMap map = new HashMap();
-                                for (int i = 0; i < list.size(); i++) {
-                                    map.put(i + "", list.get(i));
-                                }
-                                map.put(References.SENT_CHILD_CHECKED, false);
-
-                                FirebaseDatabase.getInstance()
-                                        .getReference(References.REFERENCE)
-                                        .child(References.SENT)
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child(quizId)
-                                        .setValue(map)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-
-                                                    FragmentMan.changeFragment(getActivity(), CongratsFragment.class);
-
-                                                    /*AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-                                                    builder.setTitle("FELICIDADES!")
-                                                            .setMessage("En 24HS estarán realizados los cambios. " +
-                                                                    "\n\nTIPS PARA ACELERAR EL PROCESO: " +
-                                                                    "Para acelerar el proceso te recomendamos que tomes al menos dos litros de agua al día y realices de 15 a 30 minutos" +
-                                                                    " de ejercicios aeróbicos diarios\\nA partir de mañana podrás regalarle esta experiencia a todos tus conocidos, amigos" +
-                                                                    " y familiares!")
-                                                            .setPositiveButton("ENTIENDO", new DialogInterface.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(DialogInterface dialog, int which) {
-                                                                    dialog.dismiss();
-                                                                    getActivity().onBackPressed();
-                                                                    getActivity().onBackPressed();
-                                                                    FragmentMan.changeFragment(getActivity(), TrainingFragment.class);
-                                                                }
-                                                            })
-                                                            .setCancelable(false);
-
-                                                    builder.show();*/
-                                                }
-                                            }
-                                        });
-                                try {
-                                    // uC--
-                                    if (!require.equals("")) {
-                                        userCounter--;
-                                        MainActivity.user.setCounter(userCounter);
-                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference(References.REFERENCE).child(References.USERS).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        db.child(References.USERS_CHILD_COUNTER).setValue(userCounter);
-                                        // lastSent = today
-                                        db.child(References.USERS_CHILD_LAST_SENT).setValue(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
-                                    }
-
-                                } catch (Exception e) {
-                                    Log.d("ERRORR", "QuizFragment - sendQuiz - Line 389\n    " + e.getMessage());
-                                    e.printStackTrace();
-                                }
+                                        }
+                                    });
+                        } else {
+                            Log.d(References.ERROR_LOG, "QuizFragment - Enviando guía...");
+                            showProgress(true);
+                            HashMap map = new HashMap();
+                            for (int i = 0; i < list.size(); i++) {
+                                map.put(i + "", list.get(i));
                             }
+                            map.put(References.SENT_CHILD_CHECKED, false);
+
+                            FirebaseDatabase.getInstance()
+                                    .getReference(References.REFERENCE)
+                                    .child(References.SENT)
+                                    .child(MainActivity.user.getuId())
+                                    .child(quizId)
+                                    .setValue(map)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                incrementCounter();
+                                                updateLastSent();
+                                                Log.d(References.ERROR_LOG, "QuizFragment - Guía enviada con éxito");
+                                                FragmentMan.changeFragment(getActivity(), CongratsFragment.class);
+                                                // GUARDO LA GUÍA ENVIADA
+                                                MainActivity.sentUser.add(new SentUser(quizId, false));
+                                                prefs.edit().putString(References.SHARED_PREFERENCES_USER_SENT_JSON, new Gson().toJson(MainActivity.sentUser)).apply();
+                                            } else
+                                                Log.d(References.ERROR_LOG, "QuizFragment - Error enviando la guía");
+                                        }
+                                    });
+//                            try {
+//                                // uC--
+//                                if (!require.equals("")) {
+//                                    userCounter--;
+//                                    MainActivity.user.setCounter(userCounter);
+//                                    DatabaseReference db = databaseReference.child(References.USERS).child(MainActivity.user.getuId());
+//                                    db.child(References.USERS_CHILD_COUNTER).setValue(userCounter);
+//                                    // lastSent = today
+////                                        db.child(References.USERS_CHILD_LAST_SENT).setValue(Calendar.getInstance().get(Calendar.WEEK_OF_YEAR));
+//                                    db.child(References.USERS_CHILD_LAST_SENT).setValue(ServerValue.TIMESTAMP);
+//                                }
+//
+//                            } catch (Exception e) {
+//                                Log.d(References.ERROR_LOG, "QuizFragment - sendQuiz - Line 389\n    " + e.getMessage());
+//                                e.printStackTrace();
+//                            }
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.d("ERRORR", "QuizFragment - sendQuiz - Line 307\n    " + databaseError.getMessage());
-                        }
-                    });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.d(References.ERROR_LOG, "QuizFragment - sendQuiz - Line 307\n    " + databaseError.getMessage());
+                    }
+                });
 
 
-        }
+//        }
+    }
+
+    private void incrementCounter(boolean reset) {
+        int newCounter;
+        if (reset)
+            newCounter = 0;
+        else
+            newCounter = MainActivity.user.getCounter() + 1;
+
+        Log.d(References.ERROR_LOG, "Counter: " + MainActivity.user.getCounter() + " new: " + newCounter);
+
+        MainActivity.user.setCounter(newCounter);
+
+        databaseReference
+                .child(References.USERS)
+                .child(MainActivity.user.getuId())
+                .child(References.USERS_CHILD_COUNTER)
+                .setValue(newCounter);
+    }
+
+    private void incrementCounter(){
+        incrementCounter(false);
+    }
+
+    private void resetCounter() {
+        incrementCounter(true);
+    }
+
+    private void updateLastSent() {
+        final DatabaseReference dbr = databaseReference
+                .child(References.USERS)
+                .child(MainActivity.user.getuId())
+                .child(References.USERS_CHILD_LAST_SENT);
+
+        dbr.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                MainActivity.user.setLastSent(dataSnapshot.getValue(long.class));
+                dbr.removeEventListener(this);
+                Log.d(References.ERROR_LOG, "New LastSent: " +dataSnapshot.getValue(long.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        long week = Calendar.getInstance().get(Calendar.YEAR)*100 + Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+        dbr.setValue(week);
     }
 
     YouTubePlayer player;
@@ -455,11 +509,10 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
 
     @Override
     public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
         if (youTubeInitializationResult.isUserRecoverableError()) {
             youTubeInitializationResult.getErrorDialog(getActivity(), 1).show();
-        } else {
-            String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
-            Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
         }
+        Log.d(References.ERROR_LOG, "QuizFragment - YOUTUBE ERROR:\n" + errorMessage);
     }
 }

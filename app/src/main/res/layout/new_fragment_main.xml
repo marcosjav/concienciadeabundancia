@@ -117,7 +117,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
 
             <Button
                 android:id="@+id/button_main_trainings"
@@ -155,16 +156,16 @@
                         android:id="@+id/button_main_subscribe"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:background="@drawable/button_background"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
                         android:src="@drawable/new_icon_pay" />
 
                     <TextView
+                        style="@style/textViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        style="@style/textViewStyle"
                         android:text="@string/pay" />
                 </LinearLayout>
 
@@ -188,10 +189,10 @@
                         android:src="@drawable/new_icon_videos" />
 
                     <TextView
+                        style="@style/textViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        style="@style/textViewStyle"
                         android:text="@string/videos" />
                 </LinearLayout>
 
@@ -205,16 +206,16 @@
                         android:id="@+id/button_main_conference"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
                         android:background="@drawable/button_background"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
                         android:src="@drawable/new_icon_conference" />
 
                     <TextView
+                        style="@style/textViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        style="@style/textViewStyle"
                         android:text="@string/conferences" />
                 </LinearLayout>
             </LinearLayout>
@@ -242,10 +243,10 @@
                         android:src="@drawable/new_icon_about" />
 
                     <TextView
+                        style="@style/textViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        style="@style/textViewStyle"
                         android:text="@string/cda" />
                 </LinearLayout>
 
@@ -261,18 +262,18 @@
                         android:id="@+id/button_main_fundaments"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:padding="5dp"
-                        android:scaleType="fitCenter"
                         android:background="@drawable/button_background"
+                        android:padding="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/new_icon_fundaments" />
 
                     <TextView
+                        style="@style/textViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        style="@style/textViewStyle"
                         android:text="@string/fundamentals" />
                 </LinearLayout>
 
@@ -286,21 +287,42 @@
                         android:id="@+id/button_main_faq"
                         android:layout_width="match_parent"
                         android:layout_height="60dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:padding="5dp"
-                        android:scaleType="fitCenter"
                         android:background="@drawable/button_background"
+                        android:padding="5dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/new_icon_faq" />
 
                     <TextView
+                        style="@style/textViewStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        style="@style/textViewStyle"
                         android:text="@string/questions" />
                 </LinearLayout>
             </LinearLayout>
+
+            <Button
+                android:id="@+id/button_main_ask"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/button_background"
+                android:drawableStart="@drawable/new_icon_ask"
+                android:padding="10dp"
+                android:text="@string/ask" />
+
+            <Button
+                android:id="@+id/button_main_elections"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/button_background_dark_red"
+                android:drawableStart="@drawable/new_icon_elections"
+                android:padding="10dp"
+                android:text="@string/elections" />
+
         </LinearLayout>
     </ScrollView>
 

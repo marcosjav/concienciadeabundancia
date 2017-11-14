@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
-import com.bnvlab.concienciadeabundancia.clases.ZoomOutPageTransformer;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONObject;
@@ -20,11 +19,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import github.chenupt.multiplemodel.viewpager.ModelPagerAdapter;
-import github.chenupt.multiplemodel.viewpager.PagerModelManager;
-import github.chenupt.springindicator.SpringIndicator;
-import github.chenupt.springindicator.viewpager.ScrollerViewPager;
-
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -32,7 +26,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class MessageFragment extends Fragment {
-    private ScrollerViewPager mPager;
+    //private ScrollerViewPager mPager;
     SharedPreferences prefs;
     private List<String> titles = new ArrayList<>();
     private List<String> msgs = new ArrayList<>();
@@ -83,7 +77,7 @@ public class MessageFragment extends Fragment {
         }
 
         // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ScrollerViewPager) view.findViewById(R.id.pager);
+        /*mPager = (ScrollerViewPager) view.findViewById(R.id.pager);
         SpringIndicator springIndicator = (SpringIndicator) view.findViewById(R.id.indicator);
 
         mPager.setPageTransformer(true, new ZoomOutPageTransformer());
@@ -95,7 +89,7 @@ public class MessageFragment extends Fragment {
         mPager.setAdapter(adapter);
         mPager.fixScrollSpeed();
 
-        springIndicator.setViewPager(mPager);
+        springIndicator.setViewPager(mPager);*/
 
         return view;
     }

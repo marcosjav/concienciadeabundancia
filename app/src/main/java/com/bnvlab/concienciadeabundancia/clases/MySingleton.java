@@ -2,7 +2,7 @@ package com.bnvlab.concienciadeabundancia.clases;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.util.LruCache;
+import android.util.LruCache;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -10,7 +10,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
- * Created by Marcos on 04/06/2017.
+ * Created by Marcos on 14/10/2017.
  */
 
 public class MySingleton {

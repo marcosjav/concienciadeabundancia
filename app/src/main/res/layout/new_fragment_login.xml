@@ -17,7 +17,7 @@
             android:orientation="vertical"
             android:paddingEnd="25dp"
             android:paddingStart="25dp"
-            android:visibility="visible">
+            android:visibility="visible"> <!--######################################-->
 
             <ImageView
                 android:layout_width="match_parent"
@@ -128,7 +128,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"> <!--#################################-->
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -141,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="top|start"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:visibility="visible"><!--#################################-->
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -201,19 +201,15 @@
                 android:layout_gravity="center"
                 android:orientation="vertical">
 
-                <ProgressBar
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    android:indeterminateTint="@color/button_start"
-                    android:indeterminateTintMode="src_in" />
-
-                <TextView
+                <com.github.ybq.android.spinkit.SpinKitView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/spin_kit"
+                    style="@style/SpinKitView.ChasingDots"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/loading"
-                    android:textColor="@android:color/white" />
+                    android:padding="20dp"
+                    android:layout_gravity="center"
+                    app:SpinKit_Color="@color/text" />
             </LinearLayout>
         </FrameLayout>
 
@@ -228,7 +224,7 @@
             android:id="@+id/sign_up_scrollview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="gone"><!--#################################-->
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -240,14 +236,31 @@
                     android:layout_margin="10dp"
                     android:orientation="vertical">
 
-                    <!--NAMES-->
+                    <!--FIRST NAME-->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nombres completos" />
+                        android:text="@string/signup_first_name" />
 
                     <EditText
-                        android:id="@+id/sign_up_names"
+                        android:id="@+id/sign_up_first_name"
+                        style="@style/editTextStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/sign_up_second_name" />
+
+                    <!--FIRST NAME-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/signup_second_name" />
+
+                    <EditText
+                        android:id="@+id/sign_up_second_name"
                         style="@style/editTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -258,10 +271,11 @@
 
                     <!--LAST NAME-->
                     <TextView
+                        android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="Apellido" />
+                        android:text="@string/signup_last_name" />
 
                     <EditText
                         android:id="@+id/sign_up_lastname"
@@ -278,7 +292,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="Correo" />
+                        android:text="@string/signup_email" />
 
                     <EditText
                         android:id="@+id/sign_up_mail"
@@ -295,7 +309,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="Teléfono" />
+                        android:text="@string/signup_phone" />
 
                     <EditText
                         android:id="@+id/sign_up_phone"
@@ -313,7 +327,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="Ubicación" />
+                        android:text="@string/signup_location" />
 
                     <Button
                         android:id="@+id/button_location"
@@ -321,14 +335,14 @@
                         android:layout_height="30dp"
                         android:background="@drawable/button_background"
                         android:nextFocusDown="@+id/sign_up_password"
-                        android:text="Elegir" />
+                        android:text="@string/signup_choose_location" />
 
                     <!--PASS-->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="Clave" />
+                        android:text="@string/signup_pass" />
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
@@ -352,7 +366,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
-                        android:text="Repetir Clave" />
+                        android:text="@string/signup_repass" />
 
                     <EditText
                         android:id="@+id/sign_up_repassword"
@@ -370,7 +384,7 @@
                         android:layout_height="40dp"
                         android:layout_marginTop="15dp"
                         android:background="@drawable/button_background"
-                        android:text="Registrarse" />
+                        android:text="@string/signup_signup_button" />
                 </LinearLayout>
             </FrameLayout>
         </ScrollView>

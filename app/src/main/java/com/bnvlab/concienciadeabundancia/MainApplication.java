@@ -25,5 +25,9 @@ public class MainApplication extends Application {
         FirebaseMessaging.getInstance().subscribeToTopic("notifications");
 
         Firebase.getDefaultConfig().setPersistenceEnabled(true);
+
+//        SharedPreferences prefs = getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY, MODE_PRIVATE);
+//        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+//                .child()
     }
 }

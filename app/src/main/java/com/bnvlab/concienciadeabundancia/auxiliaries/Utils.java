@@ -3,6 +3,7 @@ package com.bnvlab.concienciadeabundancia.auxiliaries;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -20,13 +21,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.LoginActivity;
+import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Marcos on 19/04/2017.
@@ -211,4 +220,32 @@ public class Utils {
 
     }
 
+    public static SharedPreferences getPrefs(Activity activity){
+        return activity.getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                MODE_PRIVATE);
+    }
+
+    public static void getServerTime(final ITimeCallback iCallback){
+        final DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference(References.APP_REFERENCE)
+                .child(References.TIME_CHILD);
+
+        ref.setValue(ServerValue.TIMESTAMP).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            iCallback.callback(dataSnapshot.getValue(Long.class));
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+            }
+        });
+    }
 }

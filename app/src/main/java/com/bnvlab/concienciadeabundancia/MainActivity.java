@@ -1,50 +1,63 @@
 package com.bnvlab.concienciadeabundancia;
 
-import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.clases.AppValues;
+import com.bnvlab.concienciadeabundancia.clases.SentUser;
 import com.bnvlab.concienciadeabundancia.clases.User;
+import com.bnvlab.concienciadeabundancia.clases.VideosURL;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
+import com.bnvlab.concienciadeabundancia.fragments.RateFragment;
 import com.bnvlab.concienciadeabundancia.fragments.TrainingFragment;
+import com.bnvlab.concienciadeabundancia.fragments.WelcomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-
-import org.jsoup.Jsoup;
+import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Marcos on 25/06/2017.
  */
 
 public class MainActivity extends FragmentActivity {
+    //##    PARTE COMPARTIDA
     public static boolean newUser = false;
     public static User user = null;
-    public static final String APP_SHARED_PREF_KEY = "ConcienciaDeAbundancia", FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
+    public static ArrayList<SentUser> sentUser = null;
+    public static VideosURL videosURL = null;
+    public static AppValues appValues = null;
+    public static final String APP_SHARED_PREF_KEY = "ConcienciaDeAbundancia";//, FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
+    public static boolean updateAvailable;
+    FirebaseUser fbUser;
+
     private String android_id;
     SharedPreferences prefs;
     boolean showTrainings = false;
     private FirebaseAuth mAuth;
     final static String TAG = "ERRORR - MainActivity";
+    DatabaseReference reference;
+    private Gson gson;
 
     FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
         @Override
@@ -56,7 +69,7 @@ public class MainActivity extends FragmentActivity {
             } else {
                 // User is signed out
                 Log.d(TAG, "onAuthStateChanged:signed_out");
-                Toast.makeText(MainActivity.this, "Se cerró la sesión", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Se cerró la sesión", Toast.LENGTH_SHORT).show();
                 showLogin();
             }
             // ...
@@ -70,50 +83,85 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        gson = new Gson();
+        reference = FirebaseDatabase.getInstance().getReference(References.REFERENCE);
+        sentUser = new ArrayList<>();
 
         try {
             Uri data = getIntent().getData();
             if (data != null) {
                 String invitationCode = data.toString();
 
-                if (invitationCode != null && invitationCode.contains("http://cdainter.com/?code=")){
+                if (invitationCode != null && invitationCode.contains("http://cdainter.com/?code=")) {
                     Intent intent = new Intent();
                     intent.putExtra("uri", "http://cdainter.com/?code=");
                     startActivity(intent);
                     finish();
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d(References.ERROR_LOG, e.getMessage());
         }
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            prefs = getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                    MODE_PRIVATE);
-            begin();
-        } else {
-            showLogin();
-        }
     }
 
 
+
+    private void getUserJSON() {
+        Log.d(References.ERROR_LOG, "getUserJSON()");
+        reference.child(References.USERS)
+                .child(fbUser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        user = dataSnapshot.getValue(User.class);
+                        user.setuId(dataSnapshot.getKey());
+                        Log.d(References.ERROR_LOG, gson.toJson(user));
+                        prefs.edit().putString(References.SHARED_PREFERENCES_USER_JSON, gson.toJson(user)).apply();
+                        getUserSent();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void getUserSent() {
+        Log.d(References.ERROR_LOG, "getUserSent()");
+        reference.child(References.SENT)
+                .child(fbUser.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            sentUser.add(new SentUser(data.getKey(), data.child(References.SENT_CHILD_CHECKED).getValue(boolean.class)));
+                        }
+                        prefs.edit().putString(References.SHARED_PREFERENCES_USER_SENT_JSON, gson.toJson(sentUser)).apply();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
     private void begin() {
+        Log.d(References.ERROR_LOG, "begin()");
         checks();
-        String value = null;
-
-        if (value != null) {
-            android_id = value;
-            prefs.edit().putString("android_id", android_id).apply();
-        } else if (prefs.getString("android_id", "").equals("")) {
-            prefs.edit().putString("android_id", android_id).apply();
-        } else {
-            android_id = prefs.getString("android_id", "");
-        }
-
-        if (prefs.getBoolean("firstLogin", true)) {
-            prefs.edit().putBoolean("firstLogin", false).apply();
-        }
+        //########### ANULO PORQUE LO HAGO EN CHECKS
+//        String value = null;
+//
+//        if (value != null) {
+//            android_id = value;
+//            prefs.edit().putString(References.DEVICE_ID, android_id).apply();
+//        } else if (prefs.getString(References.DEVICE_ID, "").equals("")) {
+//            prefs.edit().putString(References.DEVICE_ID, android_id).apply();
+//        } else {
+//            android_id = prefs.getString(References.DEVICE_ID, "");
+//        }
 
         FragmentMan.changeFragment(this, MainFragment.class);
         if (showTrainings)
@@ -132,153 +180,79 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() > 1) {
-            Log.i("MainActivity", "popping backstack");
-            fm.popBackStack();
-        } else {
-            Log.i("MainActivity", "nothing on backstack, calling super");
-            super.onBackPressed();
-            System.exit(0);
-        }
-    }
-
-    public class VersionChecker extends AsyncTask<String, String, String> {
-
-        String newVersion;
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            try {
-                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + getPackageName() + "&hl=en")
-                        .timeout(30000)
-                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                        .referrer("http://www.google.com")
-                        .get()
-                        .select("div[itemprop=softwareVersion]")
-                        .first()
-                        .ownText();
-            } catch (Exception e) {
-                e.printStackTrace();
-                newVersion = "";
+        if (!updateAvailable && !WelcomeFragment.active) {
+            if (fm.getBackStackEntryCount() > 1) {
+                Log.i(References.ERROR_LOG, "MainActivity - popping backstack");
+                Log.i(References.ERROR_LOG, "MainActivity - updateAvailable: " + updateAvailable);
+                Log.i(References.ERROR_LOG, "MainActivity - Welcome active: " + WelcomeFragment.active);
+                fm.popBackStack();
+            } else {
+                Log.i("MainActivity", "nothing on backstack, calling super");
+                super.onBackPressed();
+                System.exit(0);
             }
+        } else if (WelcomeFragment.button) {
+            fm.popBackStack();
+            if (MainActivity.sentUser.size() < 1)
+                FragmentMan.changeFragment(this, TrainingFragment.class);
 
-            return newVersion;
+            WelcomeFragment.active = false;
+            WelcomeFragment.button = false;
         }
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
 
-    }
+        FirebaseUser currentUser = mAuth.getCurrentUser();  //######    CONTROLO SI ESTÁ LOGUEADO Y GUARDO EL JSON DEL USUARIO Y DE LAS GUÍAS
+        Log.d(References.ERROR_LOG, "onCreate()");
+        if (currentUser != null) {
+            fbUser = mAuth.getCurrentUser();
+            prefs = getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + fbUser.getUid(),
+                    MODE_PRIVATE);
 
-
-//    private void dialogFirstTime(){
-//        // use a default value using new Date()
-//        boolean firstTime = prefs.getBoolean(MainActivity.FIRST_TIME_PREF_KEY, true);
-//
-//        // PROPAGANDA DEL PRIMER INGRESO DEL USUSARIO
-//        if (firstTime) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//
-//            View view1 = View.inflate(this, R.layout.dialog_video, null);
-//
-//            final YouTubePlayerSupportFragment frag =
-//                    (YouTubePlayerSupportFragment) getSupportFragmentManager().findFragmentById(R.id.youtube_frame);
-//
-//            frag.initialize(Config.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-//                @Override
-//                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
-//                    if (!wasRestored) {
-//                        //I assume the below String value is your video id
-//                        youTubePlayer.loadVideo("GJZ45KiWLV4");
-//                    }
-//                }
-//
-//                @Override
-//                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-//                    if (youTubeInitializationResult.isUserRecoverableError()) {
-//                        youTubeInitializationResult.getErrorDialog(MainActivity.this, 1).show();
-//                    } else {
-//                        String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
-//                        Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//            });
-//
-//            builder.setView(view1)
-//                    .setCancelable(false)
-//                    .setPositiveButton("ENTENDIDO", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            prefs.edit().putBoolean(MainActivity.FIRST_TIME_PREF_KEY, false).apply();
-//                            frag.onDestroy();
-//                            dialog.dismiss();
-//                        }
-//                    });
-//
-//            AlertDialog dialog = builder.create();
-//
-//            dialog.show();
-//        }
-//    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        //No call for super(). Bug on API Level > 11.
-    }
-
-    private void checks() {
-        // REVISO SI HAY UNA NUEVA VERSIÓN
-        VersionChecker versionChecker = new VersionChecker();
-        try {
-            String latestVersion = versionChecker.execute().get();
-            double playVersion = Double.valueOf(latestVersion);
-            double thisVersion = Double.valueOf(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-
-            if (playVersion > thisVersion) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                builder.setPositiveButton("IR A PLAYSTORE", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK button
-                        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                        try {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                        } catch (ActivityNotFoundException anfe) {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-                        } finally {
-                            finish();
-                        }
-                    }
-                })
-                        .setMessage("Hay una nueva versión de esta aplicación disponible.\nPor favor descargala antes de seguir.")
-                        .setTitle("Nueva actualización")
-                        .setCancelable(false)
-                        .setIcon(R.drawable.attention_yellow);
-
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
+            Log.d(References.ERROR_LOG, "currentUser != null");
+            if (videosURL == null)
+                getVideos(true);
+            else {
+                getVideos(false);
+//                begin();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            showLogin();
+            Log.d(References.ERROR_LOG, "showLogin()");
         }
 
-        FirebaseDatabase.getInstance()
-                .getReference(References.REFERENCE)
-                .child(References.USERS)
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+        FragmentManager fm = getSupportFragmentManager();
+
+        List<Fragment> list = fm.getFragments();
+        if (list != null)
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getClass().equals(RateFragment.class))
+                    onBackPressed();
+            }
+    }
+
+    private void getVideos(final boolean first) {
+        FirebaseDatabase.getInstance().getReference(References.APP_REFERENCE)
+                //.child(References.APP_VIDEOS)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-//                            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
-//                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        User user = dataSnapshot.getValue(User.class);
-//                                if (user.getEmail().equals(fbUser.getEmail()) || user.getPhone().equals(fbUser.getEmail().split("@")[0]))
-                        MainActivity.user = user;
-//                            }
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            SharedPreferences appPrefs = MainActivity.this.getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY, MODE_PRIVATE);
+                            if (data.getKey().equals(References.APP_VIDEOS)) {
+                                videosURL = data.getValue(VideosURL.class);
+                                appPrefs.edit().putString(References.SHARED_PREFERENCES_APP_VIDEOS_URL, gson.toJson(videosURL)).apply();
+                            } else if (data.getKey().equals(References.APP_VALUES)){
+                                appValues = data.getValue(AppValues.class);
+                                appPrefs.edit().putString(References.SHARED_PREFERENCES_APP_VALUES, gson.toJson(appValues)).apply();
+                            }
+                        }
+                        if (first)
+                            begin();
                     }
 
                     @Override
@@ -286,31 +260,40 @@ public class MainActivity extends FragmentActivity {
 
                     }
                 });
+    }
 
-        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
+    }
+
+    private void checks() {
+
+        Log.d(References.ERROR_LOG, "checks()");
+        getUserJSON();
+
+        reference
                 .child(References.USERS)
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(fbUser.getUid())
                 .child(References.USERS_CHILD_DEVICEID)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null) {
-                            SharedPreferences prefs = MainActivity.this.getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                                    MODE_PRIVATE);
-                            if (!dataSnapshot.getValue(String.class).equals(android_id) && !dataSnapshot.getValue(String.class).equals(prefs.getString("android_id", ""))) {
-                                Toast.makeText(getApplicationContext(), "Se inició sesión en otro dispositivo", Toast.LENGTH_LONG).show();
-                                FirebaseAuth.getInstance().signOut();
-                                try {
-                                    FirebaseInstanceId.getInstance().deleteInstanceId();
-                                } catch (IOException e) {
-                                    Log.d("ERROR_ADMIN", "MAIN_ACTIVITY_deleteInstanse: " + e.getMessage());
+                            if (fbUser != null) {
+                                SharedPreferences prefs = MainActivity.this.getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + fbUser.getUid(),
+                                        MODE_PRIVATE);
+                                if (!dataSnapshot.getValue(String.class).equals(android_id) &&
+                                        !dataSnapshot.getValue(String.class).equals(prefs.getString(References.DEVICE_ID, ""))) {
+                                    Toast.makeText(getApplicationContext(), "Se inició sesión en otro dispositivo", Toast.LENGTH_LONG).show();
+                                    mAuth.signOut();
+                                    try {
+                                        FirebaseInstanceId.getInstance().deleteInstanceId();
+                                    } catch (IOException e) {
+                                        Log.d("ERROR_ADMIN", "MAIN_ACTIVITY_deleteInstanse: " + e.getMessage());
+                                    }
                                 }
-//                                    Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-//                                    myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                                    MainActivity.this.startActivity(myIntent);
-//                                    MainActivity.this.finish();
                             }
-
                         }
                     }
 
@@ -323,21 +306,23 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void setShareStartTime() {
-        FirebaseDatabase.getInstance().getReference(References.REFERENCE)
+        reference
                 .child(References.SHARE)
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(fbUser.getUid())
                 .setValue(Calendar.getInstance().getTime().getTime());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseAuth.getInstance().addAuthStateListener(mAuthListener);
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        FirebaseAuth.getInstance().removeAuthStateListener(mAuthListener);
+        mAuth.removeAuthStateListener(mAuthListener);
+
     }
+
 }
