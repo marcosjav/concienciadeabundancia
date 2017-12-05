@@ -83,6 +83,12 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp" />
 
+            <TextView
+                android:id="@+id/textViewDescription"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -105,6 +111,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_02"
                     />
             </LinearLayout>
@@ -131,6 +138,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_03"
                     />
             </LinearLayout>
@@ -157,6 +165,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_04"
                     />
             </LinearLayout>
@@ -183,6 +192,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_05"
                     />
             </LinearLayout>
@@ -209,6 +219,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_06"
                     />
             </LinearLayout>
@@ -235,6 +246,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_07"
                     />
             </LinearLayout>
@@ -261,6 +273,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_08"
                     />
             </LinearLayout>
@@ -287,6 +300,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_09"
                     />
             </LinearLayout>
@@ -313,6 +327,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_10"
                     />
             </LinearLayout>
@@ -339,6 +354,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_11"
                     />
             </LinearLayout>
@@ -365,6 +381,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_12"
                     />
             </LinearLayout>
@@ -391,6 +408,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_13"
                     />
             </LinearLayout>
@@ -417,6 +435,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_14"
                     />
             </LinearLayout>
@@ -443,6 +462,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_15"
                     />
             </LinearLayout>
@@ -469,6 +489,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_16"
                     />
             </LinearLayout>
@@ -495,6 +516,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_17"
                     />
             </LinearLayout>
@@ -521,6 +543,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_18"
                     />
             </LinearLayout>
@@ -573,6 +596,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_20"
                     />
             </LinearLayout>
@@ -599,6 +623,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_21"
                     />
             </LinearLayout>
@@ -625,6 +650,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_22"
                     />
             </LinearLayout>
@@ -651,6 +677,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_23"
                     />
             </LinearLayout>
@@ -677,6 +704,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_24"
                     />
             </LinearLayout>
@@ -703,6 +731,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_25"
                     />
             </LinearLayout>
@@ -729,6 +758,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/edit_text_election_26"
                     />
             </LinearLayout>
@@ -755,6 +785,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:textSize="14sp"
                     android:nextFocusDown="@+id/button_send_elections"
                     />
             </LinearLayout>

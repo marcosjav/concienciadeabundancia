@@ -46,7 +46,7 @@ public class MainFragment extends Fragment {
     Button buttonTrainings, buttonShare, buttonAsk, buttonElections;
     //    View shareRow;
     private static final String fbUri0 = "https://www.facebook.com/";
-    private static final String fbUri1 = "cda-internacional-256242691550706";
+    private static final String fbUri1 = "PabloAlbertoAzarOk";
     ArrayList<JSONObject> notificationsList;
     View notificationsIndicator;
     //    LinearLayout layoutTrainings;
@@ -65,6 +65,7 @@ public class MainFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (fbUser == null) {
+            Log.d(References.ERROR_LOG, "MainFragment - onAttach user null");
             Intent myIntent = new Intent(getActivity(), LoginActivity.class);
             myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             this.startActivity(myIntent);
@@ -103,6 +104,8 @@ public class MainFragment extends Fragment {
                 .child(References.LAST_CONNECTION)
                 .child(fbUser.getUid())
                 .setValue(ServerValue.TIMESTAMP);
+
+        notificationsIndicator = view.findViewById(R.id.notifications_indicator);
 
         notificationButton = (ImageButton) view.findViewById(R.id.notifications);
         buttonFacebookLink = (ImageButton) view.findViewById(R.id.button_main_facebook);
@@ -199,7 +202,7 @@ public class MainFragment extends Fragment {
         buttonWebLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://www.cdainter.com"); // missing 'http://' will cause crashed
+                Uri uri = Uri.parse("http://www.pabloalbertoazar.com"); // missing 'http://' will cause crashed
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             }
@@ -208,7 +211,7 @@ public class MainFragment extends Fragment {
         buttonInstaLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("http://instagram.com/_u/cdainternacional");
+                Uri uri = Uri.parse("http://instagram.com/_u/pabloazarok");
                 Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
 
                 likeIng.setPackage("com.instagram.android");
@@ -217,7 +220,7 @@ public class MainFragment extends Fragment {
                     startActivity(likeIng);
                 } catch (ActivityNotFoundException e) {
                     startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://instagram.com/cdainternacional")));
+                            Uri.parse("http://instagram.com/pabloazarok")));
                 }
             }
         });
@@ -342,6 +345,10 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        onFragmentResume();
+    }
+
+    public void onFragmentResume(){
         checkVersion();
 
         //##### CALIFICAR APLICACIÓN
@@ -372,6 +379,11 @@ public class MainFragment extends Fragment {
         if (prefs.getBoolean(References.SHARED_PREFERENCES_FIRST_TIME, true)) {
             FragmentMan.changeFragment(getActivity(), WelcomeFragment.class);
         }
+        //################# AVISAR QUE HAY NOTIFICACIONES NUEVAS
+        if (prefs.getBoolean(References.NOTIFICATION_NEW_MESSAGES, false))
+            notificationsIndicator.setVisibility(View.VISIBLE);
+        else
+            notificationsIndicator.setVisibility(View.GONE);
     }
 
     private void rateApp() {

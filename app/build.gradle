@@ -8,8 +8,8 @@ android {
         applicationId "com.bnvlab.concienciadeabundancia"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 50
-        versionName "6.24"
+        versionCode 52
+        versionName "6.31"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

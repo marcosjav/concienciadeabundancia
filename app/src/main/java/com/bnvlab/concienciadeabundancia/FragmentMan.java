@@ -67,49 +67,57 @@ public class FragmentMan {
                     Log.i("DEBUG - FRAGMENT", "Found fragment: " + f.getClass());
                 }
         }
+
         if (Fragment.class.isAssignableFrom(fragmentClass) && !exist) {
 
             String className = fragmentClass.getSimpleName();
-            Fragment fragment = null;
+            Fragment fragment = fm.findFragmentByTag(className);
 
-            try {
-                fragment = (Fragment) fragmentClass.newInstance();
-                if (tag != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("tag", tag);
-                    if (secondTag != null)
-                        bundle.putString("secondTag", secondTag);
-                    fragment.setArguments(bundle);
-                }
-            } catch (Exception e) {
-                Log.d("CDA_EXCEPTION", "EXCEPTION: " + e.getMessage());
-            }
             if (fragment != null) {
-                actualFragment = fragment;
-                if (className != MainFragment.class.getSimpleName()) {
-                    activity
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
-                            .add(R.id.fragment_main, fragment, className)
-                            .addToBackStack(className)
-                            .commit();
-
-                    if (fragment instanceof ICallback) {
-                        ((ICallback) fragment).callback();
+//                fm.beginTransaction().show(fragment).commit();
+                fm.beginTransaction().remove(fragment).commit();
+//                fm.beginTransaction().addToBackStack(className).commit();
+            }
+                try {
+                    fragment = (Fragment) fragmentClass.newInstance();
+                    if (tag != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("tag", tag);
+                        if (secondTag != null)
+                            bundle.putString("secondTag", secondTag);
+                        fragment.setArguments(bundle);
                     }
-                } else {
-                    activity
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
-                            .add(R.id.fragment_main, fragment, className)
-                            .commit();
+                } catch (Exception e) {
+                    Log.d("CDA_EXCEPTION", "EXCEPTION: " + e.getMessage());
+                }
+                if (fragment != null) {
+                    actualFragment = fragment;
+                    if (!className.equals(MainFragment.class.getSimpleName())) {
+                        activity
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
+                                .add(R.id.fragment_main, fragment, className)
+                                .addToBackStack(className)
+                                .commit();
+
+                        if (fragment instanceof ICallback) {
+                            ((ICallback) fragment).callback();
+                        }
+                    } else {
+                        activity
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)  //VA ANTES DEL ADD
+                                .add(R.id.fragment_main, fragment, className)
+                                .commit();
+                    }
+
                 }
 
-            }
         }
     }
+
     public static void changeFragment(FragmentActivity activity, Class newFragment, Class oldFragment) {
         FragmentManager fm = activity.getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -117,7 +125,7 @@ public class FragmentMan {
 
         Fragment f = fm.findFragmentByTag(oldFragment.toString());
 
-        if(f != null) {
+        if (f != null) {
             ft.remove(f);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
         }
@@ -142,10 +150,10 @@ public class FragmentMan {
         try {
             nf = (Fragment) newFragment.newInstance();
             activity.getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_main, nf, newFragment.toString())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .commit();
+                    .beginTransaction()
+                    .add(R.id.fragment_main, nf, newFragment.toString())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit();
 
         } catch (Exception e) {
             Log.d(References.ERROR_LOG, "FragmentMan - " + e.getMessage());

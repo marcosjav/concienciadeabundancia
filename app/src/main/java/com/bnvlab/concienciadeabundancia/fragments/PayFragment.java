@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.FragmentMan;
@@ -49,6 +50,7 @@ public class PayFragment extends Fragment implements YouTubePlayer.OnInitialized
     String creditUrl, cashUrl, transferUrl, location, locationKey;
     View progressBar, payLayout, iUnavaliable;
     Button buttonTransfer, buttonCredit, buttonCash, buttonReport;
+    TextView textViewDesciption;
 //    private static String PUBLIC_KEY = "APP_USR-dd544c46-10ce-4901-9804-1ae3f99aac2b";
     SharedPreferences prefs;
 
@@ -65,7 +67,7 @@ public class PayFragment extends Fragment implements YouTubePlayer.OnInitialized
         prefs = getActivity().getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(),
                 MODE_PRIVATE);
 
-        location = prefs.getString(References.SHARED_PREFERENCES_USER_LOCATION,"");
+        location = MainActivity.user.getLocale();
         locationKey = prefs.getString(References.SHARED_PREFERENCES_USER_LOCATION_KEY,"");
 
         progressBar = view.findViewById(R.id.layout_progress);
@@ -77,6 +79,9 @@ public class PayFragment extends Fragment implements YouTubePlayer.OnInitialized
         buttonCredit = (Button) view.findViewById(R.id.button_pay_credit);
         buttonCash = (Button) view.findViewById(R.id.button_pay_cash);
         buttonReport = (Button) view.findViewById(R.id.button_pay_report);
+
+        textViewDesciption = (TextView) view.findViewById(R.id.textViewDescription);
+        textViewDesciption.setText(MainActivity.appText.getPayDesciption());
 
         Button buttonRecomendations = (Button) view.findViewById(R.id.button_pay_recomendations);
         ImageButton back = (ImageButton) view.findViewById(R.id.new_icon_back);
@@ -104,6 +109,7 @@ public class PayFragment extends Fragment implements YouTubePlayer.OnInitialized
             @Override
             public void onClick(View v) {
                 Uri uri = Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=S2UBEFZFGUJJ6&email=" + FirebaseAuth.getInstance().getCurrentUser().getEmail()); // TEST
+                Log.i(References.ERROR_LOG, "key: "+ locationKey + "\nValue: " + location);
                 if(locationKey.equals(References.LOCATION_KEY) ||
                         location.toLowerCase().equals(References.LOCATION_ARGENTINA.toLowerCase())) {
 //                    try {
@@ -294,6 +300,6 @@ public class PayFragment extends Fragment implements YouTubePlayer.OnInitialized
         if (youTubeInitializationResult.isUserRecoverableError()) {
             youTubeInitializationResult.getErrorDialog(getActivity(), 1).show();
         }
-        Log.d(References.ERROR_LOG, "ElectionsFragment - YOUTUBE ERROR:\n" + errorMessage);
+        Log.d(References.ERROR_LOG, "PayFragment - YOUTUBE ERROR:\n" + errorMessage);
     }
 }

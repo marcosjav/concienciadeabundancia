@@ -18,10 +18,15 @@ import com.bnvlab.concienciadeabundancia.FragmentMan;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.TrainingAdapter;
+import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.ICallback;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.SentUser;
 import com.bnvlab.concienciadeabundancia.clases.TrainingItem;
+import com.bnvlab.concienciadeabundancia.clases.VideosURL;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,7 +45,7 @@ import java.util.Comparator;
  * Created by Marcos on 08/04/2017.
  */
 
-public class TrainingFragment extends Fragment implements ICallback {
+public class TrainingFragment extends Fragment implements ICallback, YouTubePlayer.OnInitializedListener {
 
     ArrayList<TrainingItem> list;
     TrainingAdapter adapter;
@@ -53,17 +58,6 @@ public class TrainingFragment extends Fragment implements ICallback {
     SharedPreferences prefs;
 
     public TrainingFragment() {
-    }
-
-//    Animation bounce;
-    @Override
-    public void onStart() {
-        super.onStart();
-//        bounce = AnimationUtils.loadAnimation(getActivity(),R.anim.bounce);
-        // Use bounce interpolator with amplitude 0.2 and frequency 20
-//        MyBounceInterpolator interpolator = new MyBounceInterpolator();
-
-//        bounce.setInterpolator(interpolator);
     }
 
     @Nullable
@@ -113,6 +107,10 @@ public class TrainingFragment extends Fragment implements ICallback {
         });
 
         listView.setAdapter(adapter);
+
+        YouTubePlayerSupportFragment frag =
+                (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
+        frag.initialize(Config.YOUTUBE_API_KEY, this);
 
         return view;
     }
@@ -186,6 +184,7 @@ public class TrainingFragment extends Fragment implements ICallback {
             Log.d(References.ERROR_LOG, e.getMessage());
         }
         if (prefs.getBoolean(References.SHARED_PREFERENCES_FIRST_TIME, true) && !list.get(0).isFinished()) {
+            prefs.edit().putBoolean(References.SHARED_PREFERENCES_FIRST_TIME, false).apply();
             FragmentMan.changeFragment(getActivity(), QuizFragment.class, listId.get(0), "video:" + list.get(0).getVideo());
         }
     }
@@ -254,6 +253,36 @@ public class TrainingFragment extends Fragment implements ICallback {
             adapter.notifyDataSetChanged();
             getTrainings();
         }
+    }
+
+
+    @Override
+    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+        if (!b) {
+            String video = "";
+            try {
+                video = MainActivity.videosURL.getTrainings();
+            }catch (Exception e) {
+                SharedPreferences prefs = getActivity().getSharedPreferences(
+                        MainActivity.APP_SHARED_PREF_KEY + MainActivity.user.getuId(), Context.MODE_PRIVATE);
+                Gson gson = new Gson();
+                String vjson = prefs.getString(References.SHARED_PREFERENCES_APP_VIDEOS_URL, "");
+                VideosURL v = gson.fromJson(vjson, VideosURL.class);
+                video = v.getTrainings();
+            }
+
+            youTubePlayer.cueVideo(video);
+            youTubePlayer.setShowFullscreenButton(false);
+        }
+    }
+
+    @Override
+    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+        String errorMessage = String.format(getString(R.string.player_error), youTubeInitializationResult.toString());
+        if (youTubeInitializationResult.isUserRecoverableError()) {
+            youTubeInitializationResult.getErrorDialog(getActivity(), 1).show();
+        }
+        Log.d(References.ERROR_LOG, "ElectionsFragment - YOUTUBE ERROR:\n" + errorMessage);
     }
 
     private class TrainingsSort implements Comparator<TrainingItem> {

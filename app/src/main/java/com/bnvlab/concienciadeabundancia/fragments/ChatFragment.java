@@ -14,13 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
+import com.bnvlab.concienciadeabundancia.adapters.ChatAdapter;
 import com.bnvlab.concienciadeabundancia.auxiliaries.Config;
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
-import com.bnvlab.concienciadeabundancia.adapters.ChatAdapter;
 import com.bnvlab.concienciadeabundancia.clases.ChatMessageItem;
 import com.bnvlab.concienciadeabundancia.clases.VideosURL;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,6 +55,7 @@ public class ChatFragment extends Fragment implements YouTubePlayer.OnInitialize
     private ArrayList<ChatMessageItem> myDataset;
     private EditText textMessage;
     private DatabaseReference databaseReference;
+    private TextView textViewDescription;
 
     @Nullable
     @Override
@@ -81,6 +83,9 @@ public class ChatFragment extends Fragment implements YouTubePlayer.OnInitialize
         mAdapter = new ChatAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
 
+        textViewDescription = (TextView) view.findViewById(R.id.textViewDescription);
+        textViewDescription.setText(MainActivity.appText.getChatDescription());
+
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +94,13 @@ public class ChatFragment extends Fragment implements YouTubePlayer.OnInitialize
         });
 
         getChat();
+        ImageButton back = (ImageButton) view.findViewById(R.id.new_icon_back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
 
         YouTubePlayerSupportFragment frag =
                 (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);

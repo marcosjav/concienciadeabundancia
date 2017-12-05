@@ -14,6 +14,7 @@ public class References {
             , APP_REFERENCE = "APP"
             , APP_VIDEOS = "videos"
             , APP_VALUES = "values"
+            , APP_TEXTS = "text"
             , APP_VIDEOS_WELCOME = "welcome"
             , APP_VIDEOS_SHARE = "share"
             , APP_VIDEOS_PAY = "pay"
@@ -39,6 +40,8 @@ public class References {
             , LOCATIONS = "locations"
             , LOCATION_ARGENTINA = "Argentina"
             , LOCATION_KEY = "-KifHXzUTWTx1fwtSi1t"
+
+            , NOTIFICATION_NEW_MESSAGES = "newMessages"
 
             , QUIZ ="quiz"
             , QUIZ_CHILD_DESCRIPTION = "description"
@@ -89,6 +92,7 @@ public class References {
 
             , SHARED_PREFERENCES_APP_VIDEOS_URL = "videos.json"
             , SHARED_PREFERENCES_APP_VALUES = "values.json"
+            , SHARED_PREFERENCES_APP_TEXTS = "texts.json"
 
             , SHARED_PREFERENCES_FIRST_TIME = "shared_prefs_first_time"
             , SHARED_PREFERENCES_NOTIFICATION_CONFERENCE = "conference_notification"

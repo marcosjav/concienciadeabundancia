@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.bnvlab.concienciadeabundancia.auxiliaries.Notify;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -41,7 +42,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             final SharedPreferences prefs = this.getSharedPreferences(
                                     MainActivity.APP_SHARED_PREF_KEY + FirebaseAuth.getInstance().getCurrentUser().getUid(), Context.MODE_PRIVATE);
 
-                            if (prefs.getBoolean("newMessages", false)) {
+                            if (prefs.getBoolean(References.NOTIFICATION_NEW_MESSAGES, false)) {
                                 Notify.message(getApplicationContext(), "Mensajes nuevos!", "Haz click aquí para leerlos", clickAction, clickAction);
                             } else {
                                 Notify.message(getApplicationContext(), title, message, clickAction, clickAction);
@@ -57,8 +58,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                             notifications.add(jsonObject.toString());
 
-                            prefs.edit().putStringSet("notifications", notifications).apply();
-                            prefs.edit().putBoolean("newMessages", true).apply();
+                            prefs.edit().putStringSet(References.NOTIFICATIONS, notifications).apply();
+                            prefs.edit().putBoolean(References.NOTIFICATION_NEW_MESSAGES, true).apply();
 
                         } catch (Exception e) {
                             Log.d("MyFirebaseMessage", e.getMessage());

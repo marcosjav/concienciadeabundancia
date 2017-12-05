@@ -144,7 +144,7 @@ public class LoginActivity extends FragmentActivity {
 
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
-                                Log.e("ERRORR", "LoginActivity - 881\n" + databaseError.getMessage());
+                                Log.e("ERRORR", "LoginActivity - 881\n" + databaseError.getMessage()==null?"":databaseError.getMessage());
                             }
                         });
             }
@@ -172,7 +172,7 @@ public class LoginActivity extends FragmentActivity {
             try {
                 showProgress(true);
             } catch (Exception e) {
-                Log.e("ERRORR", e.getMessage());
+                Log.e("ERRORR", e.getMessage()==null?"":e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -339,12 +339,12 @@ public class LoginActivity extends FragmentActivity {
                 else if (uri != null)
                     invitationCode = uri;
 
-                Log.d(References.ERROR_LOG, invitationCode);
+                Log.d(References.ERROR_LOG, invitationCode==null?"":invitationCode);
 
                 invitationCode = invitationCode
                         .split("=")[1]; // .replaceAll("http://concienciadeabundancia.com/code=", "");
 
-                Log.d(References.ERROR_LOG, invitationCode);
+                Log.d(References.ERROR_LOG, invitationCode==null?"":invitationCode);
 
                 if (invitationCode != null)
                     invitationSenderUID = invitationCode;
@@ -393,7 +393,7 @@ public class LoginActivity extends FragmentActivity {
 
             }
         } catch (Exception e) {
-            Log.d(References.ERROR_LOG, e.getMessage());
+            Log.d(References.ERROR_LOG, e.getMessage()==null?"":e.getMessage());
         }
 
     }
@@ -464,7 +464,7 @@ public class LoginActivity extends FragmentActivity {
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 User user = data.getValue(User.class);
                                 if (user.getEmail() == null)
-                                    Log.d("CDA_ERROR", data.getKey() + " ");
+                                    Log.d("CDA_ERROR", data.getKey()==null?"":data.getKey());
                                 else
                                 if (user.getEmail().equals(email) || user.getPhone().equals(email)) {
                                     if (user.isSignInWithEmail()) {

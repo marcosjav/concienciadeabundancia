@@ -1,5 +1,6 @@
 package com.bnvlab.concienciadeabundancia.fragments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.widget.ViewSwitcher;
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
 import com.bnvlab.concienciadeabundancia.adapters.MessageAdapter;
+import com.bnvlab.concienciadeabundancia.auxiliaries.References;
 import com.bnvlab.concienciadeabundancia.clases.MessageItem;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -55,6 +57,9 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.new_fragment_notifications, container, false);
 
+        SharedPreferences prefs = getActivity().getSharedPreferences(
+                MainActivity.APP_SHARED_PREF_KEY + MainActivity.user.getuId(), Context.MODE_PRIVATE);
+
         this.inflater = inflater;
         epView = (ExpandableListView) view.findViewById(R.id.expandable_list_faq);
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher);
@@ -70,6 +75,7 @@ public class NotificationsFragment extends Fragment {
             }
         });
 
+        prefs.edit().putBoolean(References.NOTIFICATION_NEW_MESSAGES, false).apply();
         return view;
     }
 

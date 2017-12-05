@@ -64,6 +64,15 @@
 
     </FrameLayout>
 
+    <fragment
+        android:id="@+id/youtube_fragment"
+        android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp" />
+
     <Button
         android:id="@+id/button_trainings_videos"
         android:layout_width="match_parent"

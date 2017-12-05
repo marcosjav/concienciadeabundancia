@@ -22,7 +22,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/login_title" />
+                android:src="@drawable/new_icon_about" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -93,19 +93,6 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/button_password_recovery"
-                    style="@style/TextViewLogin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/reset_pass" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/new_logo" />
-
-                <TextView
                     style="@style/TextViewLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -116,8 +103,23 @@
                     android:id="@+id/button_signup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_background"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/button_background_dark_red"
                     android:text="@string/login_button_register" />
+
+                <TextView
+                    android:id="@+id/button_password_recovery"
+                    style="@style/TextViewLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/reset_pass" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/main_text"/>
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -13,12 +13,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.bnvlab.concienciadeabundancia.auxiliaries.References;
+import com.bnvlab.concienciadeabundancia.clases.AppText;
 import com.bnvlab.concienciadeabundancia.clases.AppValues;
 import com.bnvlab.concienciadeabundancia.clases.SentUser;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.clases.VideosURL;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
-import com.bnvlab.concienciadeabundancia.fragments.RateFragment;
 import com.bnvlab.concienciadeabundancia.fragments.TrainingFragment;
 import com.bnvlab.concienciadeabundancia.fragments.WelcomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +47,7 @@ public class MainActivity extends FragmentActivity {
     public static ArrayList<SentUser> sentUser = null;
     public static VideosURL videosURL = null;
     public static AppValues appValues = null;
+    public static AppText appText = null;
     public static final String APP_SHARED_PREF_KEY = "ConcienciaDeAbundancia";//, FIRST_TIME_PREF_KEY = APP_SHARED_PREF_KEY + ".firsTime", VERIFIED = APP_SHARED_PREF_KEY + ".verified";
     public static boolean updateAvailable;
     FirebaseUser fbUser;
@@ -102,7 +103,7 @@ public class MainActivity extends FragmentActivity {
         } catch (Exception e) {
             Log.d(References.ERROR_LOG, e.getMessage());
         }
-
+        getSupportFragmentManager().addOnBackStackChangedListener(getListener());
     }
 
 
@@ -180,21 +181,34 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
+        List<Fragment> fl = fm.getFragments();
+        String fs = "";
+        if (fl != null)
+            for (Fragment f : fl){
+                if (f != null)
+                    fs += "-" + f.getTag() + "\n";
+            }
+        Log.i(References.ERROR_LOG, "fragments:\n" + fs + "BackStackEntryCount: " + fm.getBackStackEntryCount());
+
         if (!updateAvailable && !WelcomeFragment.active) {
-            if (fm.getBackStackEntryCount() > 1) {
+            if (fm.getBackStackEntryCount() > 0) {
+//            if (fl.size() > 1) {
                 Log.i(References.ERROR_LOG, "MainActivity - popping backstack");
                 Log.i(References.ERROR_LOG, "MainActivity - updateAvailable: " + updateAvailable);
                 Log.i(References.ERROR_LOG, "MainActivity - Welcome active: " + WelcomeFragment.active);
                 fm.popBackStack();
             } else {
-                Log.i("MainActivity", "nothing on backstack, calling super");
+                Log.i(References.ERROR_LOG, "nothing on backstack, calling super");
                 super.onBackPressed();
                 System.exit(0);
             }
         } else if (WelcomeFragment.button) {
+            Log.i(References.ERROR_LOG, "MainActivity - WelcomFragmentButton");
             fm.popBackStack();
             if (MainActivity.sentUser.size() < 1)
                 FragmentMan.changeFragment(this, TrainingFragment.class);
+            else
+                prefs.edit().putBoolean(References.SHARED_PREFERENCES_FIRST_TIME, false).apply();
 
             WelcomeFragment.active = false;
             WelcomeFragment.button = false;
@@ -228,11 +242,14 @@ public class MainActivity extends FragmentActivity {
         FragmentManager fm = getSupportFragmentManager();
 
         List<Fragment> list = fm.getFragments();
-        if (list != null)
+        Log.d(References.ERROR_LOG, list == null? "list: null" : list.size()+"");
+        if (list==null || list.size() == 0)
+            begin();
+        /*if (list != null)
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getClass().equals(RateFragment.class))
                     onBackPressed();
-            }
+            }*/
     }
 
     private void getVideos(final boolean first) {
@@ -249,6 +266,9 @@ public class MainActivity extends FragmentActivity {
                             } else if (data.getKey().equals(References.APP_VALUES)){
                                 appValues = data.getValue(AppValues.class);
                                 appPrefs.edit().putString(References.SHARED_PREFERENCES_APP_VALUES, gson.toJson(appValues)).apply();
+                            } else if (data.getKey().equals(References.APP_TEXTS)){
+                                appText = data.getValue(AppText.class);
+                                appPrefs.edit().putString(References.SHARED_PREFERENCES_APP_TEXTS, gson.toJson(appText)).apply();
                             }
                         }
                         if (first)
@@ -325,4 +345,23 @@ public class MainActivity extends FragmentActivity {
 
     }
 
+    private FragmentManager.OnBackStackChangedListener getListener()
+    {
+        FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener()
+        {
+            public void onBackStackChanged()
+            {
+                FragmentManager manager = getSupportFragmentManager();
+
+                if (manager != null)
+                {
+                    MainFragment currFrag = (MainFragment) manager.findFragmentByTag(MainFragment.class.getSimpleName());
+
+                    currFrag.onFragmentResume();
+                }
+            }
+        };
+
+        return result;
+    }
 }

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
@@ -31,6 +33,7 @@ public class ElectionsFragment extends Fragment implements YouTubePlayer.OnIniti
     private EditText election00, election01, election02, election03, election04, election05, election06, election07
             , election08, election09, election10, election11, election12, election13, election14, election15, election16, election17
             , election18, election19, election20, election21, election22, election23, election24, election25;
+    private TextView textViewDescription;
 
     @Nullable
     @Override
@@ -97,9 +100,20 @@ public class ElectionsFragment extends Fragment implements YouTubePlayer.OnIniti
             }
         });
 
+        textViewDescription = (TextView) view.findViewById(R.id.textViewDescription);
+        textViewDescription.setText(MainActivity.appText.getElectionsDescription());
+
         YouTubePlayerSupportFragment frag =
                 (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
         frag.initialize(Config.YOUTUBE_API_KEY, this);
+
+        ImageButton back = (ImageButton) view.findViewById(R.id.new_icon_back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
 
         return view;
     }

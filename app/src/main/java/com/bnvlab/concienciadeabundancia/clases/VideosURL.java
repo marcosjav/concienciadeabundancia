@@ -5,12 +5,11 @@ package com.bnvlab.concienciadeabundancia.clases;
  */
 
 public class VideosURL {
-    private String welcome,share1,share2,pay,test,howto,about,queries,elections,register,chat, resume;
+    private String welcome,share,pay,test,howto,about,queries,elections,register,chat, resume, trainings;
 
     public VideosURL() {
         welcome = "";
-        share1 = "";
-        share2 = "";
+        share = "";
         pay = "";
         test = "";
         howto = "";
@@ -102,19 +101,19 @@ public class VideosURL {
         this.resume = resume;
     }
 
-    public String getShare1() {
-        return share1;
+    public String getShare() {
+        return share;
     }
 
-    public void setShare1(String share1) {
-        this.share1 = share1;
+    public void setShare(String share) {
+        this.share = share;
     }
 
-    public String getShare2() {
-        return share2;
+    public String getTrainings() {
+        return trainings;
     }
 
-    public void setShare2(String share2) {
-        this.share2 = share2;
+    public void setTrainings(String trainings) {
+        this.trainings = trainings;
     }
 }

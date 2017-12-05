@@ -57,7 +57,7 @@
     <string name="pay">Abonar</string>
     <string name="videos">Videos</string>
     <string name="conferences">Conferencias</string>
-    <string name="cda">CDA</string>
+    <string name="cda">SER</string>
     <string name="fundamentals">Evolución</string>
     <string name="questions">Preguntas</string>
     <string name="ask">Envianos tu Pregunta</string>
@@ -68,15 +68,15 @@
     <string name="share">Compartir</string>
 
     <!--FRAGMENT QUIZ RESUME-->
-    <string name="resume_title">Guías de Entrenamiento</string>
+    <string name="resume_title">Entrenamiento</string>
     <string name="explanatory_videos">Videos Explicativos</string>
 
     <!--FRAGMENT TRAININGS-->
     <string name="trainings_videos">Videos Explicativos</string>
-    <string name="trainings_title">Guías de Entrenamiento</string>
+    <string name="trainings_title">Entrenamiento</string>
 
     <!--FRAGMENT CDA-->
-    <string name="cda_title">CDA</string>
+    <string name="cda_title">Elecciones del SER</string>
 
     <!--FRAGMENT FUNDAMENTS-->
     <string name="fundaments_title">Evolución</string>
@@ -209,7 +209,7 @@
     <string name="elections_choise25">Elijo Dejar de ser Indiference</string>
 
     <!-- FRAGMENT CHAT -->
-    <string name="chat_title">DEJANOS TUS CONSULTAS</string>
+    <string name="chat_title">ENVIANOS TUS PREGUNTAS</string>
     <string name="chat_error_sent">No se pudo enviar el mensaje, intente nuevamente más tarde</string>
 
     <!-- FRAGMENT WELCOME -->
