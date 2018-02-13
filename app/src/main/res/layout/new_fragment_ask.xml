@@ -91,7 +91,8 @@
                 android:id="@+id/textViewDescription"
                 android:padding="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textAlignment="center"/>
 
             <LinearLayout
                 android:id="@+id/layout_progress"

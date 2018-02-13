@@ -131,46 +131,18 @@ public class ResumeFragment extends Fragment implements YouTubePlayer.OnInitiali
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        boolean checked = false;
                         for (DataSnapshot data: dataSnapshot.getChildren()) {
                             if (!data.getKey().equals(References.SENT_CHILD_CHECKED))
                                 list.add(data.getValue(QuizItem.class));
                             else {
-//                                if (data.getValue(boolean.class)){
-//                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-//                                            .child(References.TEXTS)
-//                                            .child(References.TEXTS_RESUME_FINISH)
-//                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                @Override
-//                                                public void onDataChange(DataSnapshot dataSnapshot) {
-//                                                    if (dataSnapshot.getValue() != null)
-//                                                        textViewResume.setText(dataSnapshot.getValue(String.class));
-//                                                }
-//
-//                                                @Override
-//                                                public void onCancelled(DatabaseError databaseError) {
-//
-//                                                }
-//                                            });
-//                                }else{
-//                                    FirebaseDatabase.getInstance().getReference(References.REFERENCE)
-//                                            .child(References.TEXTS)
-//                                            .child(References.TEXTS_RESUME_WAITING)
-//                                            .addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                @Override
-//                                                public void onDataChange(DataSnapshot dataSnapshot) {
-//                                                    if (dataSnapshot.getValue() != null)
-//                                                        textViewResume.setText(dataSnapshot.getValue(String.class));
-//                                                }
-//
-//                                                @Override
-//                                                public void onCancelled(DatabaseError databaseError) {
-//
-//                                                }
-//                                            });
-//                                }
+                                checked = data.getValue(boolean.class);
                             }
-
                         }
+                        if (checked)
+                            for (int i = 0; i < list.size(); i++){
+                                list.get(i).setAnswer(true);
+                            }
 
                         adapter.notifyDataSetChanged();
                         Utils.setListViewHeightBasedOnChildren(listView);

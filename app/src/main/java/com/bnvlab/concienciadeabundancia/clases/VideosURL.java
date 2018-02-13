@@ -5,7 +5,7 @@ package com.bnvlab.concienciadeabundancia.clases;
  */
 
 public class VideosURL {
-    private String welcome,share,pay,test,howto,about,queries,elections,register,chat, resume, trainings;
+    private String welcome,share,pay,test,howto,about,queries,elections,register,chat, resume, trainings, invitation;
 
     public VideosURL() {
         welcome = "";
@@ -115,5 +115,13 @@ public class VideosURL {
 
     public void setTrainings(String trainings) {
         this.trainings = trainings;
+    }
+
+    public String getInvitation() {
+        return invitation;
+    }
+
+    public void setInvitation(String invitation) {
+        this.invitation = invitation;
     }
 }

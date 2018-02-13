@@ -1,23 +1,23 @@
 <resources>
-    <string name="app_name">Conciencia De Ser</string>
-    <string name="loading">cargando…</string>
+    <string name="app_name">Awareness of BEING</string>
+    <string name="loading">loading…</string>
 
     <!--LOGIN SCREENS-->
-    <string name="login_button_login">Ingresar</string>
-    <string name="login_button_register">Registrarse</string>
-    <string name="login_sign_in_title">Ingreso de usuario</string>
-    <string name="login_sign_up_title">Registro de usuario</string>
-    <string name="login_edittext_hint_name">Nombre:</string>
-    <string name="login_edittext_hint_last_name">Apellido:</string>
-    <string name="login_edittext_hint_phone">Celular:</string>
+    <string name="login_button_login">login</string>
+    <string name="login_button_register">register</string>
+    <string name="login_sign_in_title">User login</string>
+    <string name="login_sign_up_title">User register</string>
+    <string name="login_edittext_hint_name">Name:</string>
+    <string name="login_edittext_hint_last_name">Last Name:</string>
+    <string name="login_edittext_hint_phone">Phone:</string>
     <string name="login_edittext_hint_email">Email:</string>
-    <string name="login_edittext_hint_password">Clave:</string>
-    <string name="login_edittext_hint_repassword">Repetir clave:</string>
-    <string name="login_edittext_hint_location">Localidad:</string>
-    <string name="login_invalid_email">Ingresa un email válido</string>
+    <string name="login_edittext_hint_password">Password:</string>
+    <string name="login_edittext_hint_repassword">Confirm password:</string>
+    <string name="login_edittext_hint_location">Country:</string>
+    <string name="login_invalid_email">Enter a valid Email</string>
 
-    <string name="fragment_settings">CONFIGURACIÓN</string>
-    <string name="settings_button_ok">GUARDAR</string>
+    <string name="fragment_settings">SETTINGS</string>
+    <string name="settings_button_ok">SAVE</string>
 
     <!--YOUTUBE-->
     <string name="player_error">Error initializing YouTube player: %s</string>
@@ -26,192 +26,214 @@
 
 
     <!-- Strings related to login -->
-    <string name="title_activity_login">Ingreso</string>
-    <string name="prompt_phone">Teléfono</string>
-    <string name="prompt_phone_or_email">Teléfono o correo</string>
-    <string name="prompt_password">Clave</string>
-    <string name="action_sign_in">INGRESAR</string>
-    <string name="action_sign_up">REGISTRARSE</string>
-    <string name="action_sign_in_short">INGRESAR</string>
-    <string name="error_invalid_phone">No es un teléfono válido</string>
-    <string name="error_invalid_password">La clave es muy corta</string>
-    <string name="error_incorrect_password">La clave es incorrecta</string>
-    <string name="error_field_required">Este campo es necesario</string>
+    <string name="title_activity_login">Login</string>
+    <string name="prompt_phone">Phone</string>
+    <string name="prompt_phone_or_email">Phone or Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">LOGIN</string>
+    <string name="action_sign_up">REGISTER</string>
+    <string name="action_sign_in_short">LOGIN</string>
+    <string name="error_invalid_phone">Invalid Phone</string>
+    <string name="error_invalid_password">Password it\'s too short</string>
+    <string name="error_incorrect_password">Wrong password</string>
+    <string name="error_field_required">Necessary field</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
-    <string name="reset_pass">Recuperar Clave</string>
-    <string name="no_account">¿No tienes cuenta?</string>
+    <string name="reset_pass">Recover Password</string>
+    <string name="no_account">You do not have an account?</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="error_invalid_email">El teléfono es inválido</string>
+    <string name="error_invalid_email">Invalid Phone</string>
 
-    <string name="app_half_name_1">CONCIENCIA DE</string>
-    <string name="app_half_name_2">SER</string>
+    <string name="app_half_name_1">AWARENESS OF</string>
+    <string name="app_half_name_2">BEING</string>
 
-    <string name="back">VOLVER</string>
+    <string name="back">BACK</string>
 
 
     <!--FRAGMENT MAIN-->
-    <string name="training_guides">Entrenamientos</string>
-    <string name="love_share">Comparte Amor</string>
-    <string name="pay">Abonar</string>
+    <string name="training_guides">Trainings</string>
+    <string name="love_share">Share Love</string>
+    <string name="pay">Pay</string>
     <string name="videos">Videos</string>
-    <string name="conferences">Conferencias</string>
-    <string name="cda">SER</string>
-    <string name="fundamentals">Evolución</string>
-    <string name="questions">Preguntas</string>
-    <string name="ask">Envianos tu Pregunta</string>
-    <string name="elections">Elecciones Diarias</string>
+    <string name="conferences">Conferences</string>
+    <string name="cda">BEING</string>
+    <string name="fundamentals">Evolution</string>
+    <string name="questions">Questions</string>
+    <string name="ask">Send us your question</string>
+    <string name="elections">Daily Elections</string>
 
     <!--FRAGMENT COMPARTIR-->
-    <string name="share_title">Crea Amor y Comparte</string>
-    <string name="share">Compartir</string>
+    <string name="share_title">Create Love and Share</string>
+    <string name="share">Share</string>
 
     <!--FRAGMENT QUIZ RESUME-->
-    <string name="resume_title">Entrenamiento</string>
-    <string name="explanatory_videos">Videos Explicativos</string>
+    <string name="resume_title">Training</string>
+    <string name="explanatory_videos">Explanatory videos</string>
 
     <!--FRAGMENT TRAININGS-->
-    <string name="trainings_videos">Videos Explicativos</string>
-    <string name="trainings_title">Entrenamiento</string>
+    <string name="trainings_videos">Explanatory videos</string>
+    <string name="trainings_title">Training</string>
 
     <!--FRAGMENT CDA-->
-    <string name="cda_title">Elecciones del SER</string>
+    <string name="cda_title">Choices of the BEING</string>
 
     <!--FRAGMENT FUNDAMENTS-->
-    <string name="fundaments_title">Evolución</string>
+    <string name="fundaments_title">Evolution</string>
 
     <!--FRAGMENT QUIZ-->
-    <string name="quiz_videos">Video Test Muscular</string>
-    <string name="quiz_no_test">Enviar guía sin testear</string>
-    <string name="quiz_send">Enviar</string>
+    <string name="quiz_videos">Muscular Test Video</string>
+    <string name="quiz_no_test">Send guide without testing</string>
+    <string name="quiz_send">Send</string>
     <string name="quiz_no">NO</string>
-    <string name="quiz_si">SÍ</string>
+    <string name="quiz_si">YES</string>
 
     <!--FRAGMENT PAY-->
-    <string name="pay_title">Abonar</string>
-    <string name="pay_bank">Transferencia bancaria</string>
-    <string name="pay_cash">Efectivo</string>
-    <string name="pay_credit">Crédito / Débito</string>
-    <string name="pay_credit_cash">Crédito / Débito / Efectivo</string>
-    <string name="pay_recomendations">Sistema de Recomendaciones</string>
-    <string name="pay_report">Informar un pago</string>
+    <string name="pay_title">Pay</string>
+    <string name="pay_bank">Wire transfer</string>
+    <string name="pay_cash">Cash</string>
+    <string name="pay_credit">Credit / Debit</string>
+    <string name="pay_credit_cash">Credit / Debit / Cash</string>
+    <string name="pay_recomendations">System of Recommendations</string>
+    <string name="pay_report">Report a payment</string>
 
     <!--FRAGMENT VIDEOS-->
     <string name="videos_title">Videos</string>
 
     <!--FRAGMENT FAQ-->
-    <string name="faq_title">¿Sabías Que…?</string>
+    <string name="faq_title">Did you know…?</string>
 
     <!--FRAGMENT CONFERENCES-->
-    <string name="conferences_title">Conferencias</string>
+    <string name="conferences_title">Conferences</string>
 
     <!--FRAGMENT NOTIFICATIONS-->
-    <string name="notification_title">Mensajes</string>
+    <string name="notification_title">Messages</string>
 
     <!--FRAGMENT CONGRATS-->
-    <string name="congrats_button">Acepto</string>
+    <string name="congrats_button">I agree</string>
 
     <!--FRAGMENT UPDATE-->
-    <string name="update_button">Actualizar</string>
-    <string name="update_details">Hay una nueva versión disponible. \n Descargala para poder continuar</string>
-    <string name="update_title">Actualización disponible</string>
+    <string name="update_button">Update</string>
+    <string name="update_details">There is a new version available. \n Download it to continue</string>
+    <string name="update_title">Update available</string>
 
     <!--FRAGMENT LOGOUT-->
-    <string name="logout_title">Salir</string>
-    <string name="logout_details">Desea salir de la sesión?</string>
-    <string name="logout_ok">Sí</string>
+    <string name="logout_title">Exit</string>
+    <string name="logout_details">Do you want to logout?</string>
+    <string name="logout_ok">Yes</string>
     <string name="logout_no">No</string>
 
     <!--FRAGMENT TRANSFER-->
-    <string name="transfer_title">Datos de la cuenta</string>
-    <string name="transfer_details">Banco Galicia
+    <string name="transfer_title">Bank account data:</string>
+    <string name="transfer_details">Galicia Bank
                                     \nDU: 32375071
                                     \nCTA: 4056689-6 071-6
                                     \nCBU: 0070071930004056689661
                                     \nALIAS: PILETA.JALEA.LANA
                                     \nCUIL: 27323750713</string>
-    <string name="transfer_reminder">No olvides enviarnos el Nro. de transacción</string>
-    <string name="transfer_ok">Volver</string>
+    <string name="transfer_reminder">Do not forget to send us the transaction number</string>
+    <string name="transfer_ok">Back</string>
 
     <!--FRAGMENT RATE-->
-    <string name="rate_button">Ir a PlayStore</string>
-    <string name="rate_details">Gracias por usar la aplicación!\n Si te ha gustado por favor valorala.\n Tu devolución es importante para nosotros.</string>
-    <string name="rate_dont_ask">No volver a preguntar</string>
-    <string name="rate_title">Valorar Aplicación</string>
+    <string name="rate_button">Go to PlayStore</string>
+    <string name="rate_details">Thanks for using this App!\n If you liked it, please rate it.\n Your return is important to us.</string>
+    <string name="rate_dont_ask">Don\'t ask again</string>
+    <string name="rate_title">Rate App</string>
 
     <!--FRAGMENT SIGN UP-->
-    <string name="signup_title">Registrarse</string>
-    <string name="signup_button_locations">Elegir</string>
-    <string name="signup_locations_text">Ubicación</string>
-    <string name="signup_no_location_selected">Debe seleccionar su ubicación</string>
+    <string name="signup_title">Register</string>
+    <string name="signup_button_locations">Select</string>
+    <string name="signup_locations_text">Country</string>
+    <string name="signup_no_location_selected">You must select your country</string>
         <!--TITLES-->
-        <string name="signup_first_name">Primer Nombre</string>
-        <string name="signup_second_name">Segundo Nombre</string>
-        <string name="signup_last_name">Apellidos</string>
-        <string name="signup_email">Correo</string>
-        <string name="signup_phone">Teléfono</string>
-        <string name="signup_location">Ubicación</string>
-        <string name="signup_choose_location">Elegir</string>
-        <string name="signup_pass">Clave</string>
-        <string name="signup_repass">Repetir Clave</string>
-        <string name="signup_signup_button">Registrarse</string>
+        <string name="signup_first_name">First Name</string>
+        <string name="signup_second_name">Second Name</string>
+        <string name="signup_last_name">Last Name</string>
+        <string name="signup_email">Email</string>
+        <string name="signup_phone">Phone</string>
+        <string name="signup_location">Country</string>
+        <string name="signup_choose_location">Select</string>
+        <string name="signup_pass">Password</string>
+        <string name="signup_repass">Confirm Password</string>
+        <string name="signup_signup_button">Register</string>
 
     <!--FRAGMENT SETTINGS-->
-    <string name="settings_title">Registrarse</string>
-    <string name="settings_button_locations">Elegir</string>
-    <string name="settings_button_personal_info">Datos Personales</string>
-    <string name="settings_button_change_pass">Cambiar Clave</string>
-    <string name="settings_locations_text">Ubicación</string>
-    <string name="settings_no_location_selected">Debe seleccionar su ubicación</string>
-    <string name="settings_automatic_send">ENVIAR GUÍAS AUTOMÁTICAMENTE</string>
+    <string name="settings_title">Register</string>
+    <string name="settings_button_locations">Select</string>
+    <string name="settings_button_personal_info">Personal info</string>
+    <string name="settings_button_change_pass">Change password</string>
+    <string name="settings_locations_text">Country</string>
+    <string name="settings_no_location_selected">You must select your country</string>
+    <string name="settings_automatic_send">SEND GUIDES AUTOMATICALLY</string>
     <!--TITLES-->
-    <string name="settings_first_name">Primer Nombre</string>
-    <string name="settings_second_name">Segundo Nombre</string>
-    <string name="settings_last_name">Apellidos</string>
-    <string name="settings_email">Correo</string>
-    <string name="settings_phone">Teléfono</string>
-    <string name="settings_location">Ubicación</string>
-    <string name="settings_choose_location">Elegir</string>
-    <string name="settings_pass">Clave</string>
-    <string name="settings_repass">Repetir Clave</string>
-    <string name="settings_save_button">Guardar</string>
+    <string name="settings_first_name">First Name</string>
+    <string name="settings_second_name">Second Name</string>
+    <string name="settings_last_name">Last Name</string>
+    <string name="settings_email">Email</string>
+    <string name="settings_phone">Phone</string>
+    <string name="settings_location">Country</string>
+    <string name="settings_choose_location">Select</string>
+    <string name="settings_pass">Password</string>
+    <string name="settings_repass">Confirm Password</string>
+    <string name="settings_save_button">Save</string>
     <string name="asset_statements" translatable="false">[{\n  \"relation\": [\"delegate_permission/common.handle_all_urls\"],\n  \"target\": {\n    \"namespace\": \"web\",\n    \"site\": \"https://polar-tor-72537.herokuapp.com\",\n  }\n}]</string>
 
     <!--FRAGMENT ELECTIONS-->
-    <string name="elections_title">Elecciones Diarias</string>
-    <string name="elections_subtitle">Entrenamiento de Foco Diario</string>
-    <string name="elections_choise00">Elijo Amar</string>
-    <string name="elections_choise01">Elijo Aceptar</string>
-    <string name="elections_choise02">Elijo Admirar</string>
-    <string name="elections_choise03">Elijo Agradecer</string>
-    <string name="elections_choise04">Elijo Crear</string>
-    <string name="elections_choise05">Elijo Creer</string>
-    <string name="elections_choise06">Elijo Disfrutar</string>
-    <string name="elections_choise07">Elijo Elegir</string>
-    <string name="elections_choise08">Elijo Experimentar</string>
-    <string name="elections_choise09">Elijo Generar</string>
-    <string name="elections_choise10">Elijo Honrar</string>
-    <string name="elections_choise11">Elijo Manifestar</string>
-    <string name="elections_choise12">Elijo Merecer</string>
-    <string name="elections_choise13">Elijo Perdonar</string>
-    <string name="elections_choise14">Elijo Permitirme</string>
-    <string name="elections_choise15">Elijo Reconocer</string>
-    <string name="elections_choise16">Elijo Respetar</string>
-    <string name="elections_choise17">Elijo Sanar</string>
-    <string name="elections_choise18">Elijo Ser Digno</string>
-    <string name="elections_choise19">Elijo Ser Feliz</string>
-    <string name="elections_choise20">Elijo Valorar</string>
-    <string name="elections_choise21">Elijo Dejar de Competir</string>
-    <string name="elections_choise22">Elijo Dejar de Creer y Sentir</string>
-    <string name="elections_choise23">Elijo Dejar de Ignorar</string>
-    <string name="elections_choise24">Elijo Dejar de Negarme</string>
-    <string name="elections_choise25">Elijo Dejar de ser Indiference</string>
+    <string name="elections_title">Daily Choises</string>
+    <string name="elections_subtitle">Daily Focus Training</string>
+    <string name="elections_choise00">I choose to Love</string>
+    <string name="elections_choise01">I choose to Accept</string>
+    <string name="elections_choise02">I choose to Admire</string>
+    <string name="elections_choise03">I choose to thank</string>
+    <string name="elections_choise04">I choose to Create</string>
+    <string name="elections_choise05">I choose to Believe</string>
+    <string name="elections_choise06">I choose to Enjoy</string>
+    <string name="elections_choise07">I choose to Choose</string>
+    <string name="elections_choise08">I choose to Experience</string>
+    <string name="elections_choise09">I choose to Generate</string>
+    <string name="elections_choise10">I choose to Honor</string>
+    <string name="elections_choise11">I choose to Manifest</string>
+    <string name="elections_choise12">I choose to Deserve</string>
+    <string name="elections_choise13">I choose to Forgive</string>
+    <string name="elections_choise14">I choose to Allow me</string>
+    <string name="elections_choise15">I choose to Recognize</string>
+    <string name="elections_choise16">I choose to Respect</string>
+    <string name="elections_choise17">I choose to Heal</string>
+    <string name="elections_choise18">I choose to Be Worthy</string>
+    <string name="elections_choise19">I choose to Be Happy</string>
+    <string name="elections_choise20">I choose to Assess</string>
+    <string name="elections_choise21">I choose to Stop Competing</string>
+    <string name="elections_choise22">I choose to Stop Believing and Feeling</string>
+    <string name="elections_choise23">I choose to Stop Ignore</string>
+    <string name="elections_choise24">I choose to Stop Denying Me</string>
+    <string name="elections_choise25">I choose to Stop being Indiference</string>
+    <string name="elections_hint">write your choise here…</string>
 
     <!-- FRAGMENT CHAT -->
-    <string name="chat_title">ENVIANOS TUS PREGUNTAS</string>
-    <string name="chat_error_sent">No se pudo enviar el mensaje, intente nuevamente más tarde</string>
+    <string name="chat_title">SEND US YOUR QUESTIONS</string>
+    <string name="chat_error_sent">The message could not be sent, try again later</string>
 
     <!-- FRAGMENT WELCOME -->
-    <string name="welcome_button">VER ENTRENAMIENTOS</string>
+    <string name="welcome_button">SEE TRAININGS</string>
+    <string name="welcome_button_ok">OK</string>
+
+    <!-- FRAGMENT FIRST CHANGES -->
+    <string name="first_changes_button">OK</string>
+
+    <!-- FRAGMENT INVITATION-->
+    <string name="invitation_button">OK</string>
+
+    <!-- FRAGMENT MESSAGES -->
+    <string name="message_no_connection_button">OK</string>
+    <string name="message_no_connection_title">No internet connection</string>
+    <string name="message_no_connection_text">An internet connection is required to enjoy the application.\n Please check your connection and try again.</string>
+
+    <!-- DIALOG PAYMENT ERROR -->
+    <string name="payment_error_title">Error</string>
+    <string name="payment_error_message">There was an error in obtaining the link, please send us a report by email.</string>
+    <string name="payment_send_email">Send Info</string>
+    <string name="payment_ok">OK</string>
+    <string name="payment_no_client">There are no email clients installed.</string>
+    <string name="payment_send_email_title">Send mail…</string>
+
 </resources>

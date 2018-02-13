@@ -5,7 +5,7 @@ package com.bnvlab.concienciadeabundancia.clases;
  */
 
 public class AppText {
-    private String payDesciption, chatDescription, electionsDescription, shareDescription, sms;
+    private String payDesciption, chatDescription, electionsDescription, shareDescription, sms, trainingsDescription;
 
     public AppText() {
     }
@@ -48,5 +48,13 @@ public class AppText {
 
     public void setSms(String sms) {
         this.sms = sms;
+    }
+
+    public String getTrainingsDescription() {
+        return trainingsDescription;
+    }
+
+    public void setTrainingsDescription(String trainingsDescription) {
+        this.trainingsDescription = trainingsDescription;
     }
 }

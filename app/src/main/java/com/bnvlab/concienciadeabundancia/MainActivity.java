@@ -1,7 +1,10 @@
 package com.bnvlab.concienciadeabundancia;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,7 +21,10 @@ import com.bnvlab.concienciadeabundancia.clases.AppValues;
 import com.bnvlab.concienciadeabundancia.clases.SentUser;
 import com.bnvlab.concienciadeabundancia.clases.User;
 import com.bnvlab.concienciadeabundancia.clases.VideosURL;
+import com.bnvlab.concienciadeabundancia.fragments.InvitationFragment;
 import com.bnvlab.concienciadeabundancia.fragments.MainFragment;
+import com.bnvlab.concienciadeabundancia.fragments.NoConnectionFragment;
+import com.bnvlab.concienciadeabundancia.fragments.PayFragment;
 import com.bnvlab.concienciadeabundancia.fragments.TrainingFragment;
 import com.bnvlab.concienciadeabundancia.fragments.WelcomeFragment;
 import com.google.firebase.auth.FirebaseAuth;
@@ -82,28 +88,32 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(References.ERROR_LOG, "MainActivity - OnCreate");
 
-        mAuth = FirebaseAuth.getInstance();
-        gson = new Gson();
-        reference = FirebaseDatabase.getInstance().getReference(References.REFERENCE);
-        sentUser = new ArrayList<>();
+        if (isOnline()) {
+            mAuth = FirebaseAuth.getInstance();
+            gson = new Gson();
+            reference = FirebaseDatabase.getInstance().getReference(References.REFERENCE);
+            sentUser = new ArrayList<>();
 
-        try {
-            Uri data = getIntent().getData();
-            if (data != null) {
-                String invitationCode = data.toString();
+            try {
+                Uri data = getIntent().getData();
+                if (data != null) {
+                    String invitationCode = data.toString();
 
-                if (invitationCode != null && invitationCode.contains("http://cdainter.com/?code=")) {
-                    Intent intent = new Intent();
-                    intent.putExtra("uri", "http://cdainter.com/?code=");
-                    startActivity(intent);
-                    finish();
+                    if (invitationCode != null && invitationCode.contains("http://cdainter.com/?code=")) {
+                        Intent intent = new Intent();
+                        intent.putExtra("uri", "http://cdainter.com/?code=");
+                        startActivity(intent);
+                        finish();
+                    }
                 }
+            } catch (Exception e) {
+                Log.d(References.ERROR_LOG, e.getMessage());
             }
-        } catch (Exception e) {
-            Log.d(References.ERROR_LOG, e.getMessage());
+        } else {
+            FragmentMan.changeFragment(this, NoConnectionFragment.class);
         }
-        getSupportFragmentManager().addOnBackStackChangedListener(getListener());
     }
 
 
@@ -124,7 +134,7 @@ public class MainActivity extends FragmentActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.e(References.ERROR_LOG, "getUserJSON() ËRROR - " + databaseError.getMessage());
                     }
                 });
     }
@@ -144,7 +154,7 @@ public class MainActivity extends FragmentActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.e(References.ERROR_LOG, "getUserSent() ËRROR - " + databaseError.getMessage());
                     }
                 });
     }
@@ -219,37 +229,42 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(References.ERROR_LOG, "MainActivity - OnResume");
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();  //######    CONTROLO SI ESTÁ LOGUEADO Y GUARDO EL JSON DEL USUARIO Y DE LAS GUÍAS
-        Log.d(References.ERROR_LOG, "onCreate()");
-        if (currentUser != null) {
-            fbUser = mAuth.getCurrentUser();
-            prefs = getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + fbUser.getUid(),
-                    MODE_PRIVATE);
+        if (isOnline()) {
+            FirebaseUser currentUser = mAuth.getCurrentUser();  //######    CONTROLO SI ESTÁ LOGUEADO Y GUARDO EL JSON DEL USUARIO Y DE LAS GUÍAS
+            //Log.d(References.ERROR_LOG, "onCreate()");
+            if (currentUser != null) {
+                fbUser = mAuth.getCurrentUser();
+                prefs = getSharedPreferences(MainActivity.APP_SHARED_PREF_KEY + fbUser.getUid(),
+                        MODE_PRIVATE);
 
-            Log.d(References.ERROR_LOG, "currentUser != null");
-            if (videosURL == null)
-                getVideos(true);
-            else {
-                getVideos(false);
-//                begin();
+                Log.d(References.ERROR_LOG, "currentUser != null");
+                if (videosURL == null)
+                    getVideos(true);
+                else {
+                    getVideos(false);
+               if (getSupportFragmentManager().getBackStackEntryCount() < 1)
+                    begin();
+                }
+            } else {
+                showLogin();
+                Log.d(References.ERROR_LOG, "showLogin()");
             }
-        } else {
-            showLogin();
-            Log.d(References.ERROR_LOG, "showLogin()");
-        }
 
-        FragmentManager fm = getSupportFragmentManager();
+        /*FragmentManager fm = getSupportFragmentManager();
 
         List<Fragment> list = fm.getFragments();
-        Log.d(References.ERROR_LOG, list == null? "list: null" : list.size()+"");
-        if (list==null || list.size() == 0)
-            begin();
-        /*if (list != null)
+        if (list != null)
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getClass().equals(RateFragment.class))
                     onBackPressed();
             }*/
+            int size = getSupportFragmentManager().getBackStackEntryCount();
+            for (int i = 0; i < size; i++) {
+                onBackPressed();
+            }
+        }
     }
 
     private void getVideos(final boolean first) {
@@ -266,6 +281,7 @@ public class MainActivity extends FragmentActivity {
                             } else if (data.getKey().equals(References.APP_VALUES)){
                                 appValues = data.getValue(AppValues.class);
                                 appPrefs.edit().putString(References.SHARED_PREFERENCES_APP_VALUES, gson.toJson(appValues)).apply();
+                                Log.d(References.ERROR_LOG, "PaymentLinks: " + appValues.getPaymentLinks().toString());
                             } else if (data.getKey().equals(References.APP_TEXTS)){
                                 appText = data.getValue(AppText.class);
                                 appPrefs.edit().putString(References.SHARED_PREFERENCES_APP_TEXTS, gson.toJson(appText)).apply();
@@ -277,7 +293,7 @@ public class MainActivity extends FragmentActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.e(References.ERROR_LOG, "getVideos() ËRROR - " + databaseError.getMessage());
                     }
                 });
     }
@@ -319,7 +335,7 @@ public class MainActivity extends FragmentActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.e(References.ERROR_LOG, "checks() ËRROR - " + databaseError.getMessage());
                     }
                 });
 
@@ -335,7 +351,8 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        if (isOnline())
+            mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -345,23 +362,31 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    private FragmentManager.OnBackStackChangedListener getListener()
-    {
-        FragmentManager.OnBackStackChangedListener result = new FragmentManager.OnBackStackChangedListener()
-        {
-            public void onBackStackChanged()
-            {
-                FragmentManager manager = getSupportFragmentManager();
+    public static void gotoPay(FragmentActivity activity){
+        gotoMain(activity);
+        FragmentMan.changeFragment(activity, PayFragment.class);
+    }
 
-                if (manager != null)
-                {
-                    MainFragment currFrag = (MainFragment) manager.findFragmentByTag(MainFragment.class.getSimpleName());
+    public static void showInvitation(FragmentActivity activity){
+        gotoMain(activity);
+        FragmentMan.changeFragment(activity, InvitationFragment.class);
+    }
 
-                    currFrag.onFragmentResume();
-                }
-            }
-        };
+    public static void gotoMain(FragmentActivity activity){
+        int size = activity.getSupportFragmentManager().getBackStackEntryCount();
+        for (int i = 0; i < size; i++) {
+            activity.onBackPressed();
+        }
+    }
 
-        return result;
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
+
+    public static void exitApp(){
+        System.exit(0);
     }
 }

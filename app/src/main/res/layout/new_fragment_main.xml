@@ -23,7 +23,7 @@
                 android:layout_marginStart="30dp">
 
                 <ImageButton
-                    android:id="@+id/notifications"
+                    android:id="@+id/notifications_indicator"
                     style="@style/imageButton"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
@@ -33,9 +33,9 @@
                     android:src="@drawable/new_icon_notifications" />
 
                 <ImageView
-                    android:id="@+id/notifications_indicator"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:id="@+id/notifications_indicator_alert"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:layout_margin="3dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/attention"
@@ -89,13 +89,14 @@
                 android:src="@drawable/new_icon_logout" />
 
         </LinearLayout>
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:scaleType="fitCenter"
             android:src="@drawable/main_title" />
 

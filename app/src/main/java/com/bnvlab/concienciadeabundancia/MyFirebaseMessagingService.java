@@ -55,6 +55,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             jsonObject.put("title", title);
                             jsonObject.put("read", false);
                             jsonObject.put("time", System.currentTimeMillis());
+                            if ( clickAction == 2 ){
+                                prefs.edit().putBoolean(References.SHARED_PREFERENCES_FIRST_CHANGES,true).apply();
+                            }
 
                             notifications.add(jsonObject.toString());
 

@@ -55,6 +55,7 @@ public class References {
             , QUIZ_CHILD_REQUIRE = "require"
             , QUIZ_FIRST_TRAINING_ID = "-KiaTj3gjkFLXOBDDBWa"
             , PAY = "pay_report"
+            , PAY_DEFAULT_LINK = "default"
 
             , RATE_APP = "rate_app"
 
@@ -95,6 +96,7 @@ public class References {
             , SHARED_PREFERENCES_APP_TEXTS = "texts.json"
 
             , SHARED_PREFERENCES_FIRST_TIME = "shared_prefs_first_time"
+            , SHARED_PREFERENCES_FIRST_CHANGES = "shared_prefs_first_changes"
             , SHARED_PREFERENCES_NOTIFICATION_CONFERENCE = "conference_notification"
             , SHARED_PREFERENCES_NOTIFICATION_TRAINING = "training_notification"
             , SHARED_PREFERENCES_NOTIFICATION_RESULT = "training_result"

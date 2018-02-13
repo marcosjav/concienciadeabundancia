@@ -162,7 +162,8 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
             @Override
             public void onClick(View v) {
                 if (disable)
-                    Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
+                    //MainActivity.showInvitation(getActivity());
+                    FragmentMan.changeFragment(getActivity(), InvitationFragment.class);
                 else {
                     checkSend();
                 }
@@ -173,8 +174,10 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
         buttonNoTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (disable)
-                    Toast.makeText(getContext(), "Disponible para usuarios registrados\nContáctate con nosotros para saber más", Toast.LENGTH_LONG).show();
+                if (disable) {
+                    //MainActivity.showInvitation(getActivity());
+                    FragmentMan.changeFragment(getActivity(), InvitationFragment.class);
+                }
                 else {
                     checkSend();
                 }
@@ -266,6 +269,9 @@ public class QuizFragment extends Fragment implements YouTubePlayer.OnInitialize
                             }
 
                         }
+                        if (!free && !MainActivity.user.isActive())
+                            disable = true;
+
                         mAdapter.notifyDataSetChanged();
 //                        setListViewHeightBasedOnChildren(listView);
                         showProgress(false);

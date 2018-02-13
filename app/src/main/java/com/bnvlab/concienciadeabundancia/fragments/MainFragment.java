@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,14 +42,14 @@ import java.util.ArrayList;
 
 public class MainFragment extends Fragment {
     //    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
-    ImageButton buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden, notificationButton, buttonSubscribe;
+    ImageButton buttonWebLink, buttonFacebookLink, buttonInstaLink, buttonLogout, buttonSettings, buttonAddChilden, buttonSubscribe;
     ImageButton buttonFAQ, buttonAbout, buttonFundaments, buttonConference, buttonVideos;
     Button buttonTrainings, buttonShare, buttonAsk, buttonElections;
     //    View shareRow;
     private static final String fbUri0 = "https://www.facebook.com/";
     private static final String fbUri1 = "PabloAlbertoAzarOk";
     ArrayList<JSONObject> notificationsList;
-    View notificationsIndicator;
+    View notificationsIndicator,notificationButton;
     //    LinearLayout layoutTrainings;
     SharedPreferences prefs;
     //    Animation bounce;
@@ -105,9 +106,8 @@ public class MainFragment extends Fragment {
                 .child(fbUser.getUid())
                 .setValue(ServerValue.TIMESTAMP);
 
-        notificationsIndicator = view.findViewById(R.id.notifications_indicator);
-
-        notificationButton = (ImageButton) view.findViewById(R.id.notifications);
+        notificationsIndicator = view.findViewById(R.id.notifications_indicator_alert);
+        notificationButton = view.findViewById(R.id.notifications_indicator);
         buttonFacebookLink = (ImageButton) view.findViewById(R.id.button_main_facebook);
         buttonWebLink = (ImageButton) view.findViewById(R.id.button_main_web);
         buttonInstaLink = (ImageButton) view.findViewById(R.id.button_main_instagram);
@@ -127,6 +127,13 @@ public class MainFragment extends Fragment {
         buttonElections = (Button) view.findViewById(R.id.button_main_elections);
 
         notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentMan.changeFragment(getActivity(), NotificationsFragment.class);
+            }
+        });
+
+        notificationsIndicator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentMan.changeFragment(getActivity(), NotificationsFragment.class);
@@ -345,10 +352,12 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        onFragmentResume();
+
+        onFragmentResume(getActivity());
     }
 
-    public void onFragmentResume(){
+    public void onFragmentResume(final FragmentActivity activity){
+
         checkVersion();
 
         //##### CALIFICAR APLICACIÓN
@@ -366,7 +375,7 @@ public class MainFragment extends Fragment {
                                 ask = dataSnapshot.getValue(boolean.class);
 
                             if (!ask)
-                                rateApp();
+                                rateApp(activity);
                         }
 
                         @Override
@@ -379,14 +388,15 @@ public class MainFragment extends Fragment {
         if (prefs.getBoolean(References.SHARED_PREFERENCES_FIRST_TIME, true)) {
             FragmentMan.changeFragment(getActivity(), WelcomeFragment.class);
         }
+
         //################# AVISAR QUE HAY NOTIFICACIONES NUEVAS
-        if (prefs.getBoolean(References.NOTIFICATION_NEW_MESSAGES, false))
+        /*if (prefs.getBoolean(References.NOTIFICATION_NEW_MESSAGES, false))
             notificationsIndicator.setVisibility(View.VISIBLE);
         else
-            notificationsIndicator.setVisibility(View.GONE);
+            notificationsIndicator.setVisibility(View.GONE);*/
     }
 
-    private void rateApp() {
+    private void rateApp(final FragmentActivity activity) {
         reference
                 .child(References.SENT)
                 .child(fbUser.getUid())
@@ -397,7 +407,7 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null)
-                            FragmentMan.changeFragment(getActivity(), RateFragment.class);
+                            FragmentMan.changeFragment(activity, RateFragment.class);
                     }
 
                     @Override

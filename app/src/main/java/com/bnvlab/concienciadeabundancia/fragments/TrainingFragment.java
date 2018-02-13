@@ -77,13 +77,6 @@ public class TrainingFragment extends Fragment implements ICallback, YouTubePlay
             }
         });
 
-        view.findViewById(R.id.button_trainings_videos).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentMan.changeFragment(getActivity(), VideoFragment.class);
-            }
-        });
-
         list = new ArrayList<>();
         viewSwitcher = (ViewSwitcher) view.findViewById(R.id.view_switcher_trainings);
 
@@ -111,6 +104,9 @@ public class TrainingFragment extends Fragment implements ICallback, YouTubePlay
         YouTubePlayerSupportFragment frag =
                 (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);
         frag.initialize(Config.YOUTUBE_API_KEY, this);
+
+        TextView textViewDescription = (TextView) view.findViewById(R.id.textViewDescription);
+        textViewDescription.setText(MainActivity.appText.getTrainingsDescription().replace("&","\n"));
 
         return view;
     }

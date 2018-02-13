@@ -101,7 +101,7 @@ public class ElectionsFragment extends Fragment implements YouTubePlayer.OnIniti
         });
 
         textViewDescription = (TextView) view.findViewById(R.id.textViewDescription);
-        textViewDescription.setText(MainActivity.appText.getElectionsDescription());
+        textViewDescription.setText(MainActivity.appText.getElectionsDescription().replace("&","\n"));
 
         YouTubePlayerSupportFragment frag =
                 (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment);

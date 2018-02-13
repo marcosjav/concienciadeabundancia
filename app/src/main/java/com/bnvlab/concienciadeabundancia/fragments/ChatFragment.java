@@ -84,7 +84,7 @@ public class ChatFragment extends Fragment implements YouTubePlayer.OnInitialize
         mRecyclerView.setAdapter(mAdapter);
 
         textViewDescription = (TextView) view.findViewById(R.id.textViewDescription);
-        textViewDescription.setText(MainActivity.appText.getChatDescription());
+        textViewDescription.setText(MainActivity.appText.getChatDescription().replace("&","\n"));
 
         buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override

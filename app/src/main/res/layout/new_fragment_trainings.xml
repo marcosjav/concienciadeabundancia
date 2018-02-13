@@ -73,15 +73,12 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp" />
 
-    <Button
-        android:id="@+id/button_trainings_videos"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/button_background"
-        android:drawableStart="@drawable/new_icon_videos"
+    <TextView
+        android:id="@+id/textViewDescription"
         android:padding="10dp"
-        android:text="@string/trainings_videos" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"/>
 
     <ViewSwitcher
         android:id="@+id/view_switcher_trainings"

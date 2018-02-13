@@ -63,7 +63,7 @@ public class ShareFragment extends Fragment implements YouTubePlayer.OnInitializ
         frag.initialize(Config.YOUTUBE_API_KEY, this);
 
         textViewDescription = (TextView) view.findViewById(R.id.textViewDescription);
-        textViewDescription.setText(MainActivity.appText.getShareDescription());
+        textViewDescription.setText(MainActivity.appText.getShareDescription().replace("&","\n"));
 
         return view;
     }
@@ -73,9 +73,7 @@ public class ShareFragment extends Fragment implements YouTubePlayer.OnInitializ
                         FirebaseAuth.getInstance().getCurrentUser().getUid() +
                         "&apn=com.bnvlab.concienciadeabundancia";
 
-        String message = MainActivity.appText.getSms();
-
-        message = message.replace("&","\n");
+        String message = MainActivity.appText.getSms().replace("&","\n");
 
         message += deepLink;
 

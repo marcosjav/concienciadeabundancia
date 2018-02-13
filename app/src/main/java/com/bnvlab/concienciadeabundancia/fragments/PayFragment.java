@@ -39,6 +39,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.util.Arrays;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -81,7 +83,7 @@ public class PayFragment extends Fragment implements YouTubePlayer.OnInitialized
         buttonReport = (Button) view.findViewById(R.id.button_pay_report);
 
         textViewDesciption = (TextView) view.findViewById(R.id.textViewDescription);
-        textViewDesciption.setText(MainActivity.appText.getPayDesciption());
+        textViewDesciption.setText(MainActivity.appText.getPayDesciption().replace("&","\n"));
 
         Button buttonRecomendations = (Button) view.findViewById(R.id.button_pay_recomendations);
         ImageButton back = (ImageButton) view.findViewById(R.id.new_icon_back);
@@ -108,7 +110,7 @@ public class PayFragment extends Fragment implements YouTubePlayer.OnInitialized
         buttonCredit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri uri = Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=S2UBEFZFGUJJ6&email=" + FirebaseAuth.getInstance().getCurrentUser().getEmail()); // TEST
+                /*Uri uri = Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=S2UBEFZFGUJJ6&email=" + FirebaseAuth.getInstance().getCurrentUser().getEmail()); // TEST
                 Log.i(References.ERROR_LOG, "key: "+ locationKey + "\nValue: " + location);
                 if(locationKey.equals(References.LOCATION_KEY) ||
                         location.toLowerCase().equals(References.LOCATION_ARGENTINA.toLowerCase())) {
@@ -123,6 +125,40 @@ public class PayFragment extends Fragment implements YouTubePlayer.OnInitialized
                 }else{
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
+                }*/
+                String link = MainActivity.appValues.getPaymentLinks().get(location);
+                if (link == null)
+                    link = MainActivity.appValues.getPaymentLinks().get(References.PAY_DEFAULT_LINK);
+
+                if (link.startsWith("https://www.paypal.com/"))
+                    link += "&email=" + MainActivity.user.getEmail();
+
+                Uri uri = Uri.parse(link);
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }catch (final Exception e){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle(getString(R.string.payment_error_title))
+                            .setMessage(getString(R.string.payment_error_message))
+                            .setIcon(R.drawable.attention_red)
+                            .setNeutralButton(getString(R.string.payment_send_email), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent i = new Intent(Intent.ACTION_SEND);
+                                    i.setType("message/rfc822");
+                                    i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"app@cdainter.com"});
+                                    i.putExtra(Intent.EXTRA_SUBJECT, "payment error");
+                                    i.putExtra(Intent.EXTRA_TEXT   , e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
+                                    try {
+                                        startActivity(Intent.createChooser(i, getString(R.string.payment_send_email_title)));
+                                    } catch (android.content.ActivityNotFoundException ex) {
+                                        Toast.makeText(getActivity(), getString(R.string.payment_no_client), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+                            .setPositiveButton(getString(R.string.payment_ok), null);
+                    builder.create().show();
                 }
             }
         });

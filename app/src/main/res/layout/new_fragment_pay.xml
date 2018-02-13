@@ -98,7 +98,8 @@
                     android:id="@+id/textViewDescription"
                     android:padding="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"/>
 
                 <Button
                     android:id="@+id/button_pay_bank"
@@ -142,7 +143,7 @@
                     android:layout_marginEnd="30dp"
                     android:layout_marginStart="30dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/button_background"
+                    android:background="@drawable/button_background_dark_red"
                     android:text="@string/pay_report"
                     android:textSize="14sp"
                     android:visibility="visible" />

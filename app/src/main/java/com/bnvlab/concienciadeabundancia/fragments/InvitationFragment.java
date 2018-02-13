@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.bnvlab.concienciadeabundancia.MainActivity;
 import com.bnvlab.concienciadeabundancia.R;
@@ -21,44 +20,32 @@ import com.google.android.youtube.player.YouTubePlayerSupportFragment;
  * Created by Marcos on 19/04/2017.
  */
 
-public class WelcomeFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
+public class InvitationFragment extends Fragment implements YouTubePlayer.OnInitializedListener {
     public static boolean active, button;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.new_fragment_welcome, container, false);
+        View view = inflater.inflate(R.layout.new_fragment_invitation, container, false);
 
-        YouTubePlayerSupportFragment frag = (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment_welcome);
+        YouTubePlayerSupportFragment frag = (YouTubePlayerSupportFragment) this.getChildFragmentManager().findFragmentById(R.id.youtube_fragment_invitation);
         frag.initialize(Config.YOUTUBE_API_KEY, this);
 
         view.findViewById(R.id.button_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                button = true;
-                getActivity().onBackPressed();
+                MainActivity.gotoPay(getActivity());
             }
         });
 
-        if (MainActivity.sentUser.size() > 0){
-            Button btn = (Button) view.findViewById(R.id.button_ok);
-            btn.setText(getString(R.string.welcome_button_ok));
-        }
-
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        active = true;
     }
 
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         if (!b) {
             //I assume the below String value is your video id
-            youTubePlayer.loadVideo(MainActivity.videosURL.getWelcome());
+            youTubePlayer.loadVideo(MainActivity.videosURL.getInvitation());
         }
     }
 
